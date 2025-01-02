@@ -1,0 +1,57 @@
+{
+  "metadata": {
+    "version": "1.1",
+    "source": "Tanzil Project",
+    "license": "Creative Commons Attribution 3.0",
+    "hash": "d07dc4b0397c7929b4eff11ad5b98303",
+    "generatedAt": "2025-01-02T18:42:38.387Z",
+    "page": 1,
+    "juz": 1
+  },
+  "suras": {
+    "1": {
+      "index": 1,
+      "name": "الفاتحة",
+      "tname": "Al-Faatiha",
+      "ename": "The Opening",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
+          "bismillah": null
+        },
+        {
+          "index": 2,
+          "text": "ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "مَـٰلِكِ يَوْمِ ٱلدِّينِ",
+          "bismillah": null
+        },
+        {
+          "index": 5,
+          "text": "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+          "bismillah": null
+        },
+        {
+          "index": 6,
+          "text": "ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ",
+          "bismillah": null
+        },
+        {
+          "index": 7,
+          "text": "صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ",
+          "bismillah": null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "version": "1.1",
+    "source": "Tanzil Project",
+    "license": "Creative Commons Attribution 3.0",
+    "hash": "d07dc4b0397c7929b4eff11ad5b98303",
+    "generatedAt": "2025-01-02T18:42:38.402Z",
+    "page": 598,
+    "juz": 30
+  },
+  "suras": {
+    "97": {
+      "index": 97,
+      "name": "القدر",
+      "tname": "Al-Qadr",
+      "ename": "The Power, Fate",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "إِنَّآ أَنزَلْنَـٰهُ فِى لَيْلَةِ ٱلْقَدْرِ",
+          "bismillah": "بِّسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "وَمَآ أَدْرَىٰكَ مَا لَيْلَةُ ٱلْقَدْرِ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "لَيْلَةُ ٱلْقَدْرِ خَيْرٌ مِّنْ أَلْفِ شَهْرٍ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "تَنَزَّلُ ٱلْمَلَـٰٓئِكَةُ وَٱلرُّوحُ فِيهَا بِإِذْنِ رَبِّهِم مِّن كُلِّ أَمْرٍ",
+          "bismillah": null
+        },
+        {
+          "index": 5,
+          "text": "سَلَـٰمٌ هِىَ حَتَّىٰ مَطْلَعِ ٱلْفَجْرِ",
+          "bismillah": null
+        }
+      ]
+    }
+  }
+}

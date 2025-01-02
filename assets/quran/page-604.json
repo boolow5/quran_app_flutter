@@ -1,0 +1,115 @@
+{
+  "metadata": {
+    "version": "1.1",
+    "source": "Tanzil Project",
+    "license": "Creative Commons Attribution 3.0",
+    "hash": "d07dc4b0397c7929b4eff11ad5b98303",
+    "generatedAt": "2025-01-02T18:42:38.403Z",
+    "page": 604,
+    "juz": 30
+  },
+  "suras": {
+    "112": {
+      "index": 112,
+      "name": "الإخلاص",
+      "tname": "Al-Ikhlaas",
+      "ename": "Sincerity",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "قُلْ هُوَ ٱللَّهُ أَحَدٌ",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "ٱللَّهُ ٱلصَّمَدُ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "لَمْ يَلِدْ وَلَمْ يُولَدْ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ",
+          "bismillah": null
+        }
+      ]
+    },
+    "113": {
+      "index": 113,
+      "name": "الفلق",
+      "tname": "Al-Falaq",
+      "ename": "The Dawn",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "مِن شَرِّ مَا خَلَقَ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "وَمِن شَرِّ ٱلنَّفَّـٰثَـٰتِ فِى ٱلْعُقَدِ",
+          "bismillah": null
+        },
+        {
+          "index": 5,
+          "text": "وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+          "bismillah": null
+        }
+      ]
+    },
+    "114": {
+      "index": 114,
+      "name": "الناس",
+      "tname": "An-Naas",
+      "ename": "Mankind",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "مَلِكِ ٱلنَّاسِ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "إِلَـٰهِ ٱلنَّاسِ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ",
+          "bismillah": null
+        },
+        {
+          "index": 5,
+          "text": "ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ",
+          "bismillah": null
+        },
+        {
+          "index": 6,
+          "text": "مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ",
+          "bismillah": null
+        }
+      ]
+    }
+  }
+}

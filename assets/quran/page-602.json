@@ -1,0 +1,110 @@
+{
+  "metadata": {
+    "version": "1.1",
+    "source": "Tanzil Project",
+    "license": "Creative Commons Attribution 3.0",
+    "hash": "d07dc4b0397c7929b4eff11ad5b98303",
+    "generatedAt": "2025-01-02T18:42:38.403Z",
+    "page": 602,
+    "juz": 30
+  },
+  "suras": {
+    "106": {
+      "index": 106,
+      "name": "قريش",
+      "tname": "Quraish",
+      "ename": "Quraysh",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "لِإِيلَـٰفِ قُرَيْشٍ",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "إِۦلَـٰفِهِمْ رِحْلَةَ ٱلشِّتَآءِ وَٱلصَّيْفِ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "فَلْيَعْبُدُوا۟ رَبَّ هَـٰذَا ٱلْبَيْتِ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "ٱلَّذِىٓ أَطْعَمَهُم مِّن جُوعٍ وَءَامَنَهُم مِّنْ خَوْفٍۭ",
+          "bismillah": null
+        }
+      ]
+    },
+    "107": {
+      "index": 107,
+      "name": "الماعون",
+      "tname": "Al-Maa'un",
+      "ename": "Almsgiving",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "أَرَءَيْتَ ٱلَّذِى يُكَذِّبُ بِٱلدِّينِ",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "فَذَٰلِكَ ٱلَّذِى يَدُعُّ ٱلْيَتِيمَ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "وَلَا يَحُضُّ عَلَىٰ طَعَامِ ٱلْمِسْكِينِ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "فَوَيْلٌ لِّلْمُصَلِّينَ",
+          "bismillah": null
+        },
+        {
+          "index": 5,
+          "text": "ٱلَّذِينَ هُمْ عَن صَلَاتِهِمْ سَاهُونَ",
+          "bismillah": null
+        },
+        {
+          "index": 6,
+          "text": "ٱلَّذِينَ هُمْ يُرَآءُونَ",
+          "bismillah": null
+        },
+        {
+          "index": 7,
+          "text": "وَيَمْنَعُونَ ٱلْمَاعُونَ",
+          "bismillah": null
+        }
+      ]
+    },
+    "108": {
+      "index": 108,
+      "name": "الكوثر",
+      "tname": "Al-Kawthar",
+      "ename": "Abundance",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "إِنَّآ أَعْطَيْنَـٰكَ ٱلْكَوْثَرَ",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "فَصَلِّ لِرَبِّكَ وَٱنْحَرْ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "إِنَّ شَانِئَكَ هُوَ ٱلْأَبْتَرُ",
+          "bismillah": null
+        }
+      ]
+    }
+  }
+}

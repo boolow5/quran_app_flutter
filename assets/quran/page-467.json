@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "version": "1.1",
+    "source": "Tanzil Project",
+    "license": "Creative Commons Attribution 3.0",
+    "hash": "d07dc4b0397c7929b4eff11ad5b98303",
+    "generatedAt": "2025-01-02T18:42:38.398Z",
+    "page": 467,
+    "juz": 24
+  },
+  "suras": {
+    "39": {
+      "index": 39,
+      "name": "الزمر",
+      "tname": "Az-Zumar",
+      "ename": "The Groups",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 75,
+          "text": "وَتَرَى ٱلْمَلَـٰٓئِكَةَ حَآفِّينَ مِنْ حَوْلِ ٱلْعَرْشِ يُسَبِّحُونَ بِحَمْدِ رَبِّهِمْ ۖ وَقُضِىَ بَيْنَهُم بِٱلْحَقِّ وَقِيلَ ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ",
+          "bismillah": null
+        }
+      ]
+    }
+  }
+}

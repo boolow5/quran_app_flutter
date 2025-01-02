@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "version": "1.1",
+    "source": "Tanzil Project",
+    "license": "Creative Commons Attribution 3.0",
+    "hash": "d07dc4b0397c7929b4eff11ad5b98303",
+    "generatedAt": "2025-01-02T18:42:38.395Z",
+    "page": 255,
+    "juz": 13
+  },
+  "suras": {
+    "13": {
+      "index": 13,
+      "name": "الرعد",
+      "tname": "Ar-Ra'd",
+      "ename": "The Thunder",
+      "type": "Medinan",
+      "ayas": [
+        {
+          "index": 43,
+          "text": "وَيَقُولُ ٱلَّذِينَ كَفَرُوا۟ لَسْتَ مُرْسَلًا ۚ قُلْ كَفَىٰ بِٱللَّهِ شَهِيدًۢا بَيْنِى وَبَيْنَكُمْ وَمَنْ عِندَهُۥ عِلْمُ ٱلْكِتَـٰبِ",
+          "bismillah": null
+        }
+      ]
+    }
+  }
+}

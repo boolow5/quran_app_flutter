@@ -1,0 +1,190 @@
+{
+  "metadata": {
+    "version": "1.1",
+    "source": "Tanzil Project",
+    "license": "Creative Commons Attribution 3.0",
+    "hash": "d07dc4b0397c7929b4eff11ad5b98303",
+    "generatedAt": "2025-01-02T18:42:38.402Z",
+    "page": 600,
+    "juz": 30
+  },
+  "suras": {
+    "100": {
+      "index": 100,
+      "name": "العاديات",
+      "tname": "Al-Aadiyaat",
+      "ename": "The Chargers",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "وَٱلْعَـٰدِيَـٰتِ ضَبْحًا",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "فَٱلْمُورِيَـٰتِ قَدْحًا",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "فَٱلْمُغِيرَٰتِ صُبْحًا",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "فَأَثَرْنَ بِهِۦ نَقْعًا",
+          "bismillah": null
+        },
+        {
+          "index": 5,
+          "text": "فَوَسَطْنَ بِهِۦ جَمْعًا",
+          "bismillah": null
+        },
+        {
+          "index": 6,
+          "text": "إِنَّ ٱلْإِنسَـٰنَ لِرَبِّهِۦ لَكَنُودٌ",
+          "bismillah": null
+        },
+        {
+          "index": 7,
+          "text": "وَإِنَّهُۥ عَلَىٰ ذَٰلِكَ لَشَهِيدٌ",
+          "bismillah": null
+        },
+        {
+          "index": 8,
+          "text": "وَإِنَّهُۥ لِحُبِّ ٱلْخَيْرِ لَشَدِيدٌ",
+          "bismillah": null
+        },
+        {
+          "index": 9,
+          "text": "۞ أَفَلَا يَعْلَمُ إِذَا بُعْثِرَ مَا فِى ٱلْقُبُورِ",
+          "bismillah": null
+        },
+        {
+          "index": 10,
+          "text": "وَحُصِّلَ مَا فِى ٱلصُّدُورِ",
+          "bismillah": null
+        },
+        {
+          "index": 11,
+          "text": "إِنَّ رَبَّهُم بِهِمْ يَوْمَئِذٍ لَّخَبِيرٌۢ",
+          "bismillah": null
+        }
+      ]
+    },
+    "101": {
+      "index": 101,
+      "name": "القارعة",
+      "tname": "Al-Qaari'a",
+      "ename": "The Calamity",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "ٱلْقَارِعَةُ",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "مَا ٱلْقَارِعَةُ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "وَمَآ أَدْرَىٰكَ مَا ٱلْقَارِعَةُ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "يَوْمَ يَكُونُ ٱلنَّاسُ كَٱلْفَرَاشِ ٱلْمَبْثُوثِ",
+          "bismillah": null
+        },
+        {
+          "index": 5,
+          "text": "وَتَكُونُ ٱلْجِبَالُ كَٱلْعِهْنِ ٱلْمَنفُوشِ",
+          "bismillah": null
+        },
+        {
+          "index": 6,
+          "text": "فَأَمَّا مَن ثَقُلَتْ مَوَٰزِينُهُۥ",
+          "bismillah": null
+        },
+        {
+          "index": 7,
+          "text": "فَهُوَ فِى عِيشَةٍ رَّاضِيَةٍ",
+          "bismillah": null
+        },
+        {
+          "index": 8,
+          "text": "وَأَمَّا مَنْ خَفَّتْ مَوَٰزِينُهُۥ",
+          "bismillah": null
+        },
+        {
+          "index": 9,
+          "text": "فَأُمُّهُۥ هَاوِيَةٌ",
+          "bismillah": null
+        },
+        {
+          "index": 10,
+          "text": "وَمَآ أَدْرَىٰكَ مَا هِيَهْ",
+          "bismillah": null
+        },
+        {
+          "index": 11,
+          "text": "نَارٌ حَامِيَةٌۢ",
+          "bismillah": null
+        }
+      ]
+    },
+    "102": {
+      "index": 102,
+      "name": "التكاثر",
+      "tname": "At-Takaathur",
+      "ename": "Competition",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "أَلْهَىٰكُمُ ٱلتَّكَاثُرُ",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "حَتَّىٰ زُرْتُمُ ٱلْمَقَابِرَ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "كَلَّا سَوْفَ تَعْلَمُونَ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "ثُمَّ كَلَّا سَوْفَ تَعْلَمُونَ",
+          "bismillah": null
+        },
+        {
+          "index": 5,
+          "text": "كَلَّا لَوْ تَعْلَمُونَ عِلْمَ ٱلْيَقِينِ",
+          "bismillah": null
+        },
+        {
+          "index": 6,
+          "text": "لَتَرَوُنَّ ٱلْجَحِيمَ",
+          "bismillah": null
+        },
+        {
+          "index": 7,
+          "text": "ثُمَّ لَتَرَوُنَّهَا عَيْنَ ٱلْيَقِينِ",
+          "bismillah": null
+        },
+        {
+          "index": 8,
+          "text": "ثُمَّ لَتُسْـَٔلُنَّ يَوْمَئِذٍ عَنِ ٱلنَّعِيمِ",
+          "bismillah": null
+        }
+      ]
+    }
+  }
+}

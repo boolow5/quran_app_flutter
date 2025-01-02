@@ -1,0 +1,67 @@
+{
+  "metadata": {
+    "version": "1.1",
+    "source": "Tanzil Project",
+    "license": "Creative Commons Attribution 3.0",
+    "hash": "d07dc4b0397c7929b4eff11ad5b98303",
+    "generatedAt": "2025-01-02T18:42:38.395Z",
+    "page": 267,
+    "juz": 14
+  },
+  "suras": {
+    "15": {
+      "index": 15,
+      "name": "الحجر",
+      "tname": "Al-Hijr",
+      "ename": "The Rock",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 91,
+          "text": "ٱلَّذِينَ جَعَلُوا۟ ٱلْقُرْءَانَ عِضِينَ",
+          "bismillah": null
+        },
+        {
+          "index": 92,
+          "text": "فَوَرَبِّكَ لَنَسْـَٔلَنَّهُمْ أَجْمَعِينَ",
+          "bismillah": null
+        },
+        {
+          "index": 93,
+          "text": "عَمَّا كَانُوا۟ يَعْمَلُونَ",
+          "bismillah": null
+        },
+        {
+          "index": 94,
+          "text": "فَٱصْدَعْ بِمَا تُؤْمَرُ وَأَعْرِضْ عَنِ ٱلْمُشْرِكِينَ",
+          "bismillah": null
+        },
+        {
+          "index": 95,
+          "text": "إِنَّا كَفَيْنَـٰكَ ٱلْمُسْتَهْزِءِينَ",
+          "bismillah": null
+        },
+        {
+          "index": 96,
+          "text": "ٱلَّذِينَ يَجْعَلُونَ مَعَ ٱللَّهِ إِلَـٰهًا ءَاخَرَ ۚ فَسَوْفَ يَعْلَمُونَ",
+          "bismillah": null
+        },
+        {
+          "index": 97,
+          "text": "وَلَقَدْ نَعْلَمُ أَنَّكَ يَضِيقُ صَدْرُكَ بِمَا يَقُولُونَ",
+          "bismillah": null
+        },
+        {
+          "index": 98,
+          "text": "فَسَبِّحْ بِحَمْدِ رَبِّكَ وَكُن مِّنَ ٱلسَّـٰجِدِينَ",
+          "bismillah": null
+        },
+        {
+          "index": 99,
+          "text": "وَٱعْبُدْ رَبَّكَ حَتَّىٰ يَأْتِيَكَ ٱلْيَقِينُ",
+          "bismillah": null
+        }
+      ]
+    }
+  }
+}

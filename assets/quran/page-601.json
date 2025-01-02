@@ -1,0 +1,125 @@
+{
+  "metadata": {
+    "version": "1.1",
+    "source": "Tanzil Project",
+    "license": "Creative Commons Attribution 3.0",
+    "hash": "d07dc4b0397c7929b4eff11ad5b98303",
+    "generatedAt": "2025-01-02T18:42:38.403Z",
+    "page": 601,
+    "juz": 30
+  },
+  "suras": {
+    "103": {
+      "index": 103,
+      "name": "العصر",
+      "tname": "Al-Asr",
+      "ename": "The Declining Day, Epoch",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "وَٱلْعَصْرِ",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "إِنَّ ٱلْإِنسَـٰنَ لَفِى خُسْرٍ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "إِلَّا ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّـٰلِحَـٰتِ وَتَوَاصَوْا۟ بِٱلْحَقِّ وَتَوَاصَوْا۟ بِٱلصَّبْرِ",
+          "bismillah": null
+        }
+      ]
+    },
+    "104": {
+      "index": 104,
+      "name": "الهمزة",
+      "tname": "Al-Humaza",
+      "ename": "The Traducer",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "وَيْلٌ لِّكُلِّ هُمَزَةٍ لُّمَزَةٍ",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "ٱلَّذِى جَمَعَ مَالًا وَعَدَّدَهُۥ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "يَحْسَبُ أَنَّ مَالَهُۥٓ أَخْلَدَهُۥ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "كَلَّا ۖ لَيُنۢبَذَنَّ فِى ٱلْحُطَمَةِ",
+          "bismillah": null
+        },
+        {
+          "index": 5,
+          "text": "وَمَآ أَدْرَىٰكَ مَا ٱلْحُطَمَةُ",
+          "bismillah": null
+        },
+        {
+          "index": 6,
+          "text": "نَارُ ٱللَّهِ ٱلْمُوقَدَةُ",
+          "bismillah": null
+        },
+        {
+          "index": 7,
+          "text": "ٱلَّتِى تَطَّلِعُ عَلَى ٱلْأَفْـِٔدَةِ",
+          "bismillah": null
+        },
+        {
+          "index": 8,
+          "text": "إِنَّهَا عَلَيْهِم مُّؤْصَدَةٌ",
+          "bismillah": null
+        },
+        {
+          "index": 9,
+          "text": "فِى عَمَدٍ مُّمَدَّدَةٍۭ",
+          "bismillah": null
+        }
+      ]
+    },
+    "105": {
+      "index": 105,
+      "name": "الفيل",
+      "tname": "Al-Fil",
+      "ename": "The Elephant",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَـٰبِ ٱلْفِيلِ",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "أَلَمْ يَجْعَلْ كَيْدَهُمْ فِى تَضْلِيلٍ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "تَرْمِيهِم بِحِجَارَةٍ مِّن سِجِّيلٍ",
+          "bismillah": null
+        },
+        {
+          "index": 5,
+          "text": "فَجَعَلَهُمْ كَعَصْفٍ مَّأْكُولٍۭ",
+          "bismillah": null
+        }
+      ]
+    }
+  }
+}

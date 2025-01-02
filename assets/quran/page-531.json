@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "version": "1.1",
+    "source": "Tanzil Project",
+    "license": "Creative Commons Attribution 3.0",
+    "hash": "d07dc4b0397c7929b4eff11ad5b98303",
+    "generatedAt": "2025-01-02T18:42:38.400Z",
+    "page": 531,
+    "juz": 27
+  },
+  "suras": {
+    "54": {
+      "index": 54,
+      "name": "القمر",
+      "tname": "Al-Qamar",
+      "ename": "The Moon",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 50,
+          "text": "وَمَآ أَمْرُنَآ إِلَّا وَٰحِدَةٌ كَلَمْحٍۭ بِٱلْبَصَرِ",
+          "bismillah": null
+        },
+        {
+          "index": 51,
+          "text": "وَلَقَدْ أَهْلَكْنَآ أَشْيَاعَكُمْ فَهَلْ مِن مُّدَّكِرٍ",
+          "bismillah": null
+        },
+        {
+          "index": 52,
+          "text": "وَكُلُّ شَىْءٍ فَعَلُوهُ فِى ٱلزُّبُرِ",
+          "bismillah": null
+        },
+        {
+          "index": 53,
+          "text": "وَكُلُّ صَغِيرٍ وَكَبِيرٍ مُّسْتَطَرٌ",
+          "bismillah": null
+        },
+        {
+          "index": 54,
+          "text": "إِنَّ ٱلْمُتَّقِينَ فِى جَنَّـٰتٍ وَنَهَرٍ",
+          "bismillah": null
+        },
+        {
+          "index": 55,
+          "text": "فِى مَقْعَدِ صِدْقٍ عِندَ مَلِيكٍ مُّقْتَدِرٍۭ",
+          "bismillah": null
+        }
+      ]
+    }
+  }
+}

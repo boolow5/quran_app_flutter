@@ -1,0 +1,256 @@
+{
+  "metadata": {
+    "version": "1.1",
+    "source": "Tanzil Project",
+    "license": "Creative Commons Attribution 3.0",
+    "hash": "d07dc4b0397c7929b4eff11ad5b98303",
+    "generatedAt": "2025-01-02T18:42:38.402Z",
+    "page": 592,
+    "juz": 30
+  },
+  "suras": {
+    "87": {
+      "index": 87,
+      "name": "الأعلى",
+      "tname": "Al-A'laa",
+      "ename": "The Most High",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "سَبِّحِ ٱسْمَ رَبِّكَ ٱلْأَعْلَى",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "ٱلَّذِى خَلَقَ فَسَوَّىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "وَٱلَّذِى قَدَّرَ فَهَدَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "وَٱلَّذِىٓ أَخْرَجَ ٱلْمَرْعَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 5,
+          "text": "فَجَعَلَهُۥ غُثَآءً أَحْوَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 6,
+          "text": "سَنُقْرِئُكَ فَلَا تَنسَىٰٓ",
+          "bismillah": null
+        },
+        {
+          "index": 7,
+          "text": "إِلَّا مَا شَآءَ ٱللَّهُ ۚ إِنَّهُۥ يَعْلَمُ ٱلْجَهْرَ وَمَا يَخْفَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 8,
+          "text": "وَنُيَسِّرُكَ لِلْيُسْرَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 9,
+          "text": "فَذَكِّرْ إِن نَّفَعَتِ ٱلذِّكْرَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 10,
+          "text": "سَيَذَّكَّرُ مَن يَخْشَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 11,
+          "text": "وَيَتَجَنَّبُهَا ٱلْأَشْقَى",
+          "bismillah": null
+        },
+        {
+          "index": 12,
+          "text": "ٱلَّذِى يَصْلَى ٱلنَّارَ ٱلْكُبْرَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 13,
+          "text": "ثُمَّ لَا يَمُوتُ فِيهَا وَلَا يَحْيَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 14,
+          "text": "قَدْ أَفْلَحَ مَن تَزَكَّىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 15,
+          "text": "وَذَكَرَ ٱسْمَ رَبِّهِۦ فَصَلَّىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 16,
+          "text": "بَلْ تُؤْثِرُونَ ٱلْحَيَوٰةَ ٱلدُّنْيَا",
+          "bismillah": null
+        },
+        {
+          "index": 17,
+          "text": "وَٱلْـَٔاخِرَةُ خَيْرٌ وَأَبْقَىٰٓ",
+          "bismillah": null
+        },
+        {
+          "index": 18,
+          "text": "إِنَّ هَـٰذَا لَفِى ٱلصُّحُفِ ٱلْأُولَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 19,
+          "text": "صُحُفِ إِبْرَٰهِيمَ وَمُوسَىٰ",
+          "bismillah": null
+        }
+      ]
+    },
+    "88": {
+      "index": 88,
+      "name": "الغاشية",
+      "tname": "Al-Ghaashiya",
+      "ename": "The Overwhelming",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "هَلْ أَتَىٰكَ حَدِيثُ ٱلْغَـٰشِيَةِ",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "وُجُوهٌ يَوْمَئِذٍ خَـٰشِعَةٌ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "عَامِلَةٌ نَّاصِبَةٌ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "تَصْلَىٰ نَارًا حَامِيَةً",
+          "bismillah": null
+        },
+        {
+          "index": 5,
+          "text": "تُسْقَىٰ مِنْ عَيْنٍ ءَانِيَةٍ",
+          "bismillah": null
+        },
+        {
+          "index": 6,
+          "text": "لَّيْسَ لَهُمْ طَعَامٌ إِلَّا مِن ضَرِيعٍ",
+          "bismillah": null
+        },
+        {
+          "index": 7,
+          "text": "لَّا يُسْمِنُ وَلَا يُغْنِى مِن جُوعٍ",
+          "bismillah": null
+        },
+        {
+          "index": 8,
+          "text": "وُجُوهٌ يَوْمَئِذٍ نَّاعِمَةٌ",
+          "bismillah": null
+        },
+        {
+          "index": 9,
+          "text": "لِّسَعْيِهَا رَاضِيَةٌ",
+          "bismillah": null
+        },
+        {
+          "index": 10,
+          "text": "فِى جَنَّةٍ عَالِيَةٍ",
+          "bismillah": null
+        },
+        {
+          "index": 11,
+          "text": "لَّا تَسْمَعُ فِيهَا لَـٰغِيَةً",
+          "bismillah": null
+        },
+        {
+          "index": 12,
+          "text": "فِيهَا عَيْنٌ جَارِيَةٌ",
+          "bismillah": null
+        },
+        {
+          "index": 13,
+          "text": "فِيهَا سُرُرٌ مَّرْفُوعَةٌ",
+          "bismillah": null
+        },
+        {
+          "index": 14,
+          "text": "وَأَكْوَابٌ مَّوْضُوعَةٌ",
+          "bismillah": null
+        },
+        {
+          "index": 15,
+          "text": "وَنَمَارِقُ مَصْفُوفَةٌ",
+          "bismillah": null
+        },
+        {
+          "index": 16,
+          "text": "وَزَرَابِىُّ مَبْثُوثَةٌ",
+          "bismillah": null
+        },
+        {
+          "index": 17,
+          "text": "أَفَلَا يَنظُرُونَ إِلَى ٱلْإِبِلِ كَيْفَ خُلِقَتْ",
+          "bismillah": null
+        },
+        {
+          "index": 18,
+          "text": "وَإِلَى ٱلسَّمَآءِ كَيْفَ رُفِعَتْ",
+          "bismillah": null
+        },
+        {
+          "index": 19,
+          "text": "وَإِلَى ٱلْجِبَالِ كَيْفَ نُصِبَتْ",
+          "bismillah": null
+        },
+        {
+          "index": 20,
+          "text": "وَإِلَى ٱلْأَرْضِ كَيْفَ سُطِحَتْ",
+          "bismillah": null
+        },
+        {
+          "index": 21,
+          "text": "فَذَكِّرْ إِنَّمَآ أَنتَ مُذَكِّرٌ",
+          "bismillah": null
+        },
+        {
+          "index": 22,
+          "text": "لَّسْتَ عَلَيْهِم بِمُصَيْطِرٍ",
+          "bismillah": null
+        },
+        {
+          "index": 23,
+          "text": "إِلَّا مَن تَوَلَّىٰ وَكَفَرَ",
+          "bismillah": null
+        },
+        {
+          "index": 24,
+          "text": "فَيُعَذِّبُهُ ٱللَّهُ ٱلْعَذَابَ ٱلْأَكْبَرَ",
+          "bismillah": null
+        },
+        {
+          "index": 25,
+          "text": "إِنَّ إِلَيْنَآ إِيَابَهُمْ",
+          "bismillah": null
+        },
+        {
+          "index": 26,
+          "text": "ثُمَّ إِنَّ عَلَيْنَا حِسَابَهُم",
+          "bismillah": null
+        }
+      ]
+    }
+  }
+}

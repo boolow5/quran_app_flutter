@@ -1,0 +1,240 @@
+{
+  "metadata": {
+    "version": "1.1",
+    "source": "Tanzil Project",
+    "license": "Creative Commons Attribution 3.0",
+    "hash": "d07dc4b0397c7929b4eff11ad5b98303",
+    "generatedAt": "2025-01-02T18:42:38.402Z",
+    "page": 596,
+    "juz": 30
+  },
+  "suras": {
+    "92": {
+      "index": 92,
+      "name": "الليل",
+      "tname": "Al-Lail",
+      "ename": "The Night",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "وَٱلَّيْلِ إِذَا يَغْشَىٰ",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "وَٱلنَّهَارِ إِذَا تَجَلَّىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "وَمَا خَلَقَ ٱلذَّكَرَ وَٱلْأُنثَىٰٓ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "إِنَّ سَعْيَكُمْ لَشَتَّىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 5,
+          "text": "فَأَمَّا مَنْ أَعْطَىٰ وَٱتَّقَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 6,
+          "text": "وَصَدَّقَ بِٱلْحُسْنَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 7,
+          "text": "فَسَنُيَسِّرُهُۥ لِلْيُسْرَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 8,
+          "text": "وَأَمَّا مَنۢ بَخِلَ وَٱسْتَغْنَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 9,
+          "text": "وَكَذَّبَ بِٱلْحُسْنَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 10,
+          "text": "فَسَنُيَسِّرُهُۥ لِلْعُسْرَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 11,
+          "text": "وَمَا يُغْنِى عَنْهُ مَالُهُۥٓ إِذَا تَرَدَّىٰٓ",
+          "bismillah": null
+        },
+        {
+          "index": 12,
+          "text": "إِنَّ عَلَيْنَا لَلْهُدَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 13,
+          "text": "وَإِنَّ لَنَا لَلْـَٔاخِرَةَ وَٱلْأُولَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 14,
+          "text": "فَأَنذَرْتُكُمْ نَارًا تَلَظَّىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 15,
+          "text": "لَا يَصْلَىٰهَآ إِلَّا ٱلْأَشْقَى",
+          "bismillah": null
+        },
+        {
+          "index": 16,
+          "text": "ٱلَّذِى كَذَّبَ وَتَوَلَّىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 17,
+          "text": "وَسَيُجَنَّبُهَا ٱلْأَتْقَى",
+          "bismillah": null
+        },
+        {
+          "index": 18,
+          "text": "ٱلَّذِى يُؤْتِى مَالَهُۥ يَتَزَكَّىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 19,
+          "text": "وَمَا لِأَحَدٍ عِندَهُۥ مِن نِّعْمَةٍ تُجْزَىٰٓ",
+          "bismillah": null
+        },
+        {
+          "index": 20,
+          "text": "إِلَّا ٱبْتِغَآءَ وَجْهِ رَبِّهِ ٱلْأَعْلَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 21,
+          "text": "وَلَسَوْفَ يَرْضَىٰ",
+          "bismillah": null
+        }
+      ]
+    },
+    "93": {
+      "index": 93,
+      "name": "الضحى",
+      "tname": "Ad-Dhuhaa",
+      "ename": "The Morning Hours",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "وَٱلضُّحَىٰ",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "وَٱلَّيْلِ إِذَا سَجَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "وَلَلْـَٔاخِرَةُ خَيْرٌ لَّكَ مِنَ ٱلْأُولَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 5,
+          "text": "وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰٓ",
+          "bismillah": null
+        },
+        {
+          "index": 6,
+          "text": "أَلَمْ يَجِدْكَ يَتِيمًا فَـَٔاوَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 7,
+          "text": "وَوَجَدَكَ ضَآلًّا فَهَدَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 8,
+          "text": "وَوَجَدَكَ عَآئِلًا فَأَغْنَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 9,
+          "text": "فَأَمَّا ٱلْيَتِيمَ فَلَا تَقْهَرْ",
+          "bismillah": null
+        },
+        {
+          "index": 10,
+          "text": "وَأَمَّا ٱلسَّآئِلَ فَلَا تَنْهَرْ",
+          "bismillah": null
+        },
+        {
+          "index": 11,
+          "text": "وَأَمَّا بِنِعْمَةِ رَبِّكَ فَحَدِّثْ",
+          "bismillah": null
+        }
+      ]
+    },
+    "94": {
+      "index": 94,
+      "name": "الشرح",
+      "tname": "Ash-Sharh",
+      "ename": "The Consolation",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "وَوَضَعْنَا عَنكَ وِزْرَكَ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "ٱلَّذِىٓ أَنقَضَ ظَهْرَكَ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "وَرَفَعْنَا لَكَ ذِكْرَكَ",
+          "bismillah": null
+        },
+        {
+          "index": 5,
+          "text": "فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًا",
+          "bismillah": null
+        },
+        {
+          "index": 6,
+          "text": "إِنَّ مَعَ ٱلْعُسْرِ يُسْرًا",
+          "bismillah": null
+        },
+        {
+          "index": 7,
+          "text": "فَإِذَا فَرَغْتَ فَٱنصَبْ",
+          "bismillah": null
+        },
+        {
+          "index": 8,
+          "text": "وَإِلَىٰ رَبِّكَ فَٱرْغَب",
+          "bismillah": null
+        }
+      ]
+    }
+  }
+}

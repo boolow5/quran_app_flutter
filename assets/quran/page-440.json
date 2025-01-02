@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "version": "1.1",
+    "source": "Tanzil Project",
+    "license": "Creative Commons Attribution 3.0",
+    "hash": "d07dc4b0397c7929b4eff11ad5b98303",
+    "generatedAt": "2025-01-02T18:42:38.398Z",
+    "page": 440,
+    "juz": 22
+  },
+  "suras": {
+    "35": {
+      "index": 35,
+      "name": "فاطر",
+      "tname": "Faatir",
+      "ename": "The Originator",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 45,
+          "text": "وَلَوْ يُؤَاخِذُ ٱللَّهُ ٱلنَّاسَ بِمَا كَسَبُوا۟ مَا تَرَكَ عَلَىٰ ظَهْرِهَا مِن دَآبَّةٍ وَلَـٰكِن يُؤَخِّرُهُمْ إِلَىٰٓ أَجَلٍ مُّسَمًّى ۖ فَإِذَا جَآءَ أَجَلُهُمْ فَإِنَّ ٱللَّهَ كَانَ بِعِبَادِهِۦ بَصِيرًۢا",
+          "bismillah": null
+        }
+      ]
+    }
+  }
+}

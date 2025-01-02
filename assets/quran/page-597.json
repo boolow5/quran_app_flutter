@@ -1,0 +1,166 @@
+{
+  "metadata": {
+    "version": "1.1",
+    "source": "Tanzil Project",
+    "license": "Creative Commons Attribution 3.0",
+    "hash": "d07dc4b0397c7929b4eff11ad5b98303",
+    "generatedAt": "2025-01-02T18:42:38.402Z",
+    "page": 597,
+    "juz": 30
+  },
+  "suras": {
+    "95": {
+      "index": 95,
+      "name": "التين",
+      "tname": "At-Tin",
+      "ename": "The Fig",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "وَٱلتِّينِ وَٱلزَّيْتُونِ",
+          "bismillah": "بِّسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "وَطُورِ سِينِينَ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "وَهَـٰذَا ٱلْبَلَدِ ٱلْأَمِينِ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "لَقَدْ خَلَقْنَا ٱلْإِنسَـٰنَ فِىٓ أَحْسَنِ تَقْوِيمٍ",
+          "bismillah": null
+        },
+        {
+          "index": 5,
+          "text": "ثُمَّ رَدَدْنَـٰهُ أَسْفَلَ سَـٰفِلِينَ",
+          "bismillah": null
+        },
+        {
+          "index": 6,
+          "text": "إِلَّا ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّـٰلِحَـٰتِ فَلَهُمْ أَجْرٌ غَيْرُ مَمْنُونٍ",
+          "bismillah": null
+        },
+        {
+          "index": 7,
+          "text": "فَمَا يُكَذِّبُكَ بَعْدُ بِٱلدِّينِ",
+          "bismillah": null
+        },
+        {
+          "index": 8,
+          "text": "أَلَيْسَ ٱللَّهُ بِأَحْكَمِ ٱلْحَـٰكِمِينَ",
+          "bismillah": null
+        }
+      ]
+    },
+    "96": {
+      "index": 96,
+      "name": "العلق",
+      "tname": "Al-Alaq",
+      "ename": "The Clot",
+      "type": "Meccan",
+      "ayas": [
+        {
+          "index": 1,
+          "text": "ٱقْرَأْ بِٱسْمِ رَبِّكَ ٱلَّذِى خَلَقَ",
+          "bismillah": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+        },
+        {
+          "index": 2,
+          "text": "خَلَقَ ٱلْإِنسَـٰنَ مِنْ عَلَقٍ",
+          "bismillah": null
+        },
+        {
+          "index": 3,
+          "text": "ٱقْرَأْ وَرَبُّكَ ٱلْأَكْرَمُ",
+          "bismillah": null
+        },
+        {
+          "index": 4,
+          "text": "ٱلَّذِى عَلَّمَ بِٱلْقَلَمِ",
+          "bismillah": null
+        },
+        {
+          "index": 5,
+          "text": "عَلَّمَ ٱلْإِنسَـٰنَ مَا لَمْ يَعْلَمْ",
+          "bismillah": null
+        },
+        {
+          "index": 6,
+          "text": "كَلَّآ إِنَّ ٱلْإِنسَـٰنَ لَيَطْغَىٰٓ",
+          "bismillah": null
+        },
+        {
+          "index": 7,
+          "text": "أَن رَّءَاهُ ٱسْتَغْنَىٰٓ",
+          "bismillah": null
+        },
+        {
+          "index": 8,
+          "text": "إِنَّ إِلَىٰ رَبِّكَ ٱلرُّجْعَىٰٓ",
+          "bismillah": null
+        },
+        {
+          "index": 9,
+          "text": "أَرَءَيْتَ ٱلَّذِى يَنْهَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 10,
+          "text": "عَبْدًا إِذَا صَلَّىٰٓ",
+          "bismillah": null
+        },
+        {
+          "index": 11,
+          "text": "أَرَءَيْتَ إِن كَانَ عَلَى ٱلْهُدَىٰٓ",
+          "bismillah": null
+        },
+        {
+          "index": 12,
+          "text": "أَوْ أَمَرَ بِٱلتَّقْوَىٰٓ",
+          "bismillah": null
+        },
+        {
+          "index": 13,
+          "text": "أَرَءَيْتَ إِن كَذَّبَ وَتَوَلَّىٰٓ",
+          "bismillah": null
+        },
+        {
+          "index": 14,
+          "text": "أَلَمْ يَعْلَم بِأَنَّ ٱللَّهَ يَرَىٰ",
+          "bismillah": null
+        },
+        {
+          "index": 15,
+          "text": "كَلَّا لَئِن لَّمْ يَنتَهِ لَنَسْفَعًۢا بِٱلنَّاصِيَةِ",
+          "bismillah": null
+        },
+        {
+          "index": 16,
+          "text": "نَاصِيَةٍ كَـٰذِبَةٍ خَاطِئَةٍ",
+          "bismillah": null
+        },
+        {
+          "index": 17,
+          "text": "فَلْيَدْعُ نَادِيَهُۥ",
+          "bismillah": null
+        },
+        {
+          "index": 18,
+          "text": "سَنَدْعُ ٱلزَّبَانِيَةَ",
+          "bismillah": null
+        },
+        {
+          "index": 19,
+          "text": "كَلَّا لَا تُطِعْهُ وَٱسْجُدْ وَٱقْتَرِب ۩",
+          "bismillah": null
+        }
+      ]
+    }
+  }
+}

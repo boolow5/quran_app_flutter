@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:quran_app_flutter/components/rounded_box_text.dart';
+import 'package:quran_app_flutter/components/verse_number.dart';
 import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
+import 'package:quran_app_flutter/utils/utils.dart';
 
 class QuranPage extends StatefulWidget {
   final int pageNumber;
@@ -18,6 +21,8 @@ class QuranPage extends StatefulWidget {
 
 class _QuranPageState extends State<QuranPage> {
   late final PageController _pageController;
+  String _suraName = '';
+  int _suraNumber = 0;
   List<Verse> _verses = [];
   Map<int, Sura> _suras = {};
   bool _isLoading = true;
@@ -64,6 +69,8 @@ class _QuranPageState extends State<QuranPage> {
 
         // Create Sura object
         _suras[suraNumber] = Sura.fromJson(suraNumber, suraData);
+        _suraName = _suras[suraNumber]!.name ?? '<???>';
+        _suraNumber = suraNumber;
 
         final List<dynamic> ayas = suraData['ayas'] as List<dynamic>;
         // Add verses from this sura
@@ -100,6 +107,24 @@ class _QuranPageState extends State<QuranPage> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go('/'),
         ),
+        centerTitle: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            RoundedBoxText(
+              text: "السورة ${toArabicNumber(_suraNumber)}",
+              width: 100,
+            ),
+            RoundedBoxText(
+              text: toArabicNumber(widget.pageNumber),
+              width: 40,
+            ),
+            RoundedBoxText(
+              text: _suraName,
+              width: 100,
+            ),
+          ],
+        ),
         actions: [
           IconButton(
             icon: Icon(
@@ -128,17 +153,26 @@ class _QuranPageState extends State<QuranPage> {
                   textDirection: TextDirection.rtl,
                   child: SingleChildScrollView(
                     child: Container(
-                      padding: const EdgeInsets.all(16.0),
+                      height: _isSpecialPage() ? 515 : null,
+                      width: _isSpecialPage() ? 380 : null,
+                      margin: _isSpecialPage()
+                          ? const EdgeInsets.symmetric(vertical: 32)
+                          : null,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: _isSpecialPage() ? 16.0 : 0,
+                      ),
                       decoration: BoxDecoration(
                         color: Theme.of(context).scaffoldBackgroundColor,
                         borderRadius: BorderRadius.circular(8),
                         border: _isSpecialPage()
                             ? Border.all(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withOpacity(0.5),
-                                width: 8.0,
+                                // color: Theme.of(context)
+                                //     .colorScheme
+                                //     .primary
+                                //     .withOpacity(0.5),
+                                color: DEFAULT_PRIMARY_COLOR,
+                                width: 16.0,
                               )
                             : null,
                       ),
@@ -146,16 +180,20 @@ class _QuranPageState extends State<QuranPage> {
                         decoration: _isSpecialPage()
                             ? BoxDecoration(
                                 border: Border.all(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withOpacity(0.3),
+                                  // color: Theme.of(context)
+                                  //     .colorScheme
+                                  //     .primary
+                                  //     .withOpacity(0.3),
+                                  color: DEFAULT_PRIMARY_COLOR,
                                   width: 2.0,
                                 ),
                               )
                             : null,
                         padding: _isSpecialPage()
-                            ? const EdgeInsets.all(24.0)
+                            ? const EdgeInsets.symmetric(
+                                vertical: 24.0,
+                                horizontal: 24,
+                              )
                             : EdgeInsets.zero,
                         child: RichText(
                           textAlign: _isSpecialPage()
@@ -163,41 +201,14 @@ class _QuranPageState extends State<QuranPage> {
                               : TextAlign.justify,
                           text: TextSpan(
                             style: TextStyle(
-                              fontSize: _isSpecialPage() ? 32.0 : 24.0,
+                              fontSize: _isSpecialPage() ? 24.0 : 24.0,
                               color: Theme.of(context).colorScheme.onBackground,
-                              height: _isSpecialPage() ? 3.0 : 2.0,
-                              fontFamily: 'KFGQPC',
+                              height: _isSpecialPage() ? 2.0 : 1.6,
+                              fontFamily: DEFAULT_FONT_FAMILY, // 'KFGQPC',
                             ),
-                            children: _buildVerseSpans(context),
+                            children:
+                                _buildVerseSpans(context, widget.pageNumber),
                           ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 16,
-                  child: Center(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .surface
-                            .withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        '${index + 1}',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -225,7 +236,7 @@ class _QuranPageState extends State<QuranPage> {
     return _currentPage <= 2;
   }
 
-  List<TextSpan> _buildVerseSpans(BuildContext context) {
+  List<TextSpan> _buildVerseSpans(BuildContext context, int pageNumber) {
     List<TextSpan> spans = [];
     int? currentSuraNumber;
 
@@ -241,104 +252,99 @@ class _QuranPageState extends State<QuranPage> {
         }
 
         // Add sura header
-        spans.add(TextSpan(
-          children: [
-            WidgetSpan(
-              alignment: PlaceholderAlignment.middle,
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceVariant,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Sura type on the left
-                    Text(
-                      sura.type,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    // Bismillah in the middle (only for first verse of sura, except for Sura 9)
-                    if (_verses[i].number == 1 && sura.number != 9)
-                      Text(
-                        'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ',
-                        style: TextStyle(
-                          fontFamily: 'KFGQPC',
-                          fontSize: 24,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    // Sura number on the right
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Text(
-                        '${sura.number}',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ));
-      }
-      // Add the verse text
-      spans.add(TextSpan(
-        text: _verses[i].text,
-      ));
+        if (_verses[i].number == 1 && sura.number != 9) {
+          spans.add(TextSpan(
+            children: [
+              WidgetSpan(
+                alignment: PlaceholderAlignment.middle,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  // margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    // color: Theme.of(context).colorScheme.surfaceVariant,
+                    color: DEFAULT_PRIMARY_COLOR,
+                    // borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-      // Add verse number in a decorative circle
-      spans.add(TextSpan(
-        children: [
-          WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Text(
-                    '۝',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w500,
-                      color:
-                          DEFAULT_PRIMARY_COLOR, // Theme.of(context).colorScheme.onSurfaceVariant,
-                      fontFamily: DEFAULT_FONT_FAMILY,
-                    ),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Sura type on the left
+                      // Text(
+                      //   sura.type,
+                      //   style: TextStyle(
+                      //     fontSize: DEFAULT_FONT_SIZE,
+                      //     color: Colors.white,
+                      //   ),
+                      // ),
+                      // Bismillah in the middle (only for first verse of sura, except for Sura 9)
+                      if (_verses[i].number == 1 && sura.number != 9)
+                        Text(
+                          'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ',
+                          style: TextStyle(
+                            fontFamily:
+                                'KFGQPC', // DEFAULT_FONT_FAMILY, // 'KFGQPC',
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                      // Sura number on the right
+                      // Container(
+                      //   padding: const EdgeInsets.all(8),
+                      //   decoration: BoxDecoration(
+                      //     border: Border.all(
+                      //       color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      //     ),
+                      //     shape: BoxShape.circle,
+                      //   ),
+                      //   child: Text(
+                      //     toArabicNumber(sura.number),
+                      //     style: TextStyle(
+                      //       fontFamily: DEFAULT_FONT_FAMILY,
+                      //       fontSize: DEFAULT_FONT_SIZE,
+                      //       color: Colors.white,
+                      //     ),
+                      //   ),
+                      // ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      '${_verses[i].number}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
+            ],
+          ));
+        }
+      }
+
+      if (!(pageNumber == 1 && _verses[i].number == 1)) {
+        // Add the verse text
+        spans.add(
+          TextSpan(
+            text: _verses[i].text,
+            style: TextStyle(
+              fontSize: DEFAULT_FONT_SIZE,
+              color: Theme.of(context).colorScheme.onSurfaceVariant, // red
             ),
           ),
-        ],
+        );
+      }
+
+      // Add verse number with end-of-verse symbol
+      spans.add(TextSpan(
+        text: ' ',
       ));
+      if (!(pageNumber == 1 && _verses[i].number == 1)) {
+        spans.add(
+          buildVerseNumber(
+            context,
+            verseNumber: _verses[i].number,
+          ),
+        );
+      }
 
       // Add space or ornamental divider after verse
       if (i < _verses.length - 1) {

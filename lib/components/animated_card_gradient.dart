@@ -14,7 +14,7 @@ class AnimatedGradientCard extends StatefulWidget {
       Colors.purple,
       Colors.blue,
       Colors.cyan,
-      Colors.green,
+      Colors.purple, // Repeat first color for smooth transition
     ],
     this.duration = const Duration(seconds: 3),
     this.borderRadius,
@@ -26,9 +26,10 @@ class AnimatedGradientCard extends StatefulWidget {
 }
 
 class _AnimatedGradientCardState extends State<AnimatedGradientCard>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  List<Color> get colors => widget.colors;
+    with TickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<Alignment> _topAlignmentAnimation;
+  late final Animation<Alignment> _bottomAlignmentAnimation;
 
   @override
   void initState() {
@@ -37,6 +38,40 @@ class _AnimatedGradientCardState extends State<AnimatedGradientCard>
       duration: widget.duration,
       vsync: this,
     )..repeat();
+
+    _topAlignmentAnimation = TweenSequence<Alignment>([
+      TweenSequenceItem(
+        tween: Tween<Alignment>(
+          begin: const Alignment(-1.0, -1.0),
+          end: const Alignment(1.0, -1.0),
+        ),
+        weight: 1,
+      ),
+      TweenSequenceItem(
+        tween: Tween<Alignment>(
+          begin: const Alignment(1.0, -1.0),
+          end: const Alignment(-1.0, -1.0),
+        ),
+        weight: 1,
+      ),
+    ]).animate(_controller);
+
+    _bottomAlignmentAnimation = TweenSequence<Alignment>([
+      TweenSequenceItem(
+        tween: Tween<Alignment>(
+          begin: const Alignment(1.0, 1.0),
+          end: const Alignment(-1.0, 1.0),
+        ),
+        weight: 1,
+      ),
+      TweenSequenceItem(
+        tween: Tween<Alignment>(
+          begin: const Alignment(-1.0, 1.0),
+          end: const Alignment(1.0, 1.0),
+        ),
+        weight: 1,
+      ),
+    ]).animate(_controller);
   }
 
   @override
@@ -59,13 +94,9 @@ class _AnimatedGradientCardState extends State<AnimatedGradientCard>
             padding: widget.padding,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: colors,
-                stops: List.generate(
-                  colors.length,
-                  (index) => (index / colors.length + _controller.value) % 1.0,
-                ),
+                begin: _topAlignmentAnimation.value,
+                end: _bottomAlignmentAnimation.value,
+                colors: widget.colors,
               ),
             ),
             child: widget.child,

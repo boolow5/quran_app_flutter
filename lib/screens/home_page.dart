@@ -124,7 +124,7 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 12),
 
                   // Recent page box
                   Container(
@@ -301,6 +301,21 @@ class _HomeState extends State<Home> {
                       },
                     ),
                   ),
+
+                  Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        context.push('/about');
+                      },
+                      child: Text(
+                        'About Al Quran',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
                 ],
               ),
             ),

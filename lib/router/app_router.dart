@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:quran_app_flutter/screens/home_page.dart';
 import 'package:quran_app_flutter/screens/quran_page.dart';
 import 'package:quran_app_flutter/screens/settings_page.dart';
 import 'package:quran_app_flutter/screens/table_of_contents.dart';
@@ -9,6 +10,10 @@ final GoRouter appRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
+      builder: (context, state) => const Home(),
+    ),
+    GoRoute(
+      path: '/table-of-contents',
       builder: (context, state) => const TableOfContents(),
     ),
     GoRoute(
@@ -26,9 +31,13 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const SettingsPage(),
     ),
   ],
-  errorBuilder: (context, state) => Scaffold(
-    body: Center(
-      child: Text('Page not found: ${state.uri.path}'),
-    ),
-  ),
+  errorBuilder: (context, state) {
+    final text = 'Page not found: ${state.uri.path}';
+    print(text);
+    return Scaffold(
+      body: Center(
+        child: Text(text),
+      ),
+    );
+  },
 );

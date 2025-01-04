@@ -8,6 +8,7 @@ import 'package:quran_app_flutter/components/rounded_box_text.dart';
 import 'package:quran_app_flutter/components/verse_number.dart';
 import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
+import 'package:quran_app_flutter/providers/quran_data_provider.dart';
 import 'package:quran_app_flutter/utils/utils.dart';
 
 class QuranPage extends StatefulWidget {
@@ -21,12 +22,19 @@ class QuranPage extends StatefulWidget {
 
 class _QuranPageState extends State<QuranPage> {
   late final PageController _pageController;
+  late final QuranDataProvider _quranDataProvider;
   String _suraName = '';
   int _suraNumber = 0;
   List<Verse> _verses = [];
   Map<int, Sura> _suras = {};
   bool _isLoading = true;
   int _currentPage = 1;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _quranDataProvider = context.read<QuranDataProvider>();
+  }
 
   @override
   void initState() {
@@ -40,14 +48,25 @@ class _QuranPageState extends State<QuranPage> {
           _currentPage = newPage;
           context.push('/page/$newPage');
           _loadVerses(newPage);
+          if (_suraName.isNotEmpty) {
+            _quranDataProvider.setCurrentPage(newPage, _suraName);
+          }
         }
       }
     });
     _loadVerses(widget.pageNumber);
+
+    // Initialize current page in QuranDataProvider
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_suraName.isNotEmpty) {
+        _quranDataProvider.setCurrentPage(widget.pageNumber, _suraName);
+      }
+    });
   }
 
   @override
   void dispose() {
+    _quranDataProvider.setEndTimeForMostRecentPage();
     _pageController.dispose();
     super.dispose();
   }
@@ -83,6 +102,11 @@ class _QuranPageState extends State<QuranPage> {
         _verses = verses;
         _isLoading = false;
       });
+
+      // Update QuranDataProvider with current page after loading verses
+      if (_suraName.isNotEmpty) {
+        _quranDataProvider.setCurrentPage(pageNumber, _suraName);
+      }
     } catch (e) {
       setState(() {
         _isLoading = false;
@@ -106,11 +130,8 @@ class _QuranPageState extends State<QuranPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.push('/');
-            }
+            _quranDataProvider.setEndTimeForMostRecentPage();
+            context.push('/table-of-contents');
           },
         ),
         centerTitle: true,
@@ -134,7 +155,10 @@ class _QuranPageState extends State<QuranPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () => context.push('/settings'),
+            onPressed: () {
+              _quranDataProvider.setEndTimeForMostRecentPage();
+              context.push('/settings');
+            },
           ),
         ],
       ),
@@ -164,10 +188,6 @@ class _QuranPageState extends State<QuranPage> {
                         borderRadius: BorderRadius.circular(8),
                         border: _isSpecialPage()
                             ? Border.all(
-                                // color: Theme.of(context)
-                                //     .colorScheme
-                                //     .primary
-                                //     .withOpacity(0.5),
                                 color: DEFAULT_PRIMARY_COLOR,
                                 width: 16.0,
                               )
@@ -177,10 +197,6 @@ class _QuranPageState extends State<QuranPage> {
                         decoration: _isSpecialPage()
                             ? BoxDecoration(
                                 border: Border.all(
-                                  // color: Theme.of(context)
-                                  //     .colorScheme
-                                  //     .primary
-                                  //     .withOpacity(0.3),
                                   color: DEFAULT_PRIMARY_COLOR,
                                   width: 2.0,
                                 ),
@@ -201,7 +217,7 @@ class _QuranPageState extends State<QuranPage> {
                               fontSize: _isSpecialPage() ? 24.0 : 24.0,
                               color: Theme.of(context).colorScheme.onBackground,
                               height: _isSpecialPage() ? 2.0 : 1.6,
-                              fontFamily: DEFAULT_FONT_FAMILY, // 'KFGQPC',
+                              fontFamily: DEFAULT_FONT_FAMILY,
                             ),
                             children:
                                 _buildVerseSpans(context, widget.pageNumber),
@@ -260,26 +276,12 @@ class _QuranPageState extends State<QuranPage> {
                     horizontal: 8,
                     vertical: 4,
                   ),
-                  // margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
-                    // color: Theme.of(context).colorScheme.surfaceVariant,
                     color: DEFAULT_PRIMARY_COLOR,
-                    // borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Sura type on the left
-                      // Text(
-                      //   sura.type,
-                      //   style: TextStyle(
-                      //     fontSize: DEFAULT_FONT_SIZE,
-                      //     color: Colors.white,
-                      //   ),
-                      // ),
-                      // Bismillah in the middle (only for first verse of sura, except for Sura 9)
                       if (_verses[i].number == 1 && sura.number != 9)
                         Text(
                           'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ',
@@ -290,24 +292,6 @@ class _QuranPageState extends State<QuranPage> {
                             color: Colors.white,
                           ),
                         ),
-                      // Sura number on the right
-                      // Container(
-                      //   padding: const EdgeInsets.all(8),
-                      //   decoration: BoxDecoration(
-                      //     border: Border.all(
-                      //       color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      //     ),
-                      //     shape: BoxShape.circle,
-                      //   ),
-                      //   child: Text(
-                      //     toArabicNumber(sura.number),
-                      //     style: TextStyle(
-                      //       fontFamily: DEFAULT_FONT_FAMILY,
-                      //       fontSize: DEFAULT_FONT_SIZE,
-                      //       color: Colors.white,
-                      //     ),
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),
@@ -324,7 +308,7 @@ class _QuranPageState extends State<QuranPage> {
             text: _verses[i].text,
             style: TextStyle(
               fontSize: DEFAULT_FONT_SIZE,
-              color: Theme.of(context).colorScheme.onSurfaceVariant, // red
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         );

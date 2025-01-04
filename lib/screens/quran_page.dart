@@ -38,7 +38,7 @@ class _QuranPageState extends State<QuranPage> {
         final newPage = _pageController.page!.round() + 1;
         if (newPage != _currentPage) {
           _currentPage = newPage;
-          context.go('/page/$newPage');
+          context.push('/page/$newPage');
           _loadVerses(newPage);
         }
       }
@@ -105,7 +105,13 @@ class _QuranPageState extends State<QuranPage> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/'),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.push('/');
+            }
+          },
         ),
         centerTitle: true,
         title: Row(
@@ -127,17 +133,8 @@ class _QuranPageState extends State<QuranPage> {
         ),
         actions: [
           IconButton(
-            icon: Icon(
-              context.watch<ThemeProvider>().isDarkMode
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
-            ),
-            onPressed: () {
-              context.read<ThemeProvider>().toggleTheme();
-              Future.delayed(const Duration(seconds: 1), () {
-                setState(() {});
-              });
-            },
+            icon: const Icon(Icons.settings),
+            onPressed: () => context.push('/settings'),
           ),
         ],
       ),

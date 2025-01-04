@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:quran_app_flutter/screens/quran_page.dart';
+import 'package:quran_app_flutter/screens/settings_page.dart';
 import 'package:quran_app_flutter/screens/table_of_contents.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -19,6 +20,10 @@ final GoRouter appRouter = GoRouter(
           child: QuranPage(pageNumber: pageNumber),
         );
       },
+    ),
+    GoRoute(
+      path: '/settings',
+      builder: (context, state) => const SettingsPage(),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(

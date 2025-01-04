@@ -54,12 +54,8 @@ class _TableOfContentsState extends State<TableOfContents> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(
-              context.watch<ThemeProvider>().isDarkMode
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
-            ),
-            onPressed: () => context.read<ThemeProvider>().toggleTheme(),
+            icon: const Icon(Icons.settings),
+            onPressed: () => context.push('/settings'),
           ),
         ],
       ),
@@ -108,7 +104,7 @@ class _TableOfContentsState extends State<TableOfContents> {
                     ),
                   ),
                   onTap: () {
-                    context.go('/page/${sura.startPage}');
+                    context.push('/page/${sura.startPage}');
                   },
                 );
               },

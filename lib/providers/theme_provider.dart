@@ -17,7 +17,7 @@ class ThemeProvider extends ChangeNotifier {
     brightness: Brightness.light,
     useMaterial3: true,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: Colors.deepPurple,
+      seedColor: DEFAULT_PRIMARY_COLOR,
       brightness: Brightness.light,
     ),
     scaffoldBackgroundColor: DEFAULT_BG_COLOR, // Colors.white,
@@ -27,7 +27,7 @@ class ThemeProvider extends ChangeNotifier {
     brightness: Brightness.dark,
     useMaterial3: true,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: Colors.deepPurple,
+      seedColor: DEFAULT_PRIMARY_COLOR,
       brightness: Brightness.dark,
     ),
     scaffoldBackgroundColor: Colors.black,

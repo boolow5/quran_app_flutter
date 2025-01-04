@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quran_app_flutter/constants.dart';
+import 'package:quran_app_flutter/providers/theme_provider.dart';
 import 'package:quran_app_flutter/utils/utils.dart';
 
 TextSpan buildVerseNumber(
@@ -19,7 +21,7 @@ TextSpan buildVerseNumber(
                 '۝',
                 style: TextStyle(
                   fontFamily: 'KFGQPC',
-                  fontSize: 32,
+                  fontSize: context.read<ThemeProvider>().fontSize(32),
                   fontWeight: FontWeight.w500,
                   height: 1,
                   color: DEFAULT_PRIMARY_COLOR,
@@ -36,7 +38,7 @@ TextSpan buildVerseNumber(
                   child: Text(
                     toArabicNumber(verseNumber),
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: context.read<ThemeProvider>().fontSize(12),
                       height: 1,
                       color: Theme.of(context)
                           .colorScheme

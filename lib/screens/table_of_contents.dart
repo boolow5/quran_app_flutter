@@ -79,7 +79,7 @@ class _TableOfContentsState extends State<TableOfContents> {
                         sura.name,
                         style: TextStyle(
                           fontFamily: DEFAULT_FONT_FAMILY,
-                          fontSize: 24,
+                          fontSize: context.read<ThemeProvider>().fontSize(24),
                           color: Theme.of(context).colorScheme.onBackground,
                         ),
                       ),
@@ -95,7 +95,8 @@ class _TableOfContentsState extends State<TableOfContents> {
                         child: Text(
                           '${sura.number}',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize:
+                                context.read<ThemeProvider>().fontSize(16),
                             color:
                                 Theme.of(context).colorScheme.onSurfaceVariant,
                           ),

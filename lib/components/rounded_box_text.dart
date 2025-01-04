@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quran_app_flutter/constants.dart';
+import 'package:quran_app_flutter/providers/theme_provider.dart';
 
 class RoundedBoxText extends StatelessWidget {
   const RoundedBoxText({
@@ -15,9 +17,11 @@ class RoundedBoxText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final calculatedHeight =
+        (height ?? 28) + context.read<ThemeProvider>().fontSize(8);
     return Container(
-      width: width ?? 50,
-      height: height ?? 28,
+      width: (width ?? 50),
+      height: calculatedHeight,
       padding: const EdgeInsets.symmetric(
         horizontal: 4,
         vertical: 4,
@@ -26,7 +30,7 @@ class RoundedBoxText extends StatelessWidget {
         color: DEFAULT_PRIMARY_COLOR.withValues(
           alpha: 0.85,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(calculatedHeight / 2),
       ),
       child: Center(
         child: Directionality(
@@ -36,7 +40,7 @@ class RoundedBoxText extends StatelessWidget {
             style: TextStyle(
               fontFamily: DEFAULT_FONT_FAMILY,
               color: Colors.white,
-              fontSize: 16,
+              fontSize: context.read<ThemeProvider>().fontSize(16),
               fontWeight: FontWeight.bold,
             ),
           ),

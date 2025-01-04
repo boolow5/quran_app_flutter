@@ -124,6 +124,51 @@ class _QuranPageState extends State<QuranPage> {
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
+
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final screenHeight = MediaQuery.sizeOf(context).height;
+
+    final fontCorrection = context.read<ThemeProvider>().fontSize(16) * 0.045;
+
+    final fontPadding = context.read<ThemeProvider>().fontSize(16);
+    double boxHeight = ((screenHeight > 681
+                ? screenHeight * (_currentPage == 2 ? 0.79 : 0.73)
+                : 545.0) *
+            fontCorrection) -
+        40;
+    double boxWidth = (screenWidth > 468
+            ? screenWidth * (_currentPage == 2 ? 0.8 : 0.8)
+            : 375.0) *
+        fontCorrection;
+    double fontMatchSize = context.read<ThemeProvider>().fontSize(16.0);
+    double boxPadding =
+        boxHeight * context.read<ThemeProvider>().fontSize(0.0015);
+    double boxMargin = fontMatchSize > 14 ? fontMatchSize - 14.0 : 0;
+    double horizontalMargin = (boxWidth * 0.15) - (fontPadding);
+
+    if (boxWidth < 300) {
+      boxWidth = 300 + (fontCorrection * 50);
+    }
+    if (boxHeight < 380) {
+      boxHeight = 380 + (fontCorrection * (_currentPage == 2 ? 80 : 50));
+    }
+    if (horizontalMargin < 0) {
+      horizontalMargin = 0;
+    }
+    if (fontMatchSize < 12.8) {
+      fontMatchSize = 12.8;
+    }
+
+    // print("------------------------- box size -------------------------");
+    // print("boxWidth: $boxWidth");
+    // print("boxHeight: $boxHeight");
+    // print("fontMatchSize: $fontMatchSize");
+    // print("horizontalMargin: $horizontalMargin");
+    // print("fontCorrection: $fontCorrection");
+    // print("boxPadding: $boxPadding");
+    // print("boxMargin: $boxMargin");
+    // print(">------------------------ box size ------------------------<");
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -167,60 +212,78 @@ class _QuranPageState extends State<QuranPage> {
           controller: _pageController,
           reverse: true, // For RTL
           itemCount: 604,
+          pageSnapping: false,
           itemBuilder: (context, index) {
             return Stack(
               children: [
                 Directionality(
                   textDirection: TextDirection.rtl,
                   child: SingleChildScrollView(
-                    child: Container(
-                      height: _isSpecialPage() ? 515 : null,
-                      width: _isSpecialPage() ? 380 : null,
-                      margin: _isSpecialPage()
-                          ? const EdgeInsets.symmetric(vertical: 32)
-                          : null,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: _isSpecialPage() ? 16.0 : 0,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        borderRadius: BorderRadius.circular(8),
-                        border: _isSpecialPage()
-                            ? Border.all(
-                                color: DEFAULT_PRIMARY_COLOR,
-                                width: 16.0,
-                              )
-                            : null,
-                      ),
+                    child: Center(
                       child: Container(
-                        decoration: _isSpecialPage()
-                            ? BoxDecoration(
-                                border: Border.all(
-                                  color: DEFAULT_PRIMARY_COLOR,
-                                  width: 2.0,
-                                ),
-                              )
+                        height: _isSpecialPage() ? boxHeight : null,
+                        width: _isSpecialPage() ? boxWidth : null,
+                        margin: _isSpecialPage()
+                            ? EdgeInsets.symmetric(vertical: 32, horizontal: 0)
                             : null,
-                        padding: _isSpecialPage()
-                            ? const EdgeInsets.symmetric(
-                                vertical: 24.0,
-                                horizontal: 24,
-                              )
-                            : EdgeInsets.zero,
-                        child: RichText(
-                          textAlign: _isSpecialPage()
-                              ? TextAlign.center
-                              : TextAlign.justify,
-                          text: TextSpan(
-                            style: TextStyle(
-                              fontSize: _isSpecialPage() ? 24.0 : 24.0,
-                              color: Theme.of(context).colorScheme.onBackground,
-                              height: _isSpecialPage() ? 2.0 : 1.6,
-                              fontFamily: DEFAULT_FONT_FAMILY,
+                        padding: EdgeInsets.symmetric(
+                          horizontal:
+                              context.read<ThemeProvider>().fontSize(20.0),
+                          vertical: _isSpecialPage() ? 20.0 : 0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius: BorderRadius.circular(boxWidth / 2),
+                          border: _isSpecialPage()
+                              ? Border.all(
+                                  color: DEFAULT_PRIMARY_COLOR,
+                                  width: 16.0,
+                                )
+                              : null,
+                        ),
+                        child: Container(
+                          decoration: _isSpecialPage()
+                              ? BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors
+                                        .transparent, // DEFAULT_PRIMARY_COLOR,
+                                    width: 2.0,
+                                  ),
+                                  borderRadius:
+                                      BorderRadius.circular(boxWidth / 4),
+                                )
+                              : null,
+                          padding: _isSpecialPage()
+                              ? EdgeInsets.only(
+                                  top: boxPadding,
+                                  right: boxPadding,
+                                  left: boxPadding,
+                                )
+                              : EdgeInsets.zero,
+                          margin: _isSpecialPage()
+                              ? EdgeInsets.only(
+                                  top: boxMargin,
+                                  right: boxMargin,
+                                  left: boxMargin,
+                                )
+                              : EdgeInsets.zero,
+                          child: RichText(
+                            textAlign: _isSpecialPage()
+                                ? TextAlign.center
+                                : TextAlign.justify,
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontSize: context
+                                    .read<ThemeProvider>()
+                                    .fontSize(_isSpecialPage() ? 24.0 : 24.0),
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
+                                height: _isSpecialPage() ? 1.7 : 1.5,
+                                fontFamily: DEFAULT_FONT_FAMILY,
+                              ),
+                              children:
+                                  _buildVerseSpans(context, widget.pageNumber),
                             ),
-                            children:
-                                _buildVerseSpans(context, widget.pageNumber),
                           ),
                         ),
                       ),
@@ -270,30 +333,55 @@ class _QuranPageState extends State<QuranPage> {
             children: [
               WidgetSpan(
                 alignment: PlaceholderAlignment.middle,
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: DEFAULT_PRIMARY_COLOR,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (_verses[i].number == 1 && sura.number != 9)
-                        Text(
-                          'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ',
-                          style: TextStyle(
-                            fontFamily:
-                                'KFGQPC', // DEFAULT_FONT_FAMILY, // 'KFGQPC',
-                            fontSize: 20,
-                            color: Colors.white,
-                          ),
-                        ),
-                    ],
-                  ),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return Container(
+                      width: _isSpecialPage() ? constraints.maxWidth : null,
+                      height:
+                          _isSpecialPage() ? constraints.maxWidth / 2 : null,
+                      padding: _isSpecialPage()
+                          ? EdgeInsets.only(
+                              top: constraints.maxWidth / 4,
+                              right: 8.0,
+                              left: 8.0,
+                              bottom: 4.0,
+                            )
+                          : const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                      margin: _isSpecialPage()
+                          ? null
+                          : const EdgeInsets.only(
+                              bottom: 12,
+                            ),
+                      decoration: BoxDecoration(
+                        color: DEFAULT_PRIMARY_COLOR,
+                        borderRadius: _isSpecialPage()
+                            ? BorderRadius.only(
+                                topLeft: Radius.circular(constraints.maxWidth),
+                                topRight: Radius.circular(constraints.maxWidth),
+                              )
+                            : null,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (_verses[i].number == 1 && sura.number != 9)
+                            Text(
+                              'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ',
+                              style: TextStyle(
+                                fontFamily:
+                                    'KFGQPC', // DEFAULT_FONT_FAMILY, // 'KFGQPC',
+                                fontSize:
+                                    context.read<ThemeProvider>().fontSize(20),
+                                color: Colors.white,
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ),
             ],
@@ -307,7 +395,9 @@ class _QuranPageState extends State<QuranPage> {
           TextSpan(
             text: _verses[i].text,
             style: TextStyle(
-              fontSize: DEFAULT_FONT_SIZE,
+              fontSize:
+                  context.read<ThemeProvider>().fontSize(DEFAULT_FONT_SIZE),
+              // height: 1.2,
               color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),

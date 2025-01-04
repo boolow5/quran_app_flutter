@@ -80,7 +80,7 @@ class QuranDataProvider extends ChangeNotifier {
     final String encoded = json.encode(_recentPages
         .where((page) =>
             page.endTime != null &&
-            page.endTime!.difference(page.startTime).inMinutes >= 1)
+            page.endTime!.difference(page.startTime).inSeconds >= 10)
         .map((page) => page.toJson())
         .toList());
     await _prefs.setString(_recentPagesKey, encoded);

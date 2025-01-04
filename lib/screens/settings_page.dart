@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,8 +29,18 @@ class SettingsPage extends StatelessWidget {
           // Font Family Selector
           Card(
             child: ListTile(
-              title: const Text('Font Family'),
-              subtitle: const Text('Uthmanic HAFS'), // Placeholder
+              title: Text('Font Family',
+                  style: TextStyle(
+                    fontSize: context
+                        .watch<ThemeProvider>()
+                        .fontSize(DEFAULT_FONT_SIZE),
+                  )),
+              subtitle: Text('Uthmanic HAFS',
+                  style: TextStyle(
+                    fontSize: context
+                        .watch<ThemeProvider>()
+                        .fontSize(DEFAULT_FONT_SIZE * 0.8),
+                  )), // Placeholder
               onTap: () {
                 // TODO: Implement font family selection
               },
@@ -37,14 +53,26 @@ class SettingsPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text('Font Size'),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text('Font Size',
+                      style: TextStyle(
+                        fontSize: context
+                            .watch<ThemeProvider>()
+                            .fontSize(DEFAULT_FONT_SIZE),
+                      )),
                 ),
                 Slider(
-                  value: 0.5, // Placeholder
+                  divisions: 7,
+                  min: 0.8,
+                  max: 1.5,
+                  value: context
+                      .watch<ThemeProvider>()
+                      .fontSizePercentage, // Placeholder
                   onChanged: (value) {
-                    // TODO: Implement font size change
+                    print("Slider value: $value");
+                    context.read<ThemeProvider>().fontSizePercentage = value;
+                    setState(() {});
                   },
                 ),
               ],
@@ -55,7 +83,12 @@ class SettingsPage extends StatelessWidget {
           // Dark/Light Mode Toggle
           Card(
             child: SwitchListTile(
-              title: const Text('Dark Mode'),
+              title: Text('Dark Mode',
+                  style: TextStyle(
+                    fontSize: context
+                        .watch<ThemeProvider>()
+                        .fontSize(DEFAULT_FONT_SIZE),
+                  )),
               value: context.watch<ThemeProvider>().isDarkMode,
               onChanged: (bool value) {
                 context.read<ThemeProvider>().toggleTheme();

@@ -102,3 +102,20 @@ flutter:
     - family: hafs
       fonts:
         - asset: assets/fonts/hafs.woff2
+    - family: AmiriQuran
+      fonts:
+        - asset: assets/fonts/Amiri_Quran/AmiriQuran-Regular.ttf
+    - family: Noto Naskh Arabic
+      fonts:
+        - asset: assets/fonts/Noto_Naskh_Arabic/NotoNaskhArabic-VariableFont_wght.ttf
+    - family: ScheherazadeQuran
+      fonts:
+        - asset: assets/fonts/Scheherazade_New/ScheherazadeNew-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Scheherazade_New/ScheherazadeNew-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Scheherazade_New/ScheherazadeNew-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Scheherazade_New/ScheherazadeNew-SemiBold.ttf
+          weight: 600
+        

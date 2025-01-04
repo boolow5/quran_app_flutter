@@ -1,8 +1,10 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
-const DEFAULT_FONT_FAMILY = "hafs"; // KFGQPC
+final DEFAULT_FONT_FAMILY = Platform.isIOS ? "hafs" : "ScheherazadeQuran";
 const DEFAULT_FONT_SIZE = 19.0;
 const DEFAULT_PRIMARY_COLOR =
     Color.fromARGB(255, 0, 80, 80); // Color(0x008080FF);

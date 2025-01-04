@@ -3,10 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:quran_app_flutter/components/animated_card_gradient.dart';
 import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/models/sura.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
 import 'package:quran_app_flutter/providers/quran_data_provider.dart';
+
+final shadows = [
+  Shadow(
+    color: Colors.black.withOpacity(0.5),
+    offset: const Offset(1, 1),
+    blurRadius: 2,
+  ),
+  Shadow(
+    color: Colors.black.withOpacity(0.5),
+    offset: const Offset(-1, -1),
+    blurRadius: 2,
+  ),
+];
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -46,20 +60,26 @@ class _HomeState extends State<Home> {
     }
   }
 
-  Widget _buildMenuItem(
-      BuildContext context, String title, IconData icon, VoidCallback onTap) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.0),
-        color: Theme.of(context).colorScheme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+  Widget _buildMenuItem(BuildContext context, String title, IconData icon,
+      VoidCallback onTap, List<Color> colors) {
+    return AnimatedGradientCard(
+      colors: colors,
+      duration: const Duration(seconds: 25),
+      padding: const EdgeInsets.all(16.0),
+      // margin: const EdgeInsets.all(0.0),
+      // padding: const EdgeInsets.all(4.0),
+      // constraints: BoxConstraints.tight(const Size(50, 50)),
+      // decoration: BoxDecoration(
+      //   borderRadius: BorderRadius.circular(16.0),
+      //   color: Theme.of(context).colorScheme.surface,
+      //   boxShadow: [
+      //     BoxShadow(
+      //       color: Colors.black.withOpacity(0.1),
+      //       blurRadius: 4,
+      //       offset: const Offset(0, 2),
+      //     ),
+      //   ],
+      // ),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16.0),
@@ -68,13 +88,17 @@ class _HomeState extends State<Home> {
           children: [
             Icon(
               icon,
-              size: 48,
-              color: Theme.of(context).colorScheme.primary,
+              size: 40,
+              color: Colors.white,
+              shadows: shadows,
             ),
             const SizedBox(height: 8),
             Text(
               title,
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    color: Colors.white,
+                    shadows: shadows,
+                  ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -128,7 +152,7 @@ class _HomeState extends State<Home> {
 
                   // Recent page box
                   Container(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(2.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16.0),
                       color: Theme.of(context).colorScheme.surface,
@@ -143,24 +167,28 @@ class _HomeState extends State<Home> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.timer,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                            Text(
-                              'Recent',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                            ),
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 12.0, right: 8.0, top: 12.0, bottom: 0.0),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.timer,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              Text(
+                                'Recent',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                              ),
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 8),
+                        // const SizedBox(height: 4),
                         Consumer<QuranDataProvider>(
                           builder: (context, quranData, child) {
                             final recentPages = quranData.currentRecentPages;
@@ -187,20 +215,8 @@ class _HomeState extends State<Home> {
                                           recentPage.suraName,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyMedium,
+                                              .bodySmall,
                                         ),
-                                        // subtitle: Text(
-                                        //   quranData
-                                        //       .getReadingDuration(recentPage),
-                                        //   style: Theme.of(context)
-                                        //       .textTheme
-                                        //       .bodySmall
-                                        //       ?.copyWith(
-                                        //         color: Theme.of(context)
-                                        //             .colorScheme
-                                        //             .primary,
-                                        //       ),
-                                        // ),
                                         trailing: Text(
                                           quranData
                                               .timeSinceReading(recentPage)
@@ -215,44 +231,7 @@ class _HomeState extends State<Home> {
                                               ),
                                         ),
                                       ))
-                                  .toList(), /*[
-                                
-                                Text(
-                                  'Page ${recentPage.pageNumber} - ${recentPage.suraName}',
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      quranData.getReadingDuration(recentPage),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                          ),
-                                    ),
-                                    Text(
-                                      quranData
-                                          .timeSinceReading(recentPage)
-                                          .toString(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ],*/
+                                  .toList(),
                             );
                           },
                         ),
@@ -277,24 +256,44 @@ class _HomeState extends State<Home> {
                               'Table of Contents',
                               Icons.list_alt,
                               () => context.push('/table-of-contents'),
+                              const [
+                                Color(0xFF66F6F6),
+                                Color(0xFF22A2A2),
+                                Color(0xFF008080),
+                              ],
                             ),
                             _buildMenuItem(
                               context,
                               'Bookmarks',
                               Icons.bookmark,
                               () => context.push('/bookmarks'),
+                              const [
+                                Color(0xFF008080),
+                                Color(0xFF22A2A2),
+                                Color(0xFF66F6F6),
+                              ],
                             ),
                             _buildMenuItem(
                               context,
                               'Qibla Compass',
                               Icons.explore,
                               () => context.push('/qibla'),
+                              const [
+                                Color(0xFF66F6F6),
+                                Color(0xFF22A2A2),
+                                Color(0xFF008080),
+                              ],
                             ),
                             _buildMenuItem(
                               context,
                               'Settings',
                               Icons.settings,
                               () => context.push('/settings'),
+                              const [
+                                Color(0xFF008080),
+                                Color(0xFF22A2A2),
+                                Color(0xFF66F6F6),
+                              ],
                             ),
                           ],
                         );

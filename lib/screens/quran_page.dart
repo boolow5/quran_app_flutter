@@ -132,7 +132,7 @@ class _QuranPageState extends State<QuranPage> {
 
     final fontPadding = context.read<ThemeProvider>().fontSize(16);
     double boxHeight = ((screenHeight > 681
-                ? screenHeight * (_currentPage == 2 ? 0.79 : 0.73)
+                ? screenHeight * (_currentPage == 2 ? 0.84 : 0.78)
                 : 545.0) *
             fontCorrection) -
         40;
@@ -232,7 +232,7 @@ class _QuranPageState extends State<QuranPage> {
           controller: _pageController,
           reverse: true, // For RTL
           itemCount: 604,
-          pageSnapping: false,
+          pageSnapping: true,
           itemBuilder: (context, index) {
             return Stack(
               children: [
@@ -423,8 +423,7 @@ class _QuranPageState extends State<QuranPage> {
           ),
         );
       }
-
-      // Add verse number with end-of-verse symbol
+// Add verse number with end-of-verse symbol
       spans.add(TextSpan(
         text: ' ',
       ));
@@ -436,6 +435,10 @@ class _QuranPageState extends State<QuranPage> {
           ),
         );
       }
+      // Add verse number with end-of-verse symbol
+      spans.add(TextSpan(
+        text: ' ',
+      ));
 
       // Add space or ornamental divider after verse
       if (i < _verses.length - 1) {

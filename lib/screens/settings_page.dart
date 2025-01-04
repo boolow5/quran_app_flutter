@@ -26,27 +26,27 @@ class _SettingsPageState extends State<SettingsPage> {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          // Font Family Selector
-          Card(
-            child: ListTile(
-              title: Text('Font Family',
-                  style: TextStyle(
-                    fontSize: context
-                        .watch<ThemeProvider>()
-                        .fontSize(DEFAULT_FONT_SIZE),
-                  )),
-              subtitle: Text('Uthmanic HAFS',
-                  style: TextStyle(
-                    fontSize: context
-                        .watch<ThemeProvider>()
-                        .fontSize(DEFAULT_FONT_SIZE * 0.8),
-                  )), // Placeholder
-              onTap: () {
-                // TODO: Implement font family selection
-              },
-            ),
-          ),
-          const SizedBox(height: 16),
+          // // Font Family Selector
+          // Card(
+          //   child: ListTile(
+          //     title: Text('Font Family',
+          //         style: TextStyle(
+          //           fontSize: context
+          //               .watch<ThemeProvider>()
+          //               .fontSize(DEFAULT_FONT_SIZE),
+          //         )),
+          //     subtitle: Text('Uthmanic HAFS',
+          //         style: TextStyle(
+          //           fontSize: context
+          //               .watch<ThemeProvider>()
+          //               .fontSize(DEFAULT_FONT_SIZE * 0.8),
+          //         )), // Placeholder
+          //     onTap: () {
+          //       // TODO: Implement font family selection
+          //     },
+          //   ),
+          // ),
+          // const SizedBox(height: 16),
 
           // Font Size Selection
           Card(

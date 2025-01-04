@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:quran_app_flutter/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -5,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ThemeProvider extends ChangeNotifier {
   late Future<SharedPreferences> _storage;
   bool _isDarkMode = false;
-  double _fontSizePercentage = 1.0; // 0.8 min, 1.5 max
+  double _fontSizePercentage = Platform.isIOS ? 1.2 : 1.1; // 0.8 min, 1.5 max
 
   bool get isDarkMode => _isDarkMode;
   double get fontSizePercentage => _fontSizePercentage;
@@ -14,7 +16,8 @@ class ThemeProvider extends ChangeNotifier {
     this._storage = _storage;
     _storage.then((prefs) {
       _isDarkMode = prefs.getBool('isDarkMode') ?? false;
-      _fontSizePercentage = prefs.getDouble('fontSizePercentage') ?? 1.0;
+      _fontSizePercentage =
+          prefs.getDouble('fontSizePercentage') ?? (Platform.isIOS ? 1.2 : 1.1);
       notifyListeners();
     });
   }

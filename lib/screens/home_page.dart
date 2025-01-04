@@ -163,8 +163,8 @@ class _HomeState extends State<Home> {
                         const SizedBox(height: 8),
                         Consumer<QuranDataProvider>(
                           builder: (context, quranData, child) {
-                            final recentPage = quranData.currentRecentPage;
-                            if (recentPage == null) {
+                            final recentPages = quranData.currentRecentPages;
+                            if (recentPages.isEmpty) {
                               return Text(
                                 'No recent pages',
                                 style: Theme.of(context).textTheme.bodyLarge,
@@ -172,7 +172,51 @@ class _HomeState extends State<Home> {
                             }
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
+                              children: recentPages
+                                  .map((recentPage) => ListTile(
+                                        onTap: () => context.push(
+                                          '/page/${recentPage.pageNumber}',
+                                        ),
+                                        dense: true,
+                                        leading: Text(
+                                            "Page ${recentPage.pageNumber}",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium),
+                                        title: Text(
+                                          recentPage.suraName,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium,
+                                        ),
+                                        // subtitle: Text(
+                                        //   quranData
+                                        //       .getReadingDuration(recentPage),
+                                        //   style: Theme.of(context)
+                                        //       .textTheme
+                                        //       .bodySmall
+                                        //       ?.copyWith(
+                                        //         color: Theme.of(context)
+                                        //             .colorScheme
+                                        //             .primary,
+                                        //       ),
+                                        // ),
+                                        trailing: Text(
+                                          quranData
+                                              .timeSinceReading(recentPage)
+                                              .toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                              ),
+                                        ),
+                                      ))
+                                  .toList(), /*[
+                                
                                 Text(
                                   'Page ${recentPage.pageNumber} - ${recentPage.suraName}',
                                   style: Theme.of(context).textTheme.bodyLarge,
@@ -208,14 +252,14 @@ class _HomeState extends State<Home> {
                                     ),
                                   ],
                                 ),
-                              ],
+                              ],*/
                             );
                           },
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 12),
 
                   // Menu grid
                   Expanded(
@@ -225,8 +269,8 @@ class _HomeState extends State<Home> {
                             constraints.maxWidth > 600 ? 3 : 2;
                         return GridView.count(
                           crossAxisCount: crossAxisCount,
-                          mainAxisSpacing: 16.0,
-                          crossAxisSpacing: 16.0,
+                          mainAxisSpacing: 12.0,
+                          crossAxisSpacing: 12.0,
                           children: [
                             _buildMenuItem(
                               context,

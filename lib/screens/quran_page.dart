@@ -33,12 +33,12 @@ class _QuranPageState extends State<QuranPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _quranDataProvider = context.read<QuranDataProvider>();
   }
 
   @override
   void initState() {
     super.initState();
+    _quranDataProvider = context.read<QuranDataProvider>();
     _currentPage = widget.pageNumber;
     _pageController = PageController(initialPage: widget.pageNumber - 1);
     _pageController.addListener(() {
@@ -199,10 +199,30 @@ class _QuranPageState extends State<QuranPage> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings),
+            icon: const Icon(Icons.bookmark),
             onPressed: () {
-              _quranDataProvider.setEndTimeForMostRecentPage();
-              context.push('/settings');
+              final saved = _quranDataProvider.addBookmark(
+                widget.pageNumber,
+                _suraName,
+              );
+              if (saved) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Bookmark saved successfully',
+                        style: TextStyle(color: Colors.white)),
+                    backgroundColor: Colors.green,
+                    duration: Duration(seconds: 3),
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Failed to save bookmark',
+                        style: TextStyle(color: Colors.white)),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
             },
           ),
         ],

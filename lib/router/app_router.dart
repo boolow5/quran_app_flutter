@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:quran_app_flutter/screens/bookmarks_page.dart';
 import 'package:quran_app_flutter/screens/home_page.dart';
+import 'package:quran_app_flutter/screens/qibla_compass_page.dart';
 import 'package:quran_app_flutter/screens/quran_page.dart';
 import 'package:quran_app_flutter/screens/settings_page.dart';
 import 'package:quran_app_flutter/screens/table_of_contents.dart';
@@ -25,6 +27,14 @@ final GoRouter appRouter = GoRouter(
           child: QuranPage(pageNumber: pageNumber),
         );
       },
+    ),
+    GoRoute(
+      path: "/bookmarks",
+      builder: (context, state) => const BookmarksPage(),
+    ),
+    GoRoute(
+      path: "/qibla",
+      builder: (context, state) => const QiblaCompassPage(),
     ),
     GoRoute(
       path: '/settings',

@@ -91,6 +91,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   )),
               value: context.watch<ThemeProvider>().isDarkMode,
               onChanged: (bool value) {
+                print("Toggle value: $value");
                 context.read<ThemeProvider>().toggleTheme();
               },
             ),

@@ -51,9 +51,15 @@ class _AboutPageState extends State<AboutPage> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.push('/'),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.push('/');
+            }
+          },
         ),
-        title: const Text('About Al Quran'),
+        title: const Text('About MeezanSync'),
       ),
       body: Column(
         children: [
@@ -84,7 +90,7 @@ class _AboutPageState extends State<AboutPage> {
           SizedBox(
             width: 320,
             child: Text(
-              "Al Quran was built after I had issues with other Quran apps playing ads with music, and videos with semi-naked women while I was in the mosque. So, I had to build something that doesn't have that issue. This app was not built to make money, but to help people learn the Quran. I hope you find it useful.\n\n"
+              "MeezanSync was built after I had issues with other Quran apps playing ads with music, and videos with semi-naked women while I was in the mosque. So, I had to build something that doesn't have that issue. This app was not built to make money, but to help people learn the Quran. I hope you find it useful.\n\n"
               "The Quran text data of this app is based on data from tanzil.net which is copy of the Quran text is carefully produced, highly verified and continuously monitored by a group of specialists in Tanzil Project.\t"
               "The data was last synced on ${generatedAt?.toLocal().toString()}.",
               textAlign: TextAlign.center,

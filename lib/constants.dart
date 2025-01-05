@@ -1,8 +1,10 @@
-// ignore_for_file: constant_identifier_names
+// ignore_for_file: constant_identifier_names, non_constant_identifier_names
 
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
+const APP_NAME = "MeezanSync";
 
 final DEFAULT_FONT_FAMILY = Platform.isIOS ? "hafs" : "ScheherazadeQuran";
 const DEFAULT_FONT_SIZE = 19.0;

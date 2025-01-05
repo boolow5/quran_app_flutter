@@ -19,7 +19,13 @@ class _SettingsPageState extends State<SettingsPage> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.push('/'),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.push('/');
+            }
+          },
         ),
         title: const Text('Settings'),
       ),

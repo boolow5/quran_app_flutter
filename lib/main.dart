@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) => MaterialApp.router(
           debugShowCheckedModeBanner: false,
-          title: 'Al Quran',
+          title: 'MeezanSync',
           theme: themeProvider.theme,
           routerConfig: appRouter,
         ),

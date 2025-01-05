@@ -18,3 +18,35 @@ String toArabicNumber(int number) {
       .map((digit) => arabicNumbers[digit] ?? digit)
       .join('');
 }
+
+String latToString(double lat,
+    {bool showMinutes = false, bool showSeconds = false}) {
+  // Convert the latitude and longitude to degrees and minutes
+  double degrees = lat;
+  double minutes = (lat - degrees) * 60;
+  double seconds = (minutes - minutes.toInt()) * 60;
+
+  // Convert the degrees, minutes, and seconds to strings
+  String degreesStr = degrees.toStringAsFixed(1);
+  String minutesStr = minutes.toStringAsFixed(1);
+  String secondsStr = seconds.toStringAsFixed(1);
+
+  // Return the string representation of the latitude and longitude
+  return '$degreesStr°${showMinutes ? " $minutesStr\'" : ''}${showSeconds ? " $secondsStr\"" : ''} N';
+}
+
+String lngToString(double lng,
+    {bool showMinutes = false, bool showSeconds = false}) {
+  // Convert the latitude and longitude to degrees and minutes
+  double degrees = lng;
+  double minutes = (lng - degrees) * 60;
+  double seconds = (minutes - minutes.toInt()) * 60;
+
+  // Convert the degrees, minutes, and seconds to strings
+  String degreesStr = degrees.toStringAsFixed(1);
+  String minutesStr = minutes.toStringAsFixed(1);
+  String secondsStr = seconds.toStringAsFixed(1);
+
+  // Return the string representation of the latitude and longitude
+  return '$degreesStr°${showMinutes ? " $minutesStr\'" : ''}${showSeconds ? " $secondsStr\"" : ''} E';
+}

@@ -23,6 +23,19 @@ final shadows = [
   ),
 ];
 
+final lightShadows = [
+  Shadow(
+    color: Colors.white.withOpacity(0.5),
+    offset: const Offset(1, 1),
+    blurRadius: 2,
+  ),
+  Shadow(
+    color: Colors.white.withOpacity(0.5),
+    offset: const Offset(-1, -1),
+    blurRadius: 2,
+  )
+];
+
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -119,7 +132,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: const Text('Al Quran'),
+        title: const Text('MeezanSync'),
         centerTitle: true,
         actions: [
           IconButton(
@@ -130,84 +143,111 @@ class _HomeState extends State<Home> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Container(
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius: BorderRadius.circular(16.0),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // App icon
-                  Center(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Theme.of(context).colorScheme.onBackground,
-                      ),
-                      child: ClipOval(
-                        child: Image.asset(
-                          'assets/images/icon.png',
-                          width: 100,
-                          height: 100,
+          : Center(
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: 450,
+                ),
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // App icon
+                    Center(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).colorScheme.onBackground,
+                        ),
+                        child: ClipOval(
+                          child: Image.asset(
+                            'assets/images/icon.png',
+                            width: 100,
+                            height: 100,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
+                    const SizedBox(height: 12),
 
-                  // Recent page box
-                  AnimatedGradientCard(
-                    colors: GradientColors.green,
-                    duration: const Duration(seconds: 26),
-                    padding: const EdgeInsets.all(0.0),
-                    // padding: const EdgeInsets.all(2.0),
-                    // decoration: BoxDecoration(
-                    //   borderRadius: BorderRadius.circular(16.0),
-                    //   color: Theme.of(context).colorScheme.surface,
-                    //   boxShadow: [
-                    //     BoxShadow(
-                    //       color: Colors.black.withOpacity(0.1),
-                    //       blurRadius: 4,
-                    //       offset: const Offset(0, 2),
-                    //     ),
-                    //   ],
-                    // ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 16.0, right: 8.0, top: 12.0, bottom: 6.0),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.timer,
-                                color: Colors.white,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                'Recent',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white,
-                                    ),
-                              ),
-                            ],
+                    // Recent page box
+                    AnimatedGradientCard(
+                      colors: GradientColors.green,
+                      duration: const Duration(seconds: 26),
+                      padding: const EdgeInsets.all(0.0),
+                      // padding: const EdgeInsets.all(2.0),
+                      // decoration: BoxDecoration(
+                      //   borderRadius: BorderRadius.circular(16.0),
+                      //   color: Theme.of(context).colorScheme.surface,
+                      //   boxShadow: [
+                      //     BoxShadow(
+                      //       color: Colors.black.withOpacity(0.1),
+                      //       blurRadius: 4,
+                      //       offset: const Offset(0, 2),
+                      //     ),
+                      //   ],
+                      // ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 16.0, right: 8.0, top: 12.0, bottom: 6.0),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.timer,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Recent',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                      ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        // const SizedBox(height: 4),
-                        Consumer<QuranDataProvider>(
-                          builder: (context, quranData, child) {
-                            final recentPages = quranData.currentRecentPages;
-                            if (recentPages.isEmpty) {
+                          // const SizedBox(height: 4),
+                          Consumer<QuranDataProvider>(
+                            builder: (context, quranData, child) {
+                              final recentPages = quranData.currentRecentPages;
+                              if (recentPages.isEmpty) {
+                                return Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.all(8.0),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .surface
+                                        .withValues(alpha: 0.5),
+                                    borderRadius: BorderRadius.circular(2.0),
+                                  ),
+                                  child: Text(
+                                    'No recent pages',
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.copyWith(
+                                          color: Colors.white,
+                                        ),
+                                  ),
+                                );
+                              }
                               return Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.all(8.0),
+                                padding: EdgeInsets.only(
+                                  left: 8.0,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Theme.of(context)
                                       .colorScheme
@@ -215,133 +255,114 @@ class _HomeState extends State<Home> {
                                       .withValues(alpha: 0.5),
                                   borderRadius: BorderRadius.circular(2.0),
                                 ),
-                                child: Text(
-                                  'No recent pages',
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge
-                                      ?.copyWith(
-                                        color: Colors.white,
-                                      ),
-                                ),
-                              );
-                            }
-                            return Container(
-                              padding: EdgeInsets.only(
-                                left: 8.0,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surface
-                                    .withValues(alpha: 0.5),
-                                borderRadius: BorderRadius.circular(2.0),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: recentPages
-                                    .map((recentPage) => ListTile(
-                                          onTap: () => context.push(
-                                            '/page/${recentPage.pageNumber}',
-                                          ),
-                                          dense: true,
-                                          leading: Text(
-                                              "Page ${recentPage.pageNumber}",
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: recentPages
+                                      .map((recentPage) => ListTile(
+                                            onTap: () => context.push(
+                                              '/page/${recentPage.pageNumber}',
+                                            ),
+                                            dense: true,
+                                            leading: Text(
+                                                "Page ${recentPage.pageNumber}",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium),
+                                            title: Text(
+                                              recentPage.suraName,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .bodyMedium),
-                                          title: Text(
-                                            recentPage.suraName,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodySmall,
-                                          ),
-                                          trailing: Text(
-                                            quranData
-                                                .timeSinceReading(recentPage)
-                                                .toString(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodySmall
-                                                ?.copyWith(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary,
-                                                ),
-                                          ),
-                                        ))
-                                    .toList(),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Menu grid
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final crossAxisCount =
-                            constraints.maxWidth > 600 ? 3 : 2;
-                        return GridView.count(
-                          crossAxisCount: crossAxisCount,
-                          mainAxisSpacing: 12.0,
-                          crossAxisSpacing: 12.0,
-                          children: [
-                            _buildMenuItem(
-                              context,
-                              'Table of Contents',
-                              Icons.list_alt,
-                              () => context.push('/table-of-contents'),
-                              GradientColors.teal,
-                              duration: const Duration(seconds: 26),
-                            ),
-                            _buildMenuItem(
-                                context,
-                                'Bookmarks',
-                                Icons.bookmark,
-                                () => context.push('/bookmarks'),
-                                GradientColors.blue,
-                                duration: const Duration(seconds: 26)),
-                            _buildMenuItem(
-                                context,
-                                'Qibla Compass',
-                                Icons.explore,
-                                () => context.push('/qibla'),
-                                GradientColors.orange,
-                                duration: const Duration(seconds: 26)),
-                            _buildMenuItem(
-                                context,
-                                'Settings',
-                                Icons.settings,
-                                () => context.push('/settings'),
-                                GradientColors.purple,
-                                duration: const Duration(seconds: 26)),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-
-                  Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        context.push('/about');
-                      },
-                      child: Text(
-                        'About Al Quran',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
+                                                  .bodySmall,
+                                            ),
+                                            trailing: Text(
+                                              quranData
+                                                  .timeSinceReading(recentPage)
+                                                  .toString(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall
+                                                  ?.copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary,
+                                                  ),
+                                            ),
+                                          ))
+                                      .toList(),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 32),
-                ],
+                    const SizedBox(height: 12),
+
+                    // Menu grid
+                    Expanded(
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final crossAxisCount =
+                              constraints.maxWidth > 600 ? 3 : 2;
+                          return GridView.count(
+                            crossAxisCount: crossAxisCount,
+                            mainAxisSpacing: 12.0,
+                            crossAxisSpacing: 12.0,
+                            children: [
+                              _buildMenuItem(
+                                context,
+                                'Table of Contents',
+                                Icons.list_alt,
+                                () => context.push('/table-of-contents'),
+                                GradientColors.teal,
+                                duration: const Duration(seconds: 26),
+                              ),
+                              _buildMenuItem(
+                                  context,
+                                  'Bookmarks',
+                                  Icons.bookmark,
+                                  () => context.push('/bookmarks'),
+                                  GradientColors.blue,
+                                  duration: const Duration(seconds: 26)),
+                              _buildMenuItem(
+                                  context,
+                                  'Qibla Compass',
+                                  Icons.explore,
+                                  () => context.push('/qibla'),
+                                  GradientColors.orange,
+                                  duration: const Duration(seconds: 26)),
+                              _buildMenuItem(
+                                  context,
+                                  'Settings',
+                                  Icons.settings,
+                                  () => context.push('/settings'),
+                                  GradientColors.purple,
+                                  duration: const Duration(seconds: 26)),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+
+                    Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          context.push('/about');
+                        },
+                        child: Text(
+                          'About MeezanSync',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                  ],
+                ),
               ),
             ),
     );

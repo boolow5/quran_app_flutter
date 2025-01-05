@@ -4,6 +4,8 @@ import 'package:flutter_compass/flutter_compass.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:quran_app_flutter/screens/home_page.dart';
+import 'package:quran_app_flutter/utils/utils.dart';
 
 class QiblaCompass extends StatefulWidget {
   const QiblaCompass({super.key});
@@ -14,15 +16,12 @@ class QiblaCompass extends StatefulWidget {
 
 class _QiblaCompassState extends State<QiblaCompass>
     with SingleTickerProviderStateMixin {
+  double _qiblaDirectionDegrees = 0;
   double? heading;
   bool hasPermission = false;
   Position? userLocation;
   final double kaabaLat = 21.422487;
   final double kaabaLng = 39.826206;
-
-  // Animation controller for smooth rotation
-  late AnimationController _animationController;
-  late Animation<double> _animation;
 
   // For heading smoothing
   final List<double> _headingBuffer = [];
@@ -33,13 +32,6 @@ class _QiblaCompassState extends State<QiblaCompass>
   void initState() {
     super.initState();
     _checkLocationPermission();
-
-    // Initialize animation controller
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(
-          milliseconds: 500), // Adjust duration for smoother/faster rotation
-    );
 
     // Initialize heading listener
     FlutterCompass.events?.listen((event) {
@@ -77,17 +69,6 @@ class _QiblaCompassState extends State<QiblaCompass>
       setState(() {
         heading = smoothedHeading;
       });
-
-      // Configure and start animation
-      _animation = Tween<double>(
-        begin: oldHeading,
-        end: oldHeading + headingDiff,
-      ).animate(CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeOut,
-      ));
-
-      _animationController.forward(from: 0);
     }
   }
 
@@ -103,7 +84,20 @@ class _QiblaCompassState extends State<QiblaCompass>
 
   Future<void> _getCurrentLocation() async {
     try {
-      final location = await Geolocator.getCurrentPosition();
+      final position = await Geolocator.getCurrentPosition();
+
+      final location = Position(
+        longitude: position.longitude, // 45.323484,
+        latitude: position.latitude, // 2.033466,
+        timestamp: DateTime.now(),
+        accuracy: position.accuracy,
+        altitude: position.altitude,
+        altitudeAccuracy: position.altitudeAccuracy,
+        heading: position.heading,
+        headingAccuracy: position.headingAccuracy,
+        speed: position.speed,
+        speedAccuracy: position.speedAccuracy,
+      );
       setState(() => userLocation = location);
     } catch (e) {
       debugPrint('Error getting location: $e');
@@ -130,7 +124,6 @@ class _QiblaCompassState extends State<QiblaCompass>
 
   @override
   void dispose() {
-    _animationController.dispose();
     super.dispose();
   }
 
@@ -140,11 +133,18 @@ class _QiblaCompassState extends State<QiblaCompass>
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: const Text('MeezanSync'),
+        centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.push('/'),
         ),
-        title: const Text('Qibla Compass'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () => context.push('/settings'),
+          ),
+        ],
       ),
       body: Center(
         child: hasPermission
@@ -161,94 +161,70 @@ class _QiblaCompassState extends State<QiblaCompass>
                           Container(
                             width: 300,
                             height: 300,
+                            padding: EdgeInsets.all(2),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.teal, width: 2),
+                              border: Border.all(color: Colors.teal, width: 1),
+                            ),
+                            child: Opacity(
+                              opacity: 0.55,
+                              child: Image.asset(
+                                "assets/images/compass.png",
+                              ),
                             ),
                           ),
-                          // North Direction
-                          const Positioned(
-                            top: 80,
-                            child: Column(
+                          // Qibla Direction
+                          Transform.rotate(
+                            angle: _calculateQiblaDirection() * pi / 180,
+                            child: Stack(
+                              alignment: Alignment.center,
                               children: [
-                                Icon(Icons.arrow_upward,
-                                    color: Colors.blue, size: 40),
-                                Text(
-                                  'N',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
+                                Container(
+                                  height: 233,
+                                  width: 233,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.transparent,
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 0,
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "${_calculateQiblaDirection().toStringAsFixed(2)}°",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          height: 1,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface,
+                                          shadows:
+                                              Theme.of(context).brightness ==
+                                                      Brightness.dark
+                                                  ? shadows
+                                                  : lightShadows,
+                                        ),
+                                      ),
+                                      Image.asset(
+                                        "assets/images/kaaba.png",
+                                        width: 48,
+                                        height: 48,
+                                      ),
+                                      // Text(
+                                      //   'Qibla',
+                                      //   style: TextStyle(
+                                      //     fontSize: 16,
+                                      //     fontWeight: FontWeight.bold,
+                                      //     color: Colors.teal,
+                                      //   ),
+                                      // ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          // Qibla Direction
-                          AnimatedBuilder(
-                              animation: _animationController,
-                              builder: (context, child) {
-                                return Transform.rotate(
-                                  angle: _calculateQiblaDirection() * pi / 180,
-                                  child: Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      Container(
-                                        height: 250,
-                                        width: 250,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.transparent,
-                                        ),
-                                      ),
-                                      Positioned(
-                                        top: 0,
-                                        child: Column(
-                                          children: [
-                                            const Icon(Icons.mosque,
-                                                color: Colors.teal, size: 40),
-                                            Text(
-                                              'Qibla',
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.teal,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  // child: const Column(
-                                  //   mainAxisSize: MainAxisSize.min,
-                                  //   children: [
-                                  //     Icon(Icons.mosque,
-                                  //         color: Colors.teal, size: 40),
-                                  //     Text(
-                                  //       'Qibla',
-                                  //       style: TextStyle(
-                                  //         fontSize: 16,
-                                  //         fontWeight: FontWeight.bold,
-                                  //         color: Colors.teal,
-                                  //       ),
-                                  //     ),
-                                  //   ],
-                                  // ),
-                                );
-                              }),
-                          // Cardinal Points
-                          const Positioned(
-                            bottom: 100,
-                            child: Text('S', style: TextStyle(fontSize: 20)),
-                          ),
-                          const Positioned(
-                            left: 100,
-                            child: Text('W', style: TextStyle(fontSize: 20)),
-                          ),
-                          const Positioned(
-                            right: 100,
-                            child: Text('E', style: TextStyle(fontSize: 20)),
                           ),
                         ],
                       ),
@@ -256,14 +232,32 @@ class _QiblaCompassState extends State<QiblaCompass>
                   else
                     const CircularProgressIndicator(color: Colors.teal),
                   const SizedBox(height: 20),
-                  const Text(
-                    'Qibla Direction',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.teal,
+                  Column(mainAxisSize: MainAxisSize.min, children: [
+                    Text(
+                      'Qibla Direction',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.teal,
+                      ),
                     ),
-                  ),
+                    Text(
+                      "${_calculateQiblaDirection().toStringAsFixed(2)}°",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    if (userLocation != null)
+                      Text(
+                        "${latToString(userLocation!.latitude)} ${lngToString(userLocation!.longitude)}",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                  ]),
                 ],
               )
             : SizedBox(

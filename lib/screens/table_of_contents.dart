@@ -67,7 +67,7 @@ class _TableOfContentsState extends State<TableOfContents> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: const Text('Al Quran'),
+        title: const Text('MeezanSync'),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

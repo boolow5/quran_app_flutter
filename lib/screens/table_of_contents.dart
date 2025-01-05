@@ -16,6 +16,8 @@ class TableOfContents extends StatefulWidget {
 
 class _TableOfContentsState extends State<TableOfContents> {
   List<Sura> _suras = [];
+  List<Sura> _filteredSuras = [];
+  String _searchText = "";
   bool _isLoading = true;
 
   @override
@@ -32,6 +34,7 @@ class _TableOfContentsState extends State<TableOfContents> {
       setState(() {
         _suras = jsonList.map((json) => Sura.fromJson(json)).toList();
         _isLoading = false;
+        _filteredSuras = _suras;
       });
     } catch (e) {
       setState(() {
@@ -43,6 +46,20 @@ class _TableOfContentsState extends State<TableOfContents> {
         );
       }
     }
+  }
+
+  void _onSearch(String value) {
+    setState(() {
+      _searchText = value;
+      _filteredSuras = _suras
+          .where((sura) =>
+              sura.name.toLowerCase().contains(_searchText.toLowerCase()) ||
+              sura.number == int.tryParse(_searchText) ||
+              sura.englishName
+                  .toLowerCase()
+                  .contains(_searchText.toLowerCase()))
+          .toList();
+    });
   }
 
   @override
@@ -65,57 +82,102 @@ class _TableOfContentsState extends State<TableOfContents> {
           ),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: _suras.length,
-              itemBuilder: (context, index) {
-                final sura = _suras[index];
-                return ListTile(
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        sura.name,
-                        style: TextStyle(
-                          fontFamily: DEFAULT_FONT_FAMILY,
-                          fontSize: context.read<ThemeProvider>().fontSize(24),
-                          color: Theme.of(context).colorScheme.onBackground,
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(
-                          '${sura.number}',
-                          style: TextStyle(
-                            fontSize:
-                                context.read<ThemeProvider>().fontSize(16),
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ),
-                    ],
+      body: LayoutBuilder(builder: (context, constraints) {
+        return Column(
+          children: [
+            // search bar
+            Container(
+              height: 48,
+              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(32),
+              ),
+              child: TextField(
+                onChanged: _onSearch,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(32.0),
                   ),
-                  subtitle: Text(
-                    '${sura.englishName} • ${sura.type}',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  labelText: 'Search',
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      setState(() {
+                        _filteredSuras = _suras;
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ),
+            _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : SizedBox(
+                    height: constraints.maxHeight * 0.8,
+                    child: ListView.builder(
+                      itemCount: _filteredSuras.length,
+                      itemBuilder: (context, index) {
+                        final sura = _filteredSuras[index];
+                        return ListTile(
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                sura.name,
+                                style: TextStyle(
+                                  fontFamily: DEFAULT_FONT_FAMILY,
+                                  fontSize: context
+                                      .read<ThemeProvider>()
+                                      .fontSize(24),
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Text(
+                                  '${sura.number}',
+                                  style: TextStyle(
+                                    fontSize: context
+                                        .read<ThemeProvider>()
+                                        .fontSize(16),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          subtitle: Text(
+                            '${sura.englishName} • ${sura.type}',
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
+                          ),
+                          onTap: () {
+                            context.push('/page/${sura.startPage}');
+                          },
+                        );
+                      },
                     ),
                   ),
-                  onTap: () {
-                    context.push('/page/${sura.startPage}');
-                  },
-                );
-              },
-            ),
+          ],
+        );
+      }),
     );
   }
 }

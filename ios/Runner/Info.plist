@@ -51,5 +51,7 @@
 		<string>tel</string>
 		<string>email</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to location to show Qibla direction.</string>
 </dict>
 </plist>

@@ -35,7 +35,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: "/qibla",
-      builder: (context, state) => const QiblaCompassPage(),
+      builder: (context, state) => const QiblaCompass(),
     ),
     GoRoute(
       path: '/settings',

@@ -44,7 +44,7 @@ class QuranDataProvider extends ChangeNotifier {
   late Future<SharedPreferences> _storage;
   List<Sura> _tableOfContents = [];
   int _currentPage = 1;
-  final List<RecentPage> _recentPages = [];
+  List<RecentPage> _recentPages = [];
   final List<RecentPage> _bookmarks = [];
   static const int maxRecentPages = 10;
   static const String _recentPagesKey = 'recent_pages';
@@ -98,23 +98,15 @@ class QuranDataProvider extends ChangeNotifier {
 
   // Save recent pages to SharedPreferences
   Future<void> _saveRecentPages() async {
-    final String encoded = json.encode(_recentPages
-        .where((page) =>
-            page.endTime != null &&
-            page.endTime!.difference(page.startTime).inSeconds >= 10)
-        .map((page) => page.toJson())
-        .toList());
+    final String encoded =
+        json.encode(_recentPages.map((page) => page.toJson()).toList());
     await _prefs.setString(_recentPagesKey, encoded);
   }
 
   Future<void> _saveBookmarks() async {
     print("Saving bookmarks: $_bookmarks");
-    final String encoded = json.encode(_bookmarks
-        .where((page) =>
-            page.endTime != null &&
-            page.endTime!.difference(page.startTime).inSeconds >= 10)
-        .map((page) => page.toJson())
-        .toList());
+    final String encoded =
+        json.encode(_bookmarks.map((page) => page.toJson()).toList());
     await _prefs.setString('bookmarks', encoded);
   }
 
@@ -133,20 +125,14 @@ class QuranDataProvider extends ChangeNotifier {
 
       // Add new page or update existing in the recent list
       final int index = _recentPages.indexWhere((p) => p.pageNumber == page);
-      if (index >= 0) {
-        _recentPages[index] = RecentPage(
-          pageNumber: _recentPages[index].pageNumber,
-          suraName: _recentPages[index].suraName,
-          startTime: DateTime.now(),
-          endTime: null,
-        );
-      } else {
-        _recentPages.add(RecentPage(
-          pageNumber: page,
-          suraName: suraName,
-          startTime: DateTime.now(),
-        ));
+      if (index >= 0 && _recentPages[index].suraName == suraName) {
+        _recentPages.removeAt(index);
       }
+      _recentPages.add(RecentPage(
+        pageNumber: page,
+        suraName: suraName,
+        startTime: DateTime.now(),
+      ));
 
       // Keep only the last maxRecentPages entries
       if (_recentPages.length > maxRecentPages) {
@@ -154,6 +140,11 @@ class QuranDataProvider extends ChangeNotifier {
       }
 
       _currentPage = page;
+      _recentPages = _recentPages
+          .where((page) =>
+              page.endTime != null &&
+              page.endTime!.difference(page.startTime).inSeconds >= 10)
+          .toList();
       _saveRecentPages(); // Persist changes
       notifyListeners();
     }
@@ -161,19 +152,23 @@ class QuranDataProvider extends ChangeNotifier {
 
   bool addBookmark(int page, String suraName) {
     try {
-      final bookmark = RecentPage(
-        pageNumber: page,
-        suraName: suraName,
-        startTime: DateTime.now(),
-      );
       final int index =
           _bookmarks.indexWhere((bookmark) => bookmark.pageNumber == page);
       if (index >= 0) {
         print('**************** Bookmark already exists ****************');
+        final bookmark = RecentPage(
+          pageNumber: _bookmarks[index].pageNumber,
+          suraName: _bookmarks[index].suraName,
+          startTime: DateTime.now(),
+        );
         _bookmarks[index] = bookmark;
       } else {
         print('**************** Adding bookmark ****************');
-        _bookmarks.add(bookmark);
+        _bookmarks.add(RecentPage(
+          pageNumber: page,
+          suraName: suraName,
+          startTime: DateTime.now(),
+        ));
       }
 
       _saveBookmarks(); // Persist changes

@@ -88,7 +88,7 @@ class _AnimatedGradientCardState extends State<AnimatedGradientCard>
         return Card(
           clipBehavior: Clip.antiAlias,
           shape: RoundedRectangleBorder(
-            borderRadius: widget.borderRadius ?? BorderRadius.circular(15),
+            borderRadius: widget.borderRadius ?? BorderRadius.circular(32),
           ),
           child: Container(
             padding: widget.padding,

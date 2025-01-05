@@ -46,7 +46,7 @@ class _QuranPageState extends State<QuranPage> {
         final newPage = _pageController.page!.round() + 1;
         if (newPage != _currentPage) {
           _currentPage = newPage;
-          context.push('/page/$newPage');
+          context.go('/page/$newPage');
           _loadVerses(newPage);
           if (_suraName.isNotEmpty) {
             _quranDataProvider.setCurrentPage(newPage, _suraName);
@@ -382,7 +382,7 @@ class _QuranPageState extends State<QuranPage> {
                                 topLeft: Radius.circular(constraints.maxWidth),
                                 topRight: Radius.circular(constraints.maxWidth),
                               )
-                            : null,
+                            : BorderRadius.all(Radius.circular(20.0)),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -423,9 +423,9 @@ class _QuranPageState extends State<QuranPage> {
           ),
         );
       }
-// Add verse number with end-of-verse symbol
+      // Add verse number with end-of-verse symbol
       spans.add(TextSpan(
-        text: ' ',
+        text: '',
       ));
       if (!(pageNumber == 1 && _verses[i].number == 1)) {
         spans.add(
@@ -437,7 +437,7 @@ class _QuranPageState extends State<QuranPage> {
       }
       // Add verse number with end-of-verse symbol
       spans.add(TextSpan(
-        text: ' ',
+        text: '',
       ));
 
       // Add space or ornamental divider after verse

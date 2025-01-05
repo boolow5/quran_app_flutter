@@ -61,11 +61,17 @@ class _HomeState extends State<Home> {
     }
   }
 
-  Widget _buildMenuItem(BuildContext context, String title, IconData icon,
-      VoidCallback onTap, List<Color> colors) {
+  Widget _buildMenuItem(
+    BuildContext context,
+    String title,
+    IconData icon,
+    VoidCallback onTap,
+    List<Color> colors, {
+    Duration? duration,
+  }) {
     return AnimatedGradientCard(
       colors: colors,
-      duration: const Duration(seconds: 10),
+      duration: duration ?? const Duration(seconds: 10),
       padding: const EdgeInsets.all(16.0),
       // margin: const EdgeInsets.all(0.0),
       // padding: const EdgeInsets.all(4.0),
@@ -154,7 +160,7 @@ class _HomeState extends State<Home> {
                   // Recent page box
                   AnimatedGradientCard(
                     colors: GradientColors.green,
-                    duration: const Duration(seconds: 20),
+                    duration: const Duration(seconds: 26),
                     padding: const EdgeInsets.all(0.0),
                     // padding: const EdgeInsets.all(2.0),
                     // decoration: BoxDecoration(
@@ -173,7 +179,7 @@ class _HomeState extends State<Home> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(
-                              left: 12.0, right: 8.0, top: 12.0, bottom: 6.0),
+                              left: 16.0, right: 8.0, top: 12.0, bottom: 6.0),
                           child: Row(
                             children: [
                               Icon(
@@ -222,6 +228,9 @@ class _HomeState extends State<Home> {
                               );
                             }
                             return Container(
+                              padding: EdgeInsets.only(
+                                left: 8.0,
+                              ),
                               decoration: BoxDecoration(
                                 color: Theme.of(context)
                                     .colorScheme
@@ -289,28 +298,29 @@ class _HomeState extends State<Home> {
                               Icons.list_alt,
                               () => context.push('/table-of-contents'),
                               GradientColors.teal,
+                              duration: const Duration(seconds: 26),
                             ),
                             _buildMenuItem(
-                              context,
-                              'Bookmarks',
-                              Icons.bookmark,
-                              () => context.push('/bookmarks'),
-                              GradientColors.blue,
-                            ),
+                                context,
+                                'Bookmarks',
+                                Icons.bookmark,
+                                () => context.push('/bookmarks'),
+                                GradientColors.blue,
+                                duration: const Duration(seconds: 26)),
                             _buildMenuItem(
-                              context,
-                              'Qibla Compass',
-                              Icons.explore,
-                              () => context.push('/qibla'),
-                              GradientColors.orange,
-                            ),
+                                context,
+                                'Qibla Compass',
+                                Icons.explore,
+                                () => context.push('/qibla'),
+                                GradientColors.orange,
+                                duration: const Duration(seconds: 26)),
                             _buildMenuItem(
-                              context,
-                              'Settings',
-                              Icons.settings,
-                              () => context.push('/settings'),
-                              GradientColors.purple,
-                            ),
+                                context,
+                                'Settings',
+                                Icons.settings,
+                                () => context.push('/settings'),
+                                GradientColors.purple,
+                                duration: const Duration(seconds: 26)),
                           ],
                         );
                       },

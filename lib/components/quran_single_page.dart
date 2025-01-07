@@ -305,107 +305,144 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
       textDirection: TextDirection.rtl,
       child: Column(
         children: [
-          !_isSpecialPage()
-              ? SizedBox(
-                  width: specialBoxSize,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      RoundedBoxText(
-                        text: _suraName,
-                        width: 100,
-                      ),
-                      RoundedBoxText(
-                        text: toArabicNumber(_currentPage),
-                        width: 40,
-                      ),
-                      RoundedBoxText(
-                        text: "السورة ${toArabicNumber(_suraNumber)}",
-                        width: 100,
-                      ),
-                    ],
+          if (!_isSpecialPage()) ...[
+            SizedBox(
+              width: specialBoxSize,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  RoundedBoxText(
+                    text: "سورة $_suraName ",
+                    width: 110,
+                    height: 22,
+                    fontSize: 13,
                   ),
-                )
-              : Center(
-                  child: RoundedBoxText(
+                  RoundedBoxText(
                     text: toArabicNumber(_currentPage),
                     width: 40,
+                    height: 22,
                   ),
-                ),
-          const SizedBox(height: 8),
+                  RoundedBoxText(
+                    text: "رقم السورة ${toArabicNumber(_suraNumber)}",
+                    width: 110,
+                    height: 22,
+                    fontSize: 13,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+          ] else ...[
+            SizedBox(height: pageHeight * 0.1),
+          ],
           Center(
-            child: Container(
-              // height: _isSpecialPage() ? boxHeight : null,
-              // width: _isSpecialPage() ? boxWidth : null,
-              height: pageHeight,
-              width: pageWidth,
-              // constraints: BoxConstraints(
-              //   maxWidth: _isSpecialPage() ? 350 : pageWidth,
-              //   maxHeight: _isSpecialPage() ? 530 : 800,
-              // ),
-              margin: _isSpecialPage()
-                  ? EdgeInsets.symmetric(vertical: 32, horizontal: 0)
-                  : EdgeInsets.symmetric(vertical: 0, horizontal: 4),
-              padding: EdgeInsets.symmetric(
-                horizontal: context.read<ThemeProvider>().fontSize(20.0),
-                vertical: _isSpecialPage() ? 20.0 : 8,
-              ),
-              decoration: BoxDecoration(
-                color: DEFAULT_PAGE_BG_COLOR,
-                // color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius: _isSpecialPage()
-                    ? BorderRadius.circular(specialBoxSize / 2)
-                    : null,
-                border: _isSpecialPage()
-                    ? Border.all(
-                        color: Theme.of(context).primaryColor,
-                        width: 16.0,
-                      )
-                    : null,
-              ),
-              child: SingleChildScrollView(
-                child: Container(
-                  decoration: _isSpecialPage()
-                      ? BoxDecoration(
-                          border: Border.all(
-                            color: Colors.transparent, // DEFAULT_PRIMARY_COLOR,
-                            width: 2.0,
-                          ),
-                          borderRadius:
-                              BorderRadius.circular(specialBoxSize / 4),
-                        )
-                      : null,
-                  padding: _isSpecialPage()
-                      ? EdgeInsets.only(
-                          top: boxPadding,
-                          right: boxPadding,
-                          left: boxPadding,
-                        )
-                      : EdgeInsets.zero,
+            child: Stack(
+              children: [
+                Container(
+                  // height: _isSpecialPage() ? boxHeight : null,
+                  // width: _isSpecialPage() ? boxWidth : null,
+                  height: pageHeight,
+                  width: pageWidth,
+                  // constraints: BoxConstraints(
+                  //   maxWidth: _isSpecialPage() ? 350 : pageWidth,
+                  //   maxHeight: _isSpecialPage() ? 530 : 800,
+                  // ),
                   margin: _isSpecialPage()
-                      ? EdgeInsets.only(
-                          top: boxMargin,
-                          right: boxMargin,
-                          left: boxMargin,
-                        )
-                      : EdgeInsets.zero,
-                  child: RichText(
-                    textAlign:
-                        _isSpecialPage() ? TextAlign.center : TextAlign.justify,
-                    text: TextSpan(
-                      style: TextStyle(
-                        fontSize: context
-                            .read<ThemeProvider>()
-                            .fontSize(_isSpecialPage() ? 24.0 : 24.0),
-                        color: Theme.of(context).colorScheme.onBackground,
-                        height: _isSpecialPage() ? 1.7 : 1.5,
-                        fontFamily: DEFAULT_FONT_FAMILY,
+                      ? EdgeInsets.symmetric(vertical: 32, horizontal: 0)
+                      : EdgeInsets.symmetric(vertical: 0, horizontal: 4),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: context.read<ThemeProvider>().fontSize(20.0),
+                    vertical: _isSpecialPage() ? 20.0 : 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: DEFAULT_PAGE_BG_COLOR,
+                    // color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: _isSpecialPage()
+                        ? BorderRadius.circular(specialBoxSize / 2)
+                        : null,
+                    border: _isSpecialPage()
+                        ? Border.all(
+                            color: Theme.of(context).primaryColor,
+                            width: 16.0,
+                          )
+                        : null,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Container(
+                      decoration: _isSpecialPage()
+                          ? BoxDecoration(
+                              border: Border.all(
+                                color: Colors
+                                    .transparent, // DEFAULT_PRIMARY_COLOR,
+                                width: 2.0,
+                              ),
+                              borderRadius:
+                                  BorderRadius.circular(specialBoxSize / 4),
+                            )
+                          : null,
+                      padding: _isSpecialPage()
+                          ? EdgeInsets.only(
+                              top: boxPadding,
+                              right: boxPadding,
+                              left: boxPadding,
+                            )
+                          : EdgeInsets.zero,
+                      margin: _isSpecialPage()
+                          ? EdgeInsets.only(
+                              top: boxMargin,
+                              right: boxMargin,
+                              left: boxMargin,
+                            )
+                          : EdgeInsets.zero,
+                      child: RichText(
+                        textAlign: _isSpecialPage()
+                            ? TextAlign.center
+                            : TextAlign.justify,
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: context
+                                .read<ThemeProvider>()
+                                .fontSize(_isSpecialPage() ? 24.0 : 24.0),
+                            color: Theme.of(context).colorScheme.onBackground,
+                            height: _isSpecialPage() ? 1.7 : 1.5,
+                            fontFamily: DEFAULT_FONT_FAMILY,
+                          ),
+                          children: _buildVerseSpans(context, _currentPage),
+                        ),
                       ),
-                      children: _buildVerseSpans(context, _currentPage),
                     ),
                   ),
                 ),
-              ),
+                if (_isSpecialPage()) ...[
+                  Positioned(
+                    top: 8,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: RoundedBoxText(
+                        text: "سورة $_suraName ",
+                        width: 120,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 8,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: RoundedBoxText(
+                        text: toArabicNumber(_currentPage),
+                        width: 40,
+                        height: 30,
+                        // border: Border.all(
+                        //   color: Theme.of(context).primaryColor,
+                        //   width: 2.0,
+                        // ),
+                      ),
+                    ),
+                  ),
+                ]
+              ],
             ),
           ),
         ],

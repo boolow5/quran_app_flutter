@@ -9,11 +9,15 @@ class RoundedBoxText extends StatelessWidget {
     required this.text,
     this.height,
     this.width,
+    this.border,
+    this.fontSize,
   });
 
   final String text;
   final double? height;
   final double? width;
+  final BoxBorder? border;
+  final double? fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +31,9 @@ class RoundedBoxText extends StatelessWidget {
         vertical: 4,
       ),
       decoration: BoxDecoration(
-        color: DEFAULT_PRIMARY_COLOR.withValues(
-          alpha: 0.85,
-        ),
+        color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.circular(calculatedHeight / 2),
+        border: border,
       ),
       child: Center(
         child: Directionality(
@@ -40,7 +43,7 @@ class RoundedBoxText extends StatelessWidget {
             style: TextStyle(
               fontFamily: DEFAULT_FONT_FAMILY,
               color: Colors.white,
-              fontSize: context.read<ThemeProvider>().fontSize(16),
+              fontSize: context.read<ThemeProvider>().fontSize(fontSize ?? 16),
               fontWeight: FontWeight.bold,
             ),
           ),

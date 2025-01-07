@@ -38,6 +38,7 @@ class _QuranPagesState extends State<QuranPages> {
                 : 1);
         if (newPage != _currentPage) {
           _currentPage = newPage;
+          print("\n\tPage Changed: ${widget.pageNumber} -> $newPage");
           print(
               "\n\tCurrent Page: $_currentPage, New Page: $newPage -> '/page/$newPage'");
           context.go('/page/$newPage');
@@ -167,6 +168,48 @@ class _QuranPagesState extends State<QuranPages> {
                 ),
               ),
             ),
+            if (isTablet && isLandscape) ...[
+              Positioned(
+                bottom: 0,
+                left: 4,
+                child: Container(
+                  // width: 50,
+                  // height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                  ),
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.chevron_left,
+                      size: 40,
+                    ),
+                    onPressed: () {
+                      _pageController.jumpToPage(_currentPage + 1);
+                    },
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                right: 4,
+                child: Container(
+                  // width: 50,
+                  // height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                  ),
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.chevron_right,
+                      size: 40,
+                    ),
+                    onPressed: () {
+                      _pageController.jumpToPage(_currentPage - 1);
+                    },
+                  ),
+                ),
+              )
+            ],
           ],
         ),
       ),

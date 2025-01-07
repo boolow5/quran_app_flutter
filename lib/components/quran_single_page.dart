@@ -8,9 +8,9 @@ import 'package:provider/provider.dart';
 import 'package:quran_app_flutter/components/rounded_box_text.dart';
 import 'package:quran_app_flutter/components/verse_number.dart';
 import 'package:quran_app_flutter/constants.dart';
+import 'package:quran_app_flutter/models/model.dart';
 import 'package:quran_app_flutter/providers/quran_data_provider.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
-import 'package:quran_app_flutter/screens/quran_page.dart';
 import 'package:quran_app_flutter/utils/utils.dart';
 
 class QuranSinglePage extends StatefulWidget {
@@ -170,10 +170,10 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
                             Text(
                               'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ',
                               style: TextStyle(
-                                fontFamily:
-                                    'KFGQPC', // DEFAULT_FONT_FAMILY, // 'KFGQPC',
+                                fontFamily: DEFAULT_FONT_FAMILY,
+                                // 'KFGQPC', // DEFAULT_FONT_FAMILY, // 'KFGQPC',
                                 fontSize:
-                                    context.read<ThemeProvider>().fontSize(20),
+                                    context.read<ThemeProvider>().fontSize(16),
                                 color: Colors.white,
                               ),
                             ),

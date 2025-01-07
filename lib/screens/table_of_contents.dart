@@ -170,7 +170,7 @@ class _TableOfContentsState extends State<TableOfContents> {
       return const SizedBox.shrink();
     }
     return Container(
-      margin: EdgeInsets.only(right: 8.0, left: 8.0),
+      margin: EdgeInsets.only(right: 6.0, left: 6.0),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
@@ -184,7 +184,7 @@ class _TableOfContentsState extends State<TableOfContents> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SizedBox(
-              width: 100,
+              width: 84,
               child: Text(
                 // '${sura.englishName} • ${sura.type}',
                 "ص ${toArabicNumber(sura.startPage)}",
@@ -194,7 +194,7 @@ class _TableOfContentsState extends State<TableOfContents> {
               ),
             ),
             SizedBox(
-              width: 80,
+              width: 67,
               child: Text(
                 // '${sura.englishName} • ${sura.type}',
                 sura.type,
@@ -205,7 +205,7 @@ class _TableOfContentsState extends State<TableOfContents> {
               ),
             ),
             SizedBox(
-              width: 155,
+              width: 189.5,
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -219,8 +219,8 @@ class _TableOfContentsState extends State<TableOfContents> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.all(8),
-                    margin: const EdgeInsets.only(left: 8),
+                    padding: const EdgeInsets.all(4.5),
+                    margin: const EdgeInsets.only(left: 5),
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -230,7 +230,7 @@ class _TableOfContentsState extends State<TableOfContents> {
                     child: Text(
                       '${sura.number}',
                       style: TextStyle(
-                        fontSize: context.read<ThemeProvider>().fontSize(16),
+                        fontSize: context.read<ThemeProvider>().fontSize(14),
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),

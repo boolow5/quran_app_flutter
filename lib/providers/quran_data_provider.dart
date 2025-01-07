@@ -66,6 +66,7 @@ class QuranDataProvider extends ChangeNotifier {
     _storage = storage;
     _prefs = await _storage;
     _loadRecentPages();
+    _loadBookmarks();
     _initialized = true;
   }
 
@@ -157,6 +158,12 @@ class QuranDataProvider extends ChangeNotifier {
     }
   }
 
+  bool isBookmarked(int page, {bool isWideScreen = false}) {
+    return _bookmarks.any((bookmark) => isWideScreen
+        ? (page % 2 == 0 ? bookmark.pageNumber == page + 1 : false)
+        : bookmark.pageNumber == page);
+  }
+
   bool addBookmark(int page, String suraName) {
     try {
       final int index =
@@ -186,6 +193,12 @@ class QuranDataProvider extends ChangeNotifier {
     } finally {
       notifyListeners();
     }
+  }
+
+  void removeBookmark(List<int> pages) {
+    _bookmarks.removeWhere((bookmark) => pages.contains(bookmark.pageNumber));
+    _saveBookmarks();
+    notifyListeners();
   }
 
   void setEndTimeForMostRecentPage(

@@ -5,12 +5,29 @@ import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/providers/quran_data_provider.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
 
-class BookmarksPage extends StatelessWidget {
+class BookmarksPage extends StatefulWidget {
   const BookmarksPage({super.key});
 
   @override
+  State<BookmarksPage> createState() => _BookmarksPageState();
+}
+
+class _BookmarksPageState extends State<BookmarksPage> {
+  List<RecentPage> _selectedBookmarks = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        _selectedBookmarks = [];
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final bookmarks = context.watch<QuranDataProvider>().bookmarks;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -33,43 +50,134 @@ class BookmarksPage extends StatelessWidget {
           ),
         ],
       ),
-      body: bookmarks.isEmpty
+      body: context.watch<QuranDataProvider>().bookmarks.isEmpty
           ? const Center(child: Text('No bookmarks'))
-          : ListView.builder(
-              itemCount: bookmarks.length,
-              itemBuilder: (context, index) {
-                final bookmark = bookmarks[index];
-                return ListTile(
-                  title: Text(
-                    bookmark.suraName,
-                    style: TextStyle(
-                      fontFamily: DEFAULT_FONT_FAMILY,
-                      fontSize: context.read<ThemeProvider>().fontSize(24),
-                      color: Theme.of(context).colorScheme.onBackground,
+          : LayoutBuilder(builder: (context, constraints) {
+              final isAllSelected = _selectedBookmarks.length ==
+                  context.read<QuranDataProvider>().bookmarks.length;
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // select all
+                        OutlinedButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedBookmarks = _selectedBookmarks.isEmpty
+                                  ? context.read<QuranDataProvider>().bookmarks
+                                  : _selectedBookmarks.length !=
+                                          context
+                                              .read<QuranDataProvider>()
+                                              .bookmarks
+                                              .length
+                                      ? context
+                                          .read<QuranDataProvider>()
+                                          .bookmarks
+                                      : [];
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Icon(isAllSelected
+                                  ? Icons.clear
+                                  : _selectedBookmarks.isNotEmpty
+                                      ? Icons.select_all
+                                      : Icons.check_box_outline_blank),
+                              const SizedBox(width: 8),
+                              Text(isAllSelected
+                                  ? 'Deselect All'
+                                  : 'Select All'),
+                            ],
+                          ),
+                        ),
+                        OutlinedButton(
+                          onPressed: () {
+                            setState(() {
+                              final selectedIndices = _selectedBookmarks
+                                  .map((b) => b.pageNumber)
+                                  .toList();
+                              context
+                                  .read<QuranDataProvider>()
+                                  .removeBookmark(selectedIndices);
+                              _selectedBookmarks = [];
+                            });
+                          },
+                          child: const Row(
+                            children: [
+                              Icon(Icons.delete),
+                              Text('Select All'),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  subtitle: Text(
-                    'Page ${bookmark.pageNumber}',
-                    style: TextStyle(
-                      fontSize: context.read<ThemeProvider>().fontSize(16),
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  SizedBox(
+                    height: constraints.maxHeight - 48,
+                    child: ListView.builder(
+                      itemCount:
+                          context.watch<QuranDataProvider>().bookmarks.length,
+                      itemBuilder: (context, index) {
+                        final bookmark =
+                            context.watch<QuranDataProvider>().bookmarks[index];
+                        return ListTile(
+                          leading: IconButton(
+                            icon: _selectedBookmarks.contains(bookmark)
+                                ? const Icon(Icons.check_box)
+                                : const Icon(Icons.check_box_outline_blank),
+                            onPressed: () {
+                              setState(() {
+                                if (_selectedBookmarks.contains(bookmark)) {
+                                  _selectedBookmarks.remove(bookmark);
+                                } else {
+                                  _selectedBookmarks.add(bookmark);
+                                }
+                              });
+                            },
+                          ),
+                          title: Text(
+                            bookmark.suraName,
+                            style: TextStyle(
+                              fontFamily: DEFAULT_FONT_FAMILY,
+                              fontSize:
+                                  context.read<ThemeProvider>().fontSize(24),
+                              color: Theme.of(context).colorScheme.onBackground,
+                            ),
+                          ),
+                          subtitle: Text(
+                            'Page ${bookmark.pageNumber}',
+                            style: TextStyle(
+                              fontSize:
+                                  context.read<ThemeProvider>().fontSize(16),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
+                          ),
+                          trailing: Text(
+                            context
+                                .read<QuranDataProvider>()
+                                .timeSinceReading(bookmark, start: true)
+                                .toString(),
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
+                          ),
+                          onTap: () {
+                            context.push('/page/${bookmark.pageNumber}');
+                          },
+                        );
+                      },
                     ),
                   ),
-                  trailing: Text(
-                    context
-                        .read<QuranDataProvider>()
-                        .timeSinceReading(bookmark, start: true)
-                        .toString(),
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  onTap: () {
-                    context.push('/page/${bookmark.pageNumber}');
-                  },
-                );
-              },
-            ),
+                ],
+              );
+            }),
     );
   }
 }

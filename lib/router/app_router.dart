@@ -4,7 +4,6 @@ import 'package:quran_app_flutter/screens/about_page.dart';
 import 'package:quran_app_flutter/screens/bookmarks_page.dart';
 import 'package:quran_app_flutter/screens/home_page.dart';
 import 'package:quran_app_flutter/screens/qibla_compass_page.dart';
-import 'package:quran_app_flutter/screens/quran_page.dart';
 import 'package:quran_app_flutter/screens/quran_pages.dart';
 import 'package:quran_app_flutter/screens/settings_page.dart';
 import 'package:quran_app_flutter/screens/table_of_contents.dart';

@@ -81,6 +81,22 @@ class _SettingsPageState extends State<SettingsPage> {
                     setState(() {});
                   },
                 ),
+                // sample text
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    '...'
+                    'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ'
+                    ' • '
+                    'ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: DEFAULT_FONT_FAMILY,
+                      fontSize: context.read<ThemeProvider>().fontSize(20),
+                    ),
+                  ),
+                )
               ],
             ),
           ),

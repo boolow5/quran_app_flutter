@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:quran_app_flutter/components/quran_single_page.dart';
 import 'package:quran_app_flutter/providers/quran_data_provider.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
-import 'package:quran_app_flutter/screens/quran_page.dart';
 
 class QuranPages extends StatefulWidget {
   final int pageNumber;
@@ -20,6 +19,7 @@ class QuranPages extends StatefulWidget {
 class _QuranPagesState extends State<QuranPages> {
   late final PageController _pageController;
   int _currentPage = 1;
+  int _bookmarkPage = 0;
   String _currentSuraName = '';
 
   bool isTablet = false;
@@ -29,6 +29,9 @@ class _QuranPagesState extends State<QuranPages> {
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: widget.pageNumber - 1);
+    setState(() {
+      _bookmarkPage = widget.pageNumber;
+    });
     _pageController.addListener(() {
       if (_pageController.page != null) {
         final newPage = _pageController.page!.round() +
@@ -101,6 +104,10 @@ class _QuranPagesState extends State<QuranPages> {
         MediaQuery.orientationOf(context) == Orientation.landscape;
     print(
         "scaleFactor: ${context.read<ThemeProvider>().scaleFactor} isTablet: $isTablet isLandscape: $isLandscape");
+
+    final isBookmarked = context
+        .watch<QuranDataProvider>()
+        .isBookmarked(_bookmarkPage, isWideScreen: isTablet && isLandscape);
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -147,6 +154,7 @@ class _QuranPagesState extends State<QuranPages> {
                           isLandscape: isLandscape,
                           onSuraChange: (pageNumber, suraName) {
                             _currentSuraName = suraName;
+                            _bookmarkPage = pageNumber;
 
                             context
                                 .read<QuranDataProvider>()
@@ -168,6 +176,7 @@ class _QuranPagesState extends State<QuranPages> {
                     isLandscape: isLandscape,
                     onSuraChange: (pageNumber, suraName) {
                       _currentSuraName = suraName;
+                      _bookmarkPage = pageNumber;
                       context
                           .read<QuranDataProvider>()
                           .setEndTimeForMostRecentPage(
@@ -185,6 +194,7 @@ class _QuranPagesState extends State<QuranPages> {
                   isLandscape: isLandscape,
                   onSuraChange: (pageNumber, suraName) {
                     _currentSuraName = suraName;
+                    _bookmarkPage = pageNumber;
                     context
                         .read<QuranDataProvider>()
                         .setEndTimeForMostRecentPage(
@@ -206,10 +216,15 @@ class _QuranPagesState extends State<QuranPages> {
                   color: Colors.transparent,
                 ),
                 child: IconButton(
-                  icon: const Icon(Icons.bookmark),
+                  icon: Icon(
+                    isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
+                    color: isBookmarked
+                        ? Colors.green
+                        : Theme.of(context).iconTheme.color,
+                  ),
                   onPressed: () {
                     final saved = context.read<QuranDataProvider>().addBookmark(
-                          _currentPage,
+                          _bookmarkPage,
                           _currentSuraName,
                         );
                     if (saved) {
@@ -249,7 +264,7 @@ class _QuranPagesState extends State<QuranPages> {
                     context
                         .read<QuranDataProvider>()
                         .setEndTimeForMostRecentPage(
-                          _currentPage,
+                          _bookmarkPage,
                           _currentSuraName,
                           isDoublePage: isTablet && isLandscape,
                         );
@@ -268,13 +283,14 @@ class _QuranPagesState extends State<QuranPages> {
                   decoration: BoxDecoration(
                     color: Colors.transparent,
                   ),
-                  child: IconButton(
-                    icon: const Icon(
+                  child: GestureDetector(
+                    child: const Icon(
                       Icons.chevron_left,
                       size: 40,
                     ),
-                    onPressed: () {
-                      _pageController.jumpToPage(_currentPage + 1);
+                    onTap: () {
+                      print("GO to next page ${_bookmarkPage + 2}");
+                      context.go('/page/${_bookmarkPage + 2}');
                     },
                   ),
                 ),
@@ -288,13 +304,14 @@ class _QuranPagesState extends State<QuranPages> {
                   decoration: BoxDecoration(
                     color: Colors.transparent,
                   ),
-                  child: IconButton(
-                    icon: const Icon(
+                  child: GestureDetector(
+                    child: const Icon(
                       Icons.chevron_right,
                       size: 40,
                     ),
-                    onPressed: () {
-                      _pageController.jumpToPage(_currentPage - 1);
+                    onTap: () {
+                      print("GO to prev page ${_bookmarkPage - 2}");
+                      context.go('/page/${_bookmarkPage - 2}');
                     },
                   ),
                 ),

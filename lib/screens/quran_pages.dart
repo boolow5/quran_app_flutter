@@ -20,6 +20,7 @@ class QuranPages extends StatefulWidget {
 class _QuranPagesState extends State<QuranPages> {
   late final PageController _pageController;
   int _currentPage = 1;
+  String _currentSuraName = '';
 
   bool isTablet = false;
   bool isLandscape = false;
@@ -58,6 +59,17 @@ class _QuranPagesState extends State<QuranPages> {
               isLandscape =
                   MediaQuery.orientationOf(context) == Orientation.landscape;
             }));
+
+    Future.delayed(Duration.zero, () {
+      if (!mounted) return;
+      final size = MediaQuery.sizeOf(context);
+      context.read<ThemeProvider>().setScreenSize(
+            size.width,
+            size.height,
+            MediaQuery.sizeOf(context).width > 600,
+            MediaQuery.orientationOf(context) == Orientation.landscape,
+          );
+    });
   }
 
   @override
@@ -118,19 +130,32 @@ class _QuranPagesState extends State<QuranPages> {
                       // second page of the Quran
                       Expanded(
                         child: QuranSinglePage(
-                          pageNumber: secondPage, // leftPage,
-                          updatePageNumber: false,
-                          isTablet: isTablet,
-                          isLandscape: isLandscape,
-                        ),
+                            pageNumber: secondPage, // left page,
+                            updatePageNumber: false,
+                            isTablet: isTablet,
+                            isLandscape: isLandscape,
+                            onSuraChange: (pageNumber, suraName) {
+                              // ignore changes as they are already handled in the first page
+                            }),
                       ),
                       // first page of the Quran
                       Expanded(
                         child: QuranSinglePage(
-                          pageNumber: firstPage, // rightPage,
+                          pageNumber: firstPage, // right page,
                           updatePageNumber: true,
                           isTablet: isTablet,
                           isLandscape: isLandscape,
+                          onSuraChange: (pageNumber, suraName) {
+                            _currentSuraName = suraName;
+
+                            context
+                                .read<QuranDataProvider>()
+                                .setEndTimeForMostRecentPage(
+                                  pageNumber,
+                                  suraName,
+                                  isDoublePage: isTablet && isLandscape,
+                                );
+                          },
                         ),
                       ),
                     ],
@@ -141,6 +166,16 @@ class _QuranPagesState extends State<QuranPages> {
                     updatePageNumber: true,
                     isTablet: isTablet,
                     isLandscape: isLandscape,
+                    onSuraChange: (pageNumber, suraName) {
+                      _currentSuraName = suraName;
+                      context
+                          .read<QuranDataProvider>()
+                          .setEndTimeForMostRecentPage(
+                            pageNumber,
+                            suraName,
+                            isDoublePage: isTablet && isLandscape,
+                          );
+                    },
                   );
                 }
                 return QuranSinglePage(
@@ -148,8 +183,56 @@ class _QuranPagesState extends State<QuranPages> {
                   updatePageNumber: true,
                   isTablet: isTablet,
                   isLandscape: isLandscape,
+                  onSuraChange: (pageNumber, suraName) {
+                    _currentSuraName = suraName;
+                    context
+                        .read<QuranDataProvider>()
+                        .setEndTimeForMostRecentPage(
+                          pageNumber,
+                          suraName,
+                          isDoublePage: isTablet && isLandscape,
+                        );
+                  },
                 );
               },
+            ),
+            Positioned(
+              top: 4,
+              right: 4,
+              child: Container(
+                // width: 50,
+                // height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.bookmark),
+                  onPressed: () {
+                    final saved = context.read<QuranDataProvider>().addBookmark(
+                          _currentPage,
+                          _currentSuraName,
+                        );
+                    if (saved) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Bookmark saved successfully',
+                              style: TextStyle(color: Colors.white)),
+                          backgroundColor: Colors.green,
+                          duration: Duration(seconds: 3),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Failed to save bookmark',
+                              style: TextStyle(color: Colors.white)),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
             ),
             Positioned(
               top: 4,
@@ -163,6 +246,13 @@ class _QuranPagesState extends State<QuranPages> {
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back),
                   onPressed: () {
+                    context
+                        .read<QuranDataProvider>()
+                        .setEndTimeForMostRecentPage(
+                          _currentPage,
+                          _currentSuraName,
+                          isDoublePage: isTablet && isLandscape,
+                        );
                     context.push('/table-of-contents');
                   },
                 ),

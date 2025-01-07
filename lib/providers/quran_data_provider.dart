@@ -98,9 +98,16 @@ class QuranDataProvider extends ChangeNotifier {
 
   // Save recent pages to SharedPreferences
   Future<void> _saveRecentPages() async {
+    _recentPages = _recentPages
+        .where((page) =>
+            page.endTime != null &&
+            page.endTime!.difference(page.startTime).inSeconds >= 10)
+        .toList();
+
     final String encoded =
         json.encode(_recentPages.map((page) => page.toJson()).toList());
     await _prefs.setString(_recentPagesKey, encoded);
+    notifyListeners();
   }
 
   Future<void> _saveBookmarks() async {
@@ -181,11 +188,43 @@ class QuranDataProvider extends ChangeNotifier {
     }
   }
 
-  void setEndTimeForMostRecentPage() {
-    if (_recentPages.isNotEmpty && _recentPages.last.endTime == null) {
-      print(
-          '**************** Setting end time for most recent page ****************');
-      _recentPages.last.endTime = DateTime.now();
+  void setEndTimeForMostRecentPage(
+    int pageNumber,
+    String currentSuraName, {
+    bool isDoublePage = false,
+  }) {
+    print("_recentPages: $_recentPages");
+    bool changed = false;
+    if (_recentPages.isNotEmpty) {
+      for (int i = _recentPages.length - 1; i >= 0; i--) {
+        if (_recentPages[i].pageNumber == pageNumber) {
+          print(
+              '**************** Setting end time for recent page ****************');
+          changed = true;
+          _recentPages[i] = RecentPage(
+            pageNumber: _recentPages[i].pageNumber,
+            suraName: _recentPages[i].suraName.isEmpty
+                ? currentSuraName
+                : _recentPages[i].suraName,
+            startTime: _recentPages[i].startTime,
+            endTime: DateTime.now(),
+          );
+          print(_recentPages[i]);
+          break;
+        }
+      }
+      _saveRecentPages(); // Persist changes
+      notifyListeners();
+    }
+    if (!changed || _recentPages.isEmpty) {
+      print('**************** Adding a new recent page ****************');
+      final now = DateTime.now();
+      _recentPages.add(RecentPage(
+        pageNumber: pageNumber,
+        suraName: currentSuraName,
+        startTime: now.subtract(Duration(seconds: 15)),
+        endTime: now,
+      ));
       _saveRecentPages(); // Persist changes
       notifyListeners();
     } else {

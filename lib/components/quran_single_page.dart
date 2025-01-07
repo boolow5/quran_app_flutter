@@ -18,6 +18,7 @@ class QuranSinglePage extends StatefulWidget {
   final bool updatePageNumber;
   final bool isTablet;
   final bool isLandscape;
+  final Function(int pageNumber, String suraName) onSuraChange;
 
   const QuranSinglePage({
     super.key,
@@ -25,6 +26,7 @@ class QuranSinglePage extends StatefulWidget {
     required this.updatePageNumber,
     required this.isTablet,
     required this.isLandscape,
+    required this.onSuraChange,
   }) : assert(pageNumber > 0);
 
   @override
@@ -56,14 +58,6 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
     });
   }
 
-  @override
-  void dispose() {
-    if (widget.updatePageNumber) {
-      _quranDataProvider.setEndTimeForMostRecentPage();
-    }
-    super.dispose();
-  }
-
   Future<void> _loadVerses(int pageNumber) async {
     try {
       final String jsonString =
@@ -82,6 +76,7 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
         // Create Sura object
         _suras[suraNumber] = Sura.fromJson(suraNumber, suraData);
         _suraName = _suras[suraNumber]!.name ?? '<???>';
+        widget.onSuraChange(pageNumber, _suraName);
         _suraNumber = suraNumber;
 
         final List<dynamic> ayas = suraData['ayas'] as List<dynamic>;
@@ -307,7 +302,7 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
         children: [
           if (!_isSpecialPage()) ...[
             SizedBox(
-              width: specialBoxSize,
+              width: pageWidth * 0.9,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -319,7 +314,7 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
                   ),
                   RoundedBoxText(
                     text: toArabicNumber(_currentPage),
-                    width: 40,
+                    width: 50,
                     height: 22,
                   ),
                   RoundedBoxText(

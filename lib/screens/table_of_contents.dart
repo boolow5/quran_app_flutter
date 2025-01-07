@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/models/sura.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
+import 'package:quran_app_flutter/utils/utils.dart';
 
 class TableOfContents extends StatefulWidget {
   const TableOfContents({super.key});
@@ -93,6 +94,10 @@ class _TableOfContentsState extends State<TableOfContents> {
         ],
       ),
       body: LayoutBuilder(builder: (context, constraints) {
+        final isDoubleColumn = constraints.maxWidth > 600;
+        final int itemCount = isDoubleColumn
+            ? (_filteredSuras.length / 2).ceil()
+            : _filteredSuras.length;
         return Column(
           children: [
             // search bar
@@ -122,72 +127,123 @@ class _TableOfContentsState extends State<TableOfContents> {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
             _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : SizedBox(
                     height: constraints.maxHeight * 0.8,
                     child: ListView.builder(
-                      itemCount: _filteredSuras.length,
+                      itemCount: itemCount,
                       itemBuilder: (context, index) {
-                        final sura = _filteredSuras[index];
-                        return ListTile(
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                sura.name,
-                                style: TextStyle(
-                                  fontFamily: DEFAULT_FONT_FAMILY,
-                                  fontSize: context
-                                      .read<ThemeProvider>()
-                                      .fontSize(24),
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant,
-                                  ),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Text(
-                                  '${sura.number}',
-                                  style: TextStyle(
-                                    fontSize: context
-                                        .read<ThemeProvider>()
-                                        .fontSize(16),
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          subtitle: Text(
-                            '${sura.englishName} • ${sura.type}',
-                            style: TextStyle(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                            ),
-                          ),
-                          onTap: () {
-                            context.push('/page/${sura.startPage}');
-                          },
-                        );
+                        final leftItemIndex = index * 2;
+                        final rightItemIndex = leftItemIndex + 1;
+
+                        return isDoubleColumn
+                            ? Row(
+                                children: [
+                                  Expanded(
+                                      child: _buildMenuItem(_filteredSuras
+                                                  .length <
+                                              rightItemIndex + 1
+                                          ? null
+                                          : _filteredSuras[rightItemIndex])),
+                                  Expanded(
+                                      child: _buildMenuItem(
+                                          _filteredSuras.length <
+                                                  leftItemIndex + 1
+                                              ? null
+                                              : _filteredSuras[leftItemIndex])),
+                                ],
+                              )
+                            : _buildMenuItem(_filteredSuras[index]);
                       },
                     ),
                   ),
           ],
         );
       }),
+    );
+  }
+
+  Widget _buildMenuItem(Sura? sura) {
+    if (sura == null) {
+      return const SizedBox.shrink();
+    }
+    return Container(
+      margin: EdgeInsets.only(right: 8.0, left: 8.0),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Theme.of(context).colorScheme.outline,
+            width: Theme.of(context).dividerTheme.thickness ?? 1.0,
+          ),
+        ),
+      ),
+      child: ListTile(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: 100,
+              child: Text(
+                // '${sura.englishName} • ${sura.type}',
+                "ص ${toArabicNumber(sura.startPage)}",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 80,
+              child: Text(
+                // '${sura.englishName} • ${sura.type}',
+                sura.type,
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 155,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    sura.name,
+                    style: TextStyle(
+                      fontFamily: DEFAULT_FONT_FAMILY,
+                      fontSize: context.read<ThemeProvider>().fontSize(24),
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    margin: const EdgeInsets.only(left: 8),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      '${sura.number}',
+                      style: TextStyle(
+                        fontSize: context.read<ThemeProvider>().fontSize(16),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        onTap: () {
+          context.push('/page/${sura.startPage}');
+        },
+      ),
     );
   }
 }

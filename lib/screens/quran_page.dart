@@ -66,7 +66,7 @@ class _QuranPageState extends State<QuranPage> {
 
   @override
   void dispose() {
-    _quranDataProvider.setEndTimeForMostRecentPage();
+    // _quranDataProvider.setEndTimeForMostRecentPage();
     _pageController.dispose();
     super.dispose();
   }
@@ -175,7 +175,7 @@ class _QuranPageState extends State<QuranPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            _quranDataProvider.setEndTimeForMostRecentPage();
+            // _quranDataProvider.setEndTimeForMostRecentPage();
             context.push('/table-of-contents');
           },
         ),

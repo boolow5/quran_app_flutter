@@ -234,87 +234,96 @@ class _QuranPageState extends State<QuranPage> {
           itemCount: 604,
           pageSnapping: true,
           itemBuilder: (context, index) {
-            return Stack(
-              children: [
-                Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: SingleChildScrollView(
-                    child: Center(
-                      child: Container(
-                        height: _isSpecialPage() ? boxHeight : null,
-                        width: _isSpecialPage() ? boxWidth : null,
-                        margin: _isSpecialPage()
-                            ? EdgeInsets.symmetric(vertical: 32, horizontal: 0)
-                            : null,
-                        padding: EdgeInsets.symmetric(
-                          horizontal:
-                              context.read<ThemeProvider>().fontSize(20.0),
-                          vertical: _isSpecialPage() ? 20.0 : 0,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(boxWidth / 2),
-                          border: _isSpecialPage()
-                              ? Border.all(
-                                  color: DEFAULT_PRIMARY_COLOR,
-                                  width: 16.0,
-                                )
-                              : null,
-                        ),
-                        child: Container(
-                          decoration: _isSpecialPage()
-                              ? BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors
-                                        .transparent, // DEFAULT_PRIMARY_COLOR,
-                                    width: 2.0,
-                                  ),
-                                  borderRadius:
-                                      BorderRadius.circular(boxWidth / 4),
-                                )
-                              : null,
-                          padding: _isSpecialPage()
-                              ? EdgeInsets.only(
-                                  top: boxPadding,
-                                  right: boxPadding,
-                                  left: boxPadding,
-                                )
-                              : EdgeInsets.zero,
-                          margin: _isSpecialPage()
-                              ? EdgeInsets.only(
-                                  top: boxMargin,
-                                  right: boxMargin,
-                                  left: boxMargin,
-                                )
-                              : EdgeInsets.zero,
-                          child: RichText(
-                            textAlign: _isSpecialPage()
-                                ? TextAlign.center
-                                : TextAlign.justify,
-                            text: TextSpan(
-                              style: TextStyle(
-                                fontSize: context
-                                    .read<ThemeProvider>()
-                                    .fontSize(_isSpecialPage() ? 24.0 : 24.0),
-                                color:
-                                    Theme.of(context).colorScheme.onBackground,
-                                height: _isSpecialPage() ? 1.7 : 1.5,
-                                fontFamily: DEFAULT_FONT_FAMILY,
-                              ),
-                              children:
-                                  _buildVerseSpans(context, widget.pageNumber),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
+            return _buildPageContent(
+                boxHeight, boxWidth, context, boxPadding, boxMargin);
           },
         ),
       ),
+    );
+  }
+
+  Stack _buildPageContent(double boxHeight, double boxWidth,
+      BuildContext context, double boxPadding, double boxMargin) {
+    return Stack(
+      children: [
+        Directionality(
+          textDirection: TextDirection.rtl,
+          child: SingleChildScrollView(
+            child: Center(
+              child: Container(
+                // height: _isSpecialPage() ? boxHeight : null,
+                // width: _isSpecialPage() ? boxWidth : null,
+                height: _isSpecialPage() ? 530 : 750,
+                width: _isSpecialPage() ? 350 : 425,
+                margin: _isSpecialPage()
+                    ? EdgeInsets.symmetric(vertical: 32, horizontal: 0)
+                    : null,
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.read<ThemeProvider>().fontSize(20.0),
+                  vertical: _isSpecialPage() ? 20.0 : 0,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  // color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: _isSpecialPage()
+                      ? BorderRadius.circular(boxWidth / 2)
+                      : null,
+                  border: _isSpecialPage()
+                      ? Border.all(
+                          color: DEFAULT_PRIMARY_COLOR,
+                          width: 16.0,
+                        )
+                      : null,
+                ),
+                constraints: BoxConstraints(
+                  maxWidth: _isSpecialPage() ? 350 : 450,
+                  maxHeight: _isSpecialPage() ? 530 : 800,
+                ),
+                child: Container(
+                  decoration: _isSpecialPage()
+                      ? BoxDecoration(
+                          border: Border.all(
+                            color: Colors.transparent, // DEFAULT_PRIMARY_COLOR,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(boxWidth / 4),
+                        )
+                      : null,
+                  padding: _isSpecialPage()
+                      ? EdgeInsets.only(
+                          top: boxPadding,
+                          right: boxPadding,
+                          left: boxPadding,
+                        )
+                      : EdgeInsets.zero,
+                  margin: _isSpecialPage()
+                      ? EdgeInsets.only(
+                          top: boxMargin,
+                          right: boxMargin,
+                          left: boxMargin,
+                        )
+                      : EdgeInsets.zero,
+                  child: RichText(
+                    textAlign:
+                        _isSpecialPage() ? TextAlign.center : TextAlign.justify,
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontSize: context
+                            .read<ThemeProvider>()
+                            .fontSize(_isSpecialPage() ? 24.0 : 24.0),
+                        color: Theme.of(context).colorScheme.onBackground,
+                        height: _isSpecialPage() ? 1.7 : 1.5,
+                        fontFamily: DEFAULT_FONT_FAMILY,
+                      ),
+                      children: _buildVerseSpans(context, widget.pageNumber),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

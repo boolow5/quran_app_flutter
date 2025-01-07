@@ -24,6 +24,16 @@ class _TableOfContentsState extends State<TableOfContents> {
   void initState() {
     super.initState();
     _loadSuras();
+    Future.delayed(Duration.zero, () {
+      if (!mounted) return;
+      final size = MediaQuery.sizeOf(context);
+      context.read<ThemeProvider>().setScreenSize(
+            size.width,
+            size.height,
+            MediaQuery.sizeOf(context).width > 600,
+            MediaQuery.orientationOf(context) == Orientation.landscape,
+          );
+    });
   }
 
   Future<void> _loadSuras() async {

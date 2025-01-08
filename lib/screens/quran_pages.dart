@@ -314,9 +314,9 @@ class _QuranPagesState extends State<QuranPages> {
                                 : null,
                           ),
                           Text(
-                            widget.routePageNumber + 2 == 604
+                            widget.routePageNumber + 1 == 604
                                 ? ''
-                                : toArabicNumber(widget.routePageNumber + 2),
+                                : toArabicNumber(widget.routePageNumber + 1),
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -326,8 +326,8 @@ class _QuranPagesState extends State<QuranPages> {
                       ),
                     ),
                     onTap: () {
-                      print("GO to next page ${widget.routePageNumber + 2}");
-                      context.push('/page/${widget.routePageNumber + 2}');
+                      print("GO to next page ${widget.routePageNumber + 1}");
+                      context.push('/page/${widget.routePageNumber + 1}');
                     },
                   ),
                 ),
@@ -342,11 +342,11 @@ class _QuranPagesState extends State<QuranPages> {
                     color: Colors.transparent,
                   ),
                   child: GestureDetector(
-                    onTap: widget.routePageNumber - 2 > 0
+                    onTap: widget.routePageNumber - 1 > 0
                         ? () {
                             print(
-                                "GO to prev page ${widget.routePageNumber - 2}");
-                            context.push('/page/${widget.routePageNumber - 2}');
+                                "GO to prev page ${widget.routePageNumber - 1}");
+                            context.push('/page/${widget.routePageNumber - 1}');
                           }
                         : null,
                     child: Container(
@@ -355,8 +355,8 @@ class _QuranPagesState extends State<QuranPages> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            widget.routePageNumber - 2 > 0
-                                ? toArabicNumber(widget.routePageNumber - 2)
+                            widget.routePageNumber - 1 > 0
+                                ? toArabicNumber(widget.routePageNumber - 1)
                                 : '',
                             style: const TextStyle(
                               fontSize: 16,
@@ -366,7 +366,7 @@ class _QuranPagesState extends State<QuranPages> {
                           Icon(
                             Icons.chevron_right,
                             size: 40,
-                            color: widget.routePageNumber - 2 > 0
+                            color: widget.routePageNumber - 1 > 0
                                 ? null
                                 : Colors.grey,
                           ),

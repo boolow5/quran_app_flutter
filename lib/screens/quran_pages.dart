@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -133,76 +134,76 @@ class _QuranPagesState extends State<QuranPages> {
                     itemCount: isTablet && isLandscape ? 302 : 604,
                     pageSnapping: true,
                     itemBuilder: (context, index) {
-                      if (isTablet && isLandscape) {
-                        final firstPage =
-                            (index % 2 == 0 ? index : index - 1) + 1;
-                        final secondPage = firstPage + 1;
-                        print(
-                            "[$index] leftPage: $secondPage, rightPage: $firstPage");
-                        // final rightPage = _currentPage % 2 == 0
-                        //     ? _currentPage
-                        //     : _currentPage > 1
-                        //         ? _currentPage - 1
-                        //         : 1;
-                        // final leftPage = rightPage + 1;
-                        // // final leftPage = widget.pageNumber % 2 == 0
-                        // //     ? widget.pageNumber + 1
-                        // //     : widget.pageNumber;
-                        return Row(
-                          children: [
-                            // second page of the Quran
-                            Expanded(
-                              child: QuranSinglePage(
-                                  pageNumber: secondPage, // left page,
-                                  updatePageNumber: false,
-                                  isTablet: isTablet,
-                                  isLandscape: isLandscape,
-                                  onSuraChange: (pageNumber, suraName) {
-                                    // ignore changes as they are already handled in the first page
-                                  }),
-                            ),
-                            // first page of the Quran
-                            Expanded(
-                              child: QuranSinglePage(
-                                pageNumber: firstPage, // right page,
-                                updatePageNumber: true,
-                                isTablet: isTablet,
-                                isLandscape: isLandscape,
-                                onSuraChange: (pageNumber, suraName) {
-                                  _currentSuraName = suraName;
-                                  _bookmarkPage = pageNumber;
+                      // if (isTablet && isLandscape) {
+                      //   final firstPage =
+                      //       (index % 2 == 0 ? index : index - 1) + 1;
+                      //   final secondPage = firstPage + 1;
+                      //   print(
+                      //       "[$index] leftPage: $secondPage, rightPage: $firstPage");
+                      //   // final rightPage = _currentPage % 2 == 0
+                      //   //     ? _currentPage
+                      //   //     : _currentPage > 1
+                      //   //         ? _currentPage - 1
+                      //   //         : 1;
+                      //   // final leftPage = rightPage + 1;
+                      //   // // final leftPage = widget.pageNumber % 2 == 0
+                      //   // //     ? widget.pageNumber + 1
+                      //   // //     : widget.pageNumber;
+                      //   return Row(
+                      //     children: [
+                      //       // second page of the Quran
+                      //       Expanded(
+                      //         child: QuranSinglePage(
+                      //             pageNumber: secondPage, // left page,
+                      //             updatePageNumber: false,
+                      //             isTablet: isTablet,
+                      //             isLandscape: isLandscape,
+                      //             onSuraChange: (pageNumber, suraName) {
+                      //               // ignore changes as they are already handled in the first page
+                      //             }),
+                      //       ),
+                      //       // first page of the Quran
+                      //       Expanded(
+                      //         child: QuranSinglePage(
+                      //           pageNumber: firstPage, // right page,
+                      //           updatePageNumber: true,
+                      //           isTablet: isTablet,
+                      //           isLandscape: isLandscape,
+                      //           onSuraChange: (pageNumber, suraName) {
+                      //             _currentSuraName = suraName;
+                      //             _bookmarkPage = pageNumber;
 
-                                  context
-                                      .read<QuranDataProvider>()
-                                      .setEndTimeForMostRecentPage(
-                                        pageNumber,
-                                        suraName,
-                                        isDoublePage: isTablet && isLandscape,
-                                      );
-                                },
-                              ),
-                            ),
-                          ],
-                        );
-                      } else if (isTablet && !isLandscape) {
-                        return QuranSinglePage(
-                          pageNumber: index + 1,
-                          updatePageNumber: true,
-                          isTablet: isTablet,
-                          isLandscape: isLandscape,
-                          onSuraChange: (pageNumber, suraName) {
-                            _currentSuraName = suraName;
-                            _bookmarkPage = pageNumber;
-                            context
-                                .read<QuranDataProvider>()
-                                .setEndTimeForMostRecentPage(
-                                  pageNumber,
-                                  suraName,
-                                  isDoublePage: isTablet && isLandscape,
-                                );
-                          },
-                        );
-                      }
+                      //             context
+                      //                 .read<QuranDataProvider>()
+                      //                 .setEndTimeForMostRecentPage(
+                      //                   pageNumber,
+                      //                   suraName,
+                      //                   isDoublePage: isTablet && isLandscape,
+                      //                 );
+                      //           },
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   );
+                      // } else if (isTablet && !isLandscape) {
+                      // return QuranSinglePage(
+                      //   pageNumber: index + 1,
+                      //   updatePageNumber: true,
+                      //   isTablet: isTablet,
+                      //   isLandscape: isLandscape,
+                      //   onSuraChange: (pageNumber, suraName) {
+                      //     _currentSuraName = suraName;
+                      //     _bookmarkPage = pageNumber;
+                      //     context
+                      //         .read<QuranDataProvider>()
+                      //         .setEndTimeForMostRecentPage(
+                      //           pageNumber,
+                      //           suraName,
+                      //           isDoublePage: isTablet && isLandscape,
+                      //         );
+                      //   },
+                      // );
+                      // }
                       return QuranSinglePage(
                         pageNumber: index + 1,
                         updatePageNumber: true,
@@ -289,7 +290,7 @@ class _QuranPagesState extends State<QuranPages> {
                 ),
               ),
             ),
-            if (isTablet && isLandscape) ...[
+            if (isTablet && isLandscape || kIsWeb) ...[
               Positioned(
                 bottom: 30,
                 left: 4,
@@ -308,12 +309,14 @@ class _QuranPagesState extends State<QuranPages> {
                           Icon(
                             Icons.chevron_left,
                             size: 40,
-                            color: _bookmarkPage > 603 ? Colors.grey : null,
+                            color: widget.routePageNumber > 603
+                                ? Colors.grey
+                                : null,
                           ),
                           Text(
-                            _bookmarkPage + 2 == 604
+                            widget.routePageNumber + 2 == 604
                                 ? ''
-                                : toArabicNumber(_bookmarkPage + 2),
+                                : toArabicNumber(widget.routePageNumber + 2),
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -323,8 +326,8 @@ class _QuranPagesState extends State<QuranPages> {
                       ),
                     ),
                     onTap: () {
-                      print("GO to next page ${_bookmarkPage + 2}");
-                      context.go('/page/${_bookmarkPage + 2}');
+                      print("GO to next page ${widget.routePageNumber + 2}");
+                      context.push('/page/${widget.routePageNumber + 2}');
                     },
                   ),
                 ),
@@ -339,10 +342,11 @@ class _QuranPagesState extends State<QuranPages> {
                     color: Colors.transparent,
                   ),
                   child: GestureDetector(
-                    onTap: _bookmarkPage - 2 > 0
+                    onTap: widget.routePageNumber - 2 > 0
                         ? () {
-                            print("GO to prev page ${_bookmarkPage - 2}");
-                            context.go('/page/${_bookmarkPage - 2}');
+                            print(
+                                "GO to prev page ${widget.routePageNumber - 2}");
+                            context.push('/page/${widget.routePageNumber - 2}');
                           }
                         : null,
                     child: Container(
@@ -351,8 +355,8 @@ class _QuranPagesState extends State<QuranPages> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            _bookmarkPage - 2 > 0
-                                ? toArabicNumber(_bookmarkPage - 2)
+                            widget.routePageNumber - 2 > 0
+                                ? toArabicNumber(widget.routePageNumber - 2)
                                 : '',
                             style: const TextStyle(
                               fontSize: 16,
@@ -362,7 +366,9 @@ class _QuranPagesState extends State<QuranPages> {
                           Icon(
                             Icons.chevron_right,
                             size: 40,
-                            color: _bookmarkPage - 2 > 0 ? null : Colors.grey,
+                            color: widget.routePageNumber - 2 > 0
+                                ? null
+                                : Colors.grey,
                           ),
                         ],
                       ),

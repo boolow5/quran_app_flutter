@@ -86,7 +86,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    '...'
                     'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ'
                     ' • '
                     'ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ',

@@ -31,7 +31,7 @@ class RoundedBoxText extends StatelessWidget {
         vertical: 4,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
+        color: DEFAULT_PRIMARY_COLOR,
         borderRadius: BorderRadius.circular(calculatedHeight / 2),
         border: border,
       ),

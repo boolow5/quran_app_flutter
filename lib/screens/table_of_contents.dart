@@ -243,7 +243,7 @@ class _TableOfContentsState extends State<TableOfContents> {
           ],
         ),
         onTap: () {
-          context.go('/page/${sura.startPage}');
+          context.push('/page/${sura.startPage}');
         },
       ),
     );

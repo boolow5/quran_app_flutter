@@ -19,6 +19,10 @@ String toArabicNumber(int number) {
       .join('');
 }
 
+int showPageNumber(int pageNumber, bool isDoublePaged) {
+  return isDoublePaged ? pageNumber = (pageNumber * 2).ceil() : pageNumber;
+}
+
 String latToString(double lat,
     {bool showMinutes = false, bool showSeconds = false}) {
   // Convert the latitude and longitude to degrees and minutes

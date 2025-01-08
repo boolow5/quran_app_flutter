@@ -68,7 +68,7 @@ class _AboutPageState extends State<AboutPage> {
             if (context.canPop()) {
               context.pop();
             } else {
-              context.push('/');
+              context.go('/');
             }
           },
         ),

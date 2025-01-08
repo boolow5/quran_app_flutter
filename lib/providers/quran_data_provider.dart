@@ -112,7 +112,7 @@ class QuranDataProvider extends ChangeNotifier {
   }
 
   Future<void> _saveBookmarks() async {
-    print("Saving bookmarks: $_bookmarks");
+    // print("Saving bookmarks: $_bookmarks");
     final String encoded =
         json.encode(_bookmarks.map((page) => page.toJson()).toList());
     await _prefs.setString('bookmarks', encoded);
@@ -169,7 +169,7 @@ class QuranDataProvider extends ChangeNotifier {
       final int index =
           _bookmarks.indexWhere((bookmark) => bookmark.pageNumber == page);
       if (index >= 0) {
-        print('**************** Bookmark already exists ****************');
+        // print('**************** Bookmark already exists ****************');
         final bookmark = RecentPage(
           pageNumber: _bookmarks[index].pageNumber,
           suraName: _bookmarks[index].suraName,
@@ -177,7 +177,7 @@ class QuranDataProvider extends ChangeNotifier {
         );
         _bookmarks[index] = bookmark;
       } else {
-        print('**************** Adding bookmark ****************');
+        // print('**************** Adding bookmark ****************');
         _bookmarks.add(RecentPage(
           pageNumber: page,
           suraName: suraName,
@@ -188,7 +188,7 @@ class QuranDataProvider extends ChangeNotifier {
       _saveBookmarks(); // Persist changes
       return true;
     } catch (err) {
-      print('**************** Error adding bookmark: $err ****************');
+      // print('**************** Error adding bookmark: $err ****************');
       return false;
     } finally {
       notifyListeners();
@@ -206,13 +206,13 @@ class QuranDataProvider extends ChangeNotifier {
     String currentSuraName, {
     bool isDoublePage = false,
   }) {
-    print("_recentPages: $_recentPages");
+    // print("_recentPages: $_recentPages");
     bool changed = false;
     if (_recentPages.isNotEmpty) {
       for (int i = _recentPages.length - 1; i >= 0; i--) {
         if (_recentPages[i].pageNumber == pageNumber) {
-          print(
-              '**************** Setting end time for recent page ****************');
+          // print(
+          //     '**************** Setting end time for recent page ****************');
           changed = true;
           _recentPages[i] = RecentPage(
             pageNumber: _recentPages[i].pageNumber,
@@ -230,7 +230,7 @@ class QuranDataProvider extends ChangeNotifier {
       notifyListeners();
     }
     if (!changed || _recentPages.isEmpty) {
-      print('**************** Adding a new recent page ****************');
+      // print('**************** Adding a new recent page ****************');
       final now = DateTime.now();
       _recentPages.add(RecentPage(
         pageNumber: pageNumber,
@@ -241,8 +241,8 @@ class QuranDataProvider extends ChangeNotifier {
       _saveRecentPages(); // Persist changes
       notifyListeners();
     } else {
-      print(
-          '**************** End time for most recent page already set ****************');
+      // print(
+      //     '**************** End time for most recent page already set ****************');
     }
   }
 

@@ -39,7 +39,7 @@ class _BookmarksPageState extends State<BookmarksPage> {
             if (context.canPop()) {
               context.pop();
             } else {
-              context.push('/');
+              context.go('/');
             }
           },
         ),
@@ -141,7 +141,7 @@ class _BookmarksPageState extends State<BookmarksPage> {
                           title: Text(
                             bookmark.suraName,
                             style: TextStyle(
-                              fontFamily: DEFAULT_FONT_FAMILY,
+                              fontFamily: defaultFontFamily(),
                               fontSize:
                                   context.read<ThemeProvider>().fontSize(24),
                               color: Theme.of(context).colorScheme.onBackground,

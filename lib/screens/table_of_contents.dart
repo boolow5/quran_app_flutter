@@ -83,13 +83,13 @@ class _TableOfContentsState extends State<TableOfContents> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            context.push('/');
+            context.go('/');
           },
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () => context.push('/settings'),
+            onPressed: () => context.go('/settings'),
           ),
         ],
       ),
@@ -142,20 +142,22 @@ class _TableOfContentsState extends State<TableOfContents> {
                             ? Row(
                                 children: [
                                   Expanded(
-                                      child: _buildMenuItem(_filteredSuras
-                                                  .length <
-                                              rightItemIndex + 1
-                                          ? null
-                                          : _filteredSuras[rightItemIndex])),
+                                      child: _buildMenuItem(
+                                          _filteredSuras.length <
+                                                  rightItemIndex + 1
+                                              ? null
+                                              : _filteredSuras[rightItemIndex],
+                                          true)),
                                   Expanded(
                                       child: _buildMenuItem(
                                           _filteredSuras.length <
                                                   leftItemIndex + 1
                                               ? null
-                                              : _filteredSuras[leftItemIndex])),
+                                              : _filteredSuras[leftItemIndex],
+                                          true)),
                                 ],
                               )
-                            : _buildMenuItem(_filteredSuras[index]);
+                            : _buildMenuItem(_filteredSuras[index], false);
                       },
                     ),
                   ),
@@ -165,7 +167,7 @@ class _TableOfContentsState extends State<TableOfContents> {
     );
   }
 
-  Widget _buildMenuItem(Sura? sura) {
+  Widget _buildMenuItem(Sura? sura, bool isDoubleColumn) {
     if (sura == null) {
       return const SizedBox.shrink();
     }
@@ -213,7 +215,7 @@ class _TableOfContentsState extends State<TableOfContents> {
                   Text(
                     sura.name,
                     style: TextStyle(
-                      fontFamily: DEFAULT_FONT_FAMILY,
+                      fontFamily: defaultFontFamily(),
                       fontSize: context.read<ThemeProvider>().fontSize(24),
                       color: Theme.of(context).colorScheme.onBackground,
                     ),
@@ -241,7 +243,7 @@ class _TableOfContentsState extends State<TableOfContents> {
           ],
         ),
         onTap: () {
-          context.push('/page/${sura.startPage}');
+          context.go('/page/${sura.startPage}');
         },
       ),
     );

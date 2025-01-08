@@ -137,12 +137,12 @@ class _QiblaCompassState extends State<QiblaCompass>
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.push('/'),
+          onPressed: () => context.go('/'),
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () => context.push('/settings'),
+            onPressed: () => context.go('/settings'),
           ),
         ],
       ),

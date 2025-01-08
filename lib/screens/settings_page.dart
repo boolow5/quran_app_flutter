@@ -23,7 +23,7 @@ class _SettingsPageState extends State<SettingsPage> {
             if (context.canPop()) {
               context.pop();
             } else {
-              context.push('/');
+              context.go('/');
             }
           },
         ),
@@ -71,7 +71,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 Slider(
                   divisions: 7,
                   min: 0.8,
-                  max: 1.5,
+                  max: 1.3,
                   value: context
                       .watch<ThemeProvider>()
                       .fontSizePercentage, // Placeholder
@@ -92,7 +92,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     'ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontFamily: DEFAULT_FONT_FAMILY,
+                      fontFamily: defaultFontFamily(),
                       fontSize: context.read<ThemeProvider>().fontSize(20),
                     ),
                   ),

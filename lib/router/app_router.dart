@@ -25,7 +25,7 @@ final GoRouter appRouter = GoRouter(
         final pageNumber =
             int.tryParse(state.pathParameters['pageNumber'] ?? '1') ?? 1;
         return NoTransitionPage(
-          child: QuranPages(pageNumber: pageNumber),
+          child: QuranPages(routePageNumber: pageNumber),
         );
       },
     ),

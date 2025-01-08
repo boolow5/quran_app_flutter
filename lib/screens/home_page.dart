@@ -137,7 +137,7 @@ class _HomeState extends State<Home> {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () => context.push('/settings'),
+            onPressed: () => context.go('/settings'),
           ),
         ],
       ),
@@ -259,7 +259,7 @@ class _HomeState extends State<Home> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: recentPages
                                       .map((recentPage) => ListTile(
-                                            onTap: () => context.push(
+                                            onTap: () => context.go(
                                               '/page/${recentPage.pageNumber}',
                                             ),
                                             dense: true,
@@ -313,7 +313,7 @@ class _HomeState extends State<Home> {
                                 context,
                                 'Table of Contents',
                                 Icons.list_alt,
-                                () => context.push('/table-of-contents'),
+                                () => context.go('/table-of-contents'),
                                 GradientColors.teal,
                                 duration: const Duration(seconds: 26),
                               ),
@@ -321,21 +321,21 @@ class _HomeState extends State<Home> {
                                   context,
                                   'Bookmarks',
                                   Icons.bookmark,
-                                  () => context.push('/bookmarks'),
+                                  () => context.go('/bookmarks'),
                                   GradientColors.blue,
                                   duration: const Duration(seconds: 26)),
                               _buildMenuItem(
                                   context,
                                   'Qibla Compass',
                                   Icons.explore,
-                                  () => context.push('/qibla'),
+                                  () => context.go('/qibla'),
                                   GradientColors.orange,
                                   duration: const Duration(seconds: 26)),
                               _buildMenuItem(
                                   context,
                                   'Settings',
                                   Icons.settings,
-                                  () => context.push('/settings'),
+                                  () => context.go('/settings'),
                                   GradientColors.purple,
                                   duration: const Duration(seconds: 26)),
                             ],

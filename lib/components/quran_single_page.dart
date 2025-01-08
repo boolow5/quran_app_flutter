@@ -59,6 +59,11 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
   }
 
   Future<void> _loadVerses(int pageNumber) async {
+    print("Loading verses for page $pageNumber");
+    // if (widget.isTablet && widget.isLandscape) {
+    //   pageNumber = (pageNumber * 2).ceil();
+    // }
+    print("Is tablet: ${widget.isTablet} Is landscape: ${widget.isLandscape}");
     try {
       final String jsonString =
           await rootBundle.loadString('assets/quran/page-$pageNumber.json');
@@ -96,13 +101,16 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
         _quranDataProvider.setCurrentPage(pageNumber, _suraName);
       }
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error loading verses: $e')),
         );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
@@ -170,7 +178,7 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
                             Text(
                               'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ',
                               style: TextStyle(
-                                fontFamily: DEFAULT_FONT_FAMILY,
+                                fontFamily: defaultFontFamily(),
                                 // 'KFGQPC', // DEFAULT_FONT_FAMILY, // 'KFGQPC',
                                 fontSize:
                                     context.read<ThemeProvider>().fontSize(16),
@@ -296,6 +304,12 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
     double pageWidth =
         _isSpecialPage() ? specialBoxSize : screenWith - (screenWith * 0.03);
 
+    if (!_isSpecialPage() && MediaQuery.sizeOf(context).width > 600) {
+      pageWidth = min(screenWith, 490.0);
+      // print("screenWith: $screenWith pageWidth -> ${pageWidth}");
+      pageHeight = pageWidth * 1.65;
+    }
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Column(
@@ -397,10 +411,10 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
                           style: TextStyle(
                             fontSize: context
                                 .read<ThemeProvider>()
-                                .fontSize(_isSpecialPage() ? 24.0 : 24.0),
+                                .fontSize(_isSpecialPage() ? 21.0 : 22.0),
                             color: Theme.of(context).colorScheme.onBackground,
                             height: _isSpecialPage() ? 1.7 : 1.5,
-                            fontFamily: DEFAULT_FONT_FAMILY,
+                            fontFamily: defaultFontFamily(),
                           ),
                           children: _buildVerseSpans(context, _currentPage),
                         ),
@@ -417,6 +431,7 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
                       child: RoundedBoxText(
                         text: "سورة $_suraName ",
                         width: 120,
+                        fontSize: 11,
                       ),
                     ),
                   ),

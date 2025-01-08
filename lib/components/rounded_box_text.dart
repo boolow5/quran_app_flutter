@@ -41,7 +41,7 @@ class RoundedBoxText extends StatelessWidget {
           child: Text(
             text,
             style: TextStyle(
-              fontFamily: DEFAULT_FONT_FAMILY,
+              fontFamily: defaultFontFamily(),
               color: Colors.white,
               fontSize: context.read<ThemeProvider>().fontSize(fontSize ?? 16),
               fontWeight: FontWeight.bold,

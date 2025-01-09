@@ -9,6 +9,7 @@ import 'package:quran_app_flutter/models/sura.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
 import 'package:quran_app_flutter/providers/quran_data_provider.dart';
 import 'package:quran_app_flutter/utils/gradients.dart';
+import 'package:quran_app_flutter/utils/utils.dart';
 
 final shadows = [
   Shadow(
@@ -50,6 +51,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    updateThemeScale(context);
     _loadSuras();
   }
 

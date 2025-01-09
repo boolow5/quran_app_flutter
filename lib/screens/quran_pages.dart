@@ -31,6 +31,7 @@ class _QuranPagesState extends State<QuranPages> {
   @override
   void initState() {
     super.initState();
+    updateThemeScale(context);
 
     Future.delayed(const Duration(microseconds: 100), () {
       setState(() {

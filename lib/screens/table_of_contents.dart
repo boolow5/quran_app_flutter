@@ -24,6 +24,7 @@ class _TableOfContentsState extends State<TableOfContents> {
   @override
   void initState() {
     super.initState();
+    updateThemeScale(context);
     _loadSuras();
     Future.delayed(Duration.zero, () {
       if (!mounted) return;
@@ -171,81 +172,82 @@ class _TableOfContentsState extends State<TableOfContents> {
     if (sura == null) {
       return const SizedBox.shrink();
     }
-    return Container(
-      margin: EdgeInsets.only(right: 6.0, left: 6.0),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Theme.of(context).colorScheme.outline,
-            width: Theme.of(context).dividerTheme.thickness ?? 1.0,
+    return LayoutBuilder(builder: (context, constraints) {
+      return Container(
+        margin: EdgeInsets.only(right: 6.0, left: 6.0),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: Theme.of(context).colorScheme.outline,
+              width: Theme.of(context).dividerTheme.thickness ?? 1.0,
+            ),
           ),
         ),
-      ),
-      child: ListTile(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              width: 84,
-              child: Text(
-                // '${sura.englishName} • ${sura.type}',
-                "ص ${toArabicNumber(sura.startPage)}",
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 67,
-              child: Text(
-                // '${sura.englishName} • ${sura.type}',
-                sura.type,
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 189.5,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    sura.name,
-                    style: TextStyle(
-                      fontFamily: defaultFontFamily(),
-                      fontSize: context.read<ThemeProvider>().fontSize(24),
-                      color: Theme.of(context).colorScheme.onBackground,
-                    ),
+        child: ListTile(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: constraints.maxWidth * 0.15,
+                child: Text(
+                  // '${sura.englishName} • ${sura.type}',
+                  "ص ${toArabicNumber(sura.startPage)}",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
-                  Container(
-                    padding: const EdgeInsets.all(4.5),
-                    margin: const EdgeInsets.only(left: 5),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      '${sura.number}',
+                ),
+              ),
+              SizedBox(
+                width: constraints.maxWidth * 0.15,
+                child: Text(
+                  // '${sura.englishName} • ${sura.type}',
+                  sura.type,
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      sura.name,
                       style: TextStyle(
-                        fontSize: context.read<ThemeProvider>().fontSize(14),
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontFamily: defaultFontFamily(),
+                        fontSize: context.read<ThemeProvider>().fontSize(24),
+                        color: Theme.of(context).colorScheme.onBackground,
                       ),
                     ),
-                  ),
-                ],
+                    Container(
+                      padding: const EdgeInsets.all(4.5),
+                      margin: const EdgeInsets.only(left: 5),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(
+                        '${sura.number}',
+                        style: TextStyle(
+                          fontSize: context.read<ThemeProvider>().fontSize(14),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
+          onTap: () {
+            context.push('/page/${sura.startPage}');
+          },
         ),
-        onTap: () {
-          context.push('/page/${sura.startPage}');
-        },
-      ),
-    );
+      );
+    });
   }
 }

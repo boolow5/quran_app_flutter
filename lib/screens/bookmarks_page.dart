@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/providers/quran_data_provider.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
+import 'package:quran_app_flutter/utils/utils.dart';
 
 class BookmarksPage extends StatefulWidget {
   const BookmarksPage({super.key});
@@ -18,6 +19,7 @@ class _BookmarksPageState extends State<BookmarksPage> {
   @override
   void initState() {
     super.initState();
+    updateThemeScale(context);
 
     Future.delayed(Duration.zero, () {
       setState(() {

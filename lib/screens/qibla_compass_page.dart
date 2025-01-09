@@ -31,6 +31,7 @@ class _QiblaCompassState extends State<QiblaCompass>
   @override
   void initState() {
     super.initState();
+    updateThemeScale(context);
     _checkLocationPermission();
 
     // Initialize heading listener

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,15 +19,20 @@ void updatePlatform() {
 class ThemeProvider extends ChangeNotifier {
   late Future<SharedPreferences> _storage;
   bool _isDarkMode = false;
-  double _fontSizePercentage = _isIOS ? 1.2 : 1.1; // 0.8 min, 1.5 max
   double _screenWidth = 300;
   double _screenHeight = 500;
   bool _isTablet = false;
   bool _isLandscape = false;
 
+  double _min = 0.8;
+  double _max = 1.5;
+  double _fontSizePercentage = _isIOS ? 1.2 : 1.1; // 0.8 min, 1.5 max
+
   bool get isDarkMode => _isDarkMode;
   double get fontSizePercentage => _fontSizePercentage;
   bool get isDoublePaged => _isTablet && _isLandscape;
+  double get minPercentage => _min;
+  double get maxPercentage => _max;
 
   ThemeProvider(Future<SharedPreferences> _storage) {
     updatePlatform();
@@ -51,6 +57,8 @@ class ThemeProvider extends ChangeNotifier {
     _screenHeight = height;
     _isTablet = isTablet;
     _isLandscape = isLandscape;
+    _min = _screenWidth < 375 ? 0.9 : 0.8;
+    _max = _screenWidth < 375 ? 1.3 : 1.5;
     notifyListeners();
   }
 
@@ -63,8 +71,9 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   set fontSizePercentage(double percentage) {
-    print("percentage: $percentage");
-    if (percentage < 0.8 || percentage > 1.5) {
+    print(
+        "percentage: ${percentage.toStringAsFixed(3)} ${_screenWidth}x$_screenHeight");
+    if (percentage < _min || percentage > _max) {
       print("invalid percentage: $percentage");
       return;
     }
@@ -76,9 +85,8 @@ class ThemeProvider extends ChangeNotifier {
 
   // fontSize takes a font size and applies the percentage to get the user desired font size
   double fontSize(double fontSize, {double? percentage}) {
-    // return (fontSize * (percentage ?? _fontSizePercentage)) +
-    //     ((percentage ?? _fontSizePercentage) * scaleFactor);
-    return fontSize * scaleFactor * (percentage ?? _fontSizePercentage);
+    final size = fontSize * scaleFactor * (percentage ?? _fontSizePercentage);
+    return min(size, MAX_FONT_SIZE);
   }
 
   ThemeData get theme => _isDarkMode ? darkTheme : lightTheme;

@@ -2,6 +2,7 @@
 
 PLATFORM_NAME=android
 RELEASE_TYPE=apk
+SYMBOLS_DIR=build/app/intermediates/merged_native_libs/release/out/lib
 
 if [ "$1" = "ios" ]; then
   PLATFORM_NAME=ios
@@ -43,11 +44,18 @@ if [ "$PLATFORM_NAME" = "android" ]; then
         echo "flutter   apk --release --obfuscate --split-debug-info=quran-app/v1.0.1"
         flutter build apk --release --obfuscate --split-debug-info=v1.0.1
     fi
-    # if current os is macos, open build/app/outputs/flutter-apk
+
+    # create symbol zip file
+    cd $SYMBOLS_DIR;
+    rm .DS_Store;
+    zip -r symbols.zip .
+    cp $SYMBOLS_DIR/symbols.zip build/app/outputs/bundle/release/;
+
+    # if current os is macos, open build/app/outputs/bundle/release
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        open build/app/outputs/flutter-apk;
+        open build/app/outputs/bundle/release;
     else
-        echo "open build/app/outputs/flutter-apk"
+        echo "open build/app/outputs/bundle/release";
     fi
 else
     echo "flutter build ios --release"

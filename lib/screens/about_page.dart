@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
+import 'package:quran_app_flutter/utils/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends StatefulWidget {
@@ -21,6 +22,7 @@ class _AboutPageState extends State<AboutPage> {
   void initState() {
     super.initState();
     _loadVersionData();
+    updateThemeScale(context);
 
     Future.delayed(Duration.zero, () {
       if (!mounted) return;

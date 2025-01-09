@@ -38,7 +38,13 @@ TextSpan buildVerseNumber(
                   child: Text(
                     toArabicNumber(verseNumber),
                     style: TextStyle(
-                      fontSize: context.read<ThemeProvider>().fontSize(12),
+                      fontSize: context
+                          .read<ThemeProvider>()
+                          .fontSize(verseNumber < 10
+                              ? 11
+                              : verseNumber < 100
+                                  ? 10
+                                  : 8),
                       height: 1,
                       color: Theme.of(context)
                           .colorScheme

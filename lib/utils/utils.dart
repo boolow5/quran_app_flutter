@@ -1,3 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quran_app_flutter/providers/theme_provider.dart';
+
 String toArabicNumber(int number) {
   const Map<String, String> arabicNumbers = {
     '0': '٠',
@@ -53,4 +57,16 @@ String lngToString(double lng,
 
   // Return the string representation of the latitude and longitude
   return '$degreesStr°${showMinutes ? " $minutesStr\'" : ''}${showSeconds ? " $secondsStr\"" : ''} E';
+}
+
+void updateThemeScale(BuildContext context) {
+  Future.delayed(Duration.zero, () {
+    final size = MediaQuery.sizeOf(context);
+    context.read<ThemeProvider>().setScreenSize(
+          size.width,
+          size.height,
+          MediaQuery.sizeOf(context).width > 600,
+          MediaQuery.orientationOf(context) == Orientation.landscape,
+        );
+  });
 }

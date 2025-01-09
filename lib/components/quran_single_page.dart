@@ -323,7 +323,7 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
         screenWith * (context.read<ThemeProvider>().scaleFactor / 2.25), 375.0);
     double pageHeight = _isSpecialPage()
         ? specialBoxSize * 1.45
-        : screenHeight - (screenHeight * 0.155);
+        : screenHeight - (screenHeight * 0.157);
     double pageWidth =
         _isSpecialPage() ? specialBoxSize : screenWith - (screenWith * 0.03);
 
@@ -331,6 +331,12 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
       pageWidth = min(screenWith, 490.0);
       // print("screenWith: $screenWith pageWidth -> ${pageWidth}");
       pageHeight = pageWidth * 1.64;
+    }
+
+    // prevent overflow in small screens
+    if (_isSpecialPage() && pageHeight > screenHeight * 0.74) {
+      pageHeight = screenHeight * 0.74 +
+          context.read<ThemeProvider>().scaleFactor / 2.25;
     }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -397,8 +403,10 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
                         ? EdgeInsets.symmetric(vertical: 32, horizontal: 0)
                         : EdgeInsets.symmetric(vertical: 2, horizontal: 2),
                     padding: EdgeInsets.symmetric(
-                      horizontal: context.read<ThemeProvider>().fontSize(20.0),
-                      vertical: _isSpecialPage() ? 20.0 : 8,
+                      horizontal: context
+                          .read<ThemeProvider>()
+                          .fontSize(_isSpecialPage() ? 12.0 : 8.0),
+                      vertical: _isSpecialPage() ? 20.0 : 6,
                     ),
                     decoration: BoxDecoration(
                       color: isDark ? Colors.black : DEFAULT_PAGE_BG_COLOR,

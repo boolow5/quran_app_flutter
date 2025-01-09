@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 const APP_NAME = "MeezanSync";
 
+const MAX_FONT_SIZE = 24.5;
 const DEFAULT_FONT_SIZE = 19.0;
 const DEFAULT_PRIMARY_COLOR = Color(0xFF008080);
 // #f7fce3

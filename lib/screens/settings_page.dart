@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
+import 'package:quran_app_flutter/utils/utils.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -12,6 +13,12 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  @override
+  void initState() {
+    updateThemeScale(context);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,8 +77,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 Slider(
                   divisions: 7,
-                  min: 0.8,
-                  max: 1.3,
+                  min: context.watch<ThemeProvider>().minPercentage,
+                  max: context.watch<ThemeProvider>().maxPercentage,
                   value: context
                       .watch<ThemeProvider>()
                       .fontSizePercentage, // Placeholder

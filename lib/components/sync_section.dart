@@ -18,10 +18,10 @@ class _SynSectionState extends State<SynSection> {
   void initState() {
     super.initState();
 
-    AuthService().authStateChanges.listen((user) {
-      if (!mounted) return;
-      context.read<QuranDataProvider>().setUser(user?.uid);
-    });
+    // AuthService().authStateChanges.listen((user) {
+    //   if (!mounted) return;
+    //   context.read<QuranDataProvider>().setUser(user?.uid);
+    // });
   }
 
   @override

@@ -11,6 +11,7 @@ void main() async {
   await Firebase.initializeApp();
 
   final storage = SharedPreferences.getInstance();
+
   runApp(MyApp(
     storage: storage,
   ));

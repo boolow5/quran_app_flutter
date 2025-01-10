@@ -9,6 +9,16 @@ class AuthService {
 
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
+  // Add this method to get the JWT token
+  Future<String?> getIdToken() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      // Force token refresh if needed
+      return await user.getIdToken(true);
+    }
+    return null;
+  }
+
   Future<void> signOut() async {
     await _auth.signOut();
   }

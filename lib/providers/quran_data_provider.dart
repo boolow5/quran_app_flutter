@@ -99,16 +99,21 @@ class QuranDataProvider extends ChangeNotifier {
 
   // Save recent pages to SharedPreferences
   Future<void> _saveRecentPages() async {
-    _recentPages = _recentPages
-        .where((page) =>
-            page.endTime != null &&
-            page.endTime!.difference(page.startTime).inSeconds >= 10)
-        .toList();
+    try {
+      final pages = _recentPages
+          .where((page) =>
+              page.endTime != null &&
+              page.endTime!.difference(page.startTime).inSeconds >= 30)
+          .toList();
 
-    final String encoded =
-        json.encode(_recentPages.map((page) => page.toJson()).toList());
-    await _prefs.setString(_recentPagesKey, encoded);
-    notifyListeners();
+      final String encoded =
+          json.encode(pages.map((page) => page.toJson()).toList());
+      await _prefs.setString(_recentPagesKey, encoded);
+    } catch (e) {
+      print("Error saving recent pages: $e");
+    } finally {
+      notifyListeners();
+    }
   }
 
   Future<void> _saveBookmarks() async {

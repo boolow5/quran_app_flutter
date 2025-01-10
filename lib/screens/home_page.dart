@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:quran_app_flutter/components/animated_card_gradient.dart';
+import 'package:quran_app_flutter/components/sync_section.dart';
 import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/models/sura.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
@@ -158,6 +159,7 @@ class _HomeState extends State<Home> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    SynSection(),
                     // App icon
                     Center(
                       child: Container(
@@ -174,7 +176,7 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 8),
 
                     // Recent page box
                     AnimatedGradientCard(
@@ -310,6 +312,7 @@ class _HomeState extends State<Home> {
                             crossAxisCount: crossAxisCount,
                             mainAxisSpacing: 12.0,
                             crossAxisSpacing: 12.0,
+                            childAspectRatio: 16 / 11,
                             children: [
                               _buildMenuItem(
                                 context,

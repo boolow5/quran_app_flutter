@@ -54,6 +54,10 @@ class _HomeState extends State<Home> {
     super.initState();
     updateThemeScale(context);
     _loadSuras();
+    Future.delayed(Duration(seconds: 1), () {
+      if (!mounted) return;
+      context.read<QuranDataProvider>().getBookmarks();
+    });
   }
 
   Future<void> _loadSuras() async {

@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/services/auth.dart';
 
 // Initialize ApiService
 ApiService apiService = ApiService(
-  baseUrl: 'https://api.yourserver.com',
+  baseUrl: BASE_URL,
   authService: AuthService(),
 );
 
@@ -35,12 +36,28 @@ class ApiService {
         onRequest: (options, handler) async {
           // Get fresh token before each request
           final token = await _authService.getIdToken();
+          print("[API] Token: $token");
           if (token != null) {
             options.headers['Authorization'] = 'Bearer $token';
+          } else {
+            return handler.reject(DioException(
+              requestOptions: options,
+              type: DioExceptionType.badResponse,
+              error: 'No token available',
+              response: Response(
+                requestOptions: options,
+                statusCode: 401,
+                statusMessage: 'Unauthorized',
+                data: {
+                  "message": "No token available",
+                },
+              ),
+            ));
           }
           return handler.next(options);
         },
         onError: (error, handler) async {
+          print("[API] Error: ${error.response?.data}");
           if (error.response?.statusCode == 401) {
             // Handle unauthorized error (e.g., force logout)
             await _authService.signOut();
@@ -70,6 +87,7 @@ class ApiService {
     Options? options,
     ResponseConverter<T>? converter,
   }) async {
+    print("[API] Request: $path");
     try {
       final response = await _dio.request(
         path,
@@ -201,6 +219,7 @@ class ApiService {
   }
 
   Exception _handleDioError(DioException error) {
+    print("[API] Error: ${error.response?.data}");
     switch (error.type) {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:

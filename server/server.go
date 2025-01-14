@@ -15,7 +15,7 @@ func main() {
 
 	controllers.SetupHandlers(router)
 
-	router.Run("localhost:1140")
+	router.Run("0.0.0.0:1140")
 }
 
 func SetupServices() {

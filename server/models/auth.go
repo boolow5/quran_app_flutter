@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	JWT_AUDIENCE_NAME       = "meezansync-api.bolow.me"
-	JWT_ISSUER_NAME         = "meezansync-api.bolow.me"
+	JWT_AUDIENCE_NAME       = "meezansync-95a7c"
+	JWT_ISSUER_NAME         = "https://securetoken.google.com/meezansync-95a7c"
 	JWT_TYPE_AUTHENTICATION = "authentication"
 	JWT_TYPE_REFRESH_TOKEN  = "refresh_token"
 )

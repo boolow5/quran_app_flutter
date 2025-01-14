@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/models/sura.dart';
+import 'package:quran_app_flutter/services/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RecentPage {
@@ -45,7 +48,7 @@ class QuranDataProvider extends ChangeNotifier {
   List<Sura> _tableOfContents = [];
   int _currentPage = 1;
   List<RecentPage> _recentPages = [];
-  final List<RecentPage> _bookmarks = [];
+  List<RecentPage> _bookmarks = [];
   static const int maxRecentPages = 10;
   static const String _recentPagesKey = 'recent_pages';
   late SharedPreferences _prefs;
@@ -286,6 +289,25 @@ class QuranDataProvider extends ChangeNotifier {
       return '${elapsed.inDays}d ago';
     } else {
       return '${(elapsed.inDays / 30).floor()}mo ago';
+    }
+  }
+
+  Future<void> getBookmarks() async {
+    try {
+      final resp = await apiService.get(path: "/api/v1/bookmarks");
+      if (resp != null && resp?.statusCode == 200) {
+        print("getBookmarks Success: ${resp.data}");
+        final bookmarks = resp.data['data']['bookmarks'];
+        _bookmarks =
+            bookmarks.map((item) => RecentPage.fromJson(item)).toList();
+      } else {
+        print("getBookmarks Failed: ${resp?.data}");
+        throw resp?.data['message'] ?? 'Something went wrong';
+      }
+    } on DioException catch (e) {
+      print("getBookmarks Dio Error: $e");
+    } catch (e) {
+      print("getBookmarks Uknown Error: $e");
     }
   }
 }

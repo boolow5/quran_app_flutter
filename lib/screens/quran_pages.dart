@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:quran_app_flutter/components/quran_single_page.dart';
 import 'package:quran_app_flutter/providers/quran_data_provider.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
+import 'package:quran_app_flutter/services/auth.dart';
 import 'package:quran_app_flutter/utils/utils.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class QuranPages extends StatefulWidget {
   final int routePageNumber;
@@ -31,6 +33,7 @@ class _QuranPagesState extends State<QuranPages> {
   @override
   void initState() {
     super.initState();
+    WakelockPlus.enable();
     updateThemeScale(context);
 
     Future.delayed(const Duration(microseconds: 100), () {
@@ -107,6 +110,7 @@ class _QuranPagesState extends State<QuranPages> {
 
   @override
   void dispose() {
+    WakelockPlus.disable();
     super.dispose();
 
     _pageController.dispose();
@@ -240,11 +244,13 @@ class _QuranPagesState extends State<QuranPages> {
                         ? Colors.green
                         : Theme.of(context).iconTheme.color,
                   ),
-                  onPressed: () {
-                    final saved = context.read<QuranDataProvider>().addBookmark(
-                          _bookmarkPage,
-                          _currentSuraName,
-                        );
+                  onPressed: () async {
+                    final saved =
+                        await context.read<QuranDataProvider>().addBookmark(
+                              AuthService().currentUser?.uid ?? "",
+                              _bookmarkPage,
+                              _currentSuraName,
+                            );
                     if (saved) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

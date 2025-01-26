@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/models/sura.dart';
 import 'package:quran_app_flutter/services/api_service.dart';
+import 'package:quran_app_flutter/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RecentPage {
@@ -172,7 +173,7 @@ class QuranDataProvider extends ChangeNotifier {
         : bookmark.pageNumber == page);
   }
 
-  bool addBookmark(int page, String suraName) {
+  bool _addBookmark(int page, String suraName) {
     try {
       final int index =
           _bookmarks.indexWhere((bookmark) => bookmark.pageNumber == page);
@@ -309,5 +310,39 @@ class QuranDataProvider extends ChangeNotifier {
     } catch (e) {
       print("getBookmarks Uknown Error: $e");
     }
+  }
+
+  Future<bool> addBookmark(String? userID, int pageNumber, String suraName,
+      {DateTime? startDate, DateTime? endDate}) async {
+    bool saved = false;
+    try {
+      final resp = await apiService.post(
+        path: "/api/v1/bookmarks",
+        data: {
+          "user_id": userID,
+          "pageNumber": pageNumber,
+          "suraName": suraName,
+          "startDate": toUTCRFC3339(
+            startDate ?? DateTime.now().add(Duration(seconds: -15)),
+          ),
+          "endDate": toUTCRFC3339(endDate ?? DateTime.now()),
+        },
+      );
+      if (resp != null && resp?.statusCode == 200) {
+        print("addBookmark Success: ${resp.data}");
+        final bookmark = resp.data['data']['bookmark'];
+        _bookmarks.add(RecentPage.fromJson(bookmark));
+      } else {
+        print("addBookmark Failed: ${resp?.data}");
+        throw resp?.data['message'] ?? 'Something went wrong';
+      }
+    } on DioException catch (e) {
+      print("addBookmark Dio Error: $e");
+    } catch (e) {
+      print("addBookmark Uknown Error: $e");
+    } finally {
+      saved = _addBookmark(pageNumber, suraName);
+    }
+    return saved;
   }
 }

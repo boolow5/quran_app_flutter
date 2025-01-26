@@ -48,6 +48,7 @@ dependencies:
   google_sign_in: ^6.2.2
   flutter_facebook_auth: ^7.1.1
   dio: ^5.7.0
+  wakelock_plus: ^1.2.10
 
 dev_dependencies:
   flutter_test:

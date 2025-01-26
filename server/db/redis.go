@@ -2,14 +2,20 @@ package db
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/redis/go-redis/v9"
 )
 
-var redisCtx = context.Background()
+var (
+	keyPrefix = ""
+	// redisCtx  = context.Background()
+)
 
 type IRedisDB interface {
 	// Get keys gets all keys matching pattern.
@@ -105,6 +111,7 @@ type RedisDB struct {
 }
 
 func NewRedisDB(uri, password string, defaultDb int) (*RedisDB, error) {
+	keyPrefix = os.Getenv("APP_NAME")
 	if uri == "" {
 		redisHost := os.Getenv("REDIS_HOST")
 		if redisHost == "" {
@@ -138,7 +145,7 @@ func NewRedisDB(uri, password string, defaultDb int) (*RedisDB, error) {
 		DB:       defaultDb,
 	})
 
-	_, err = client.Ping(redisCtx).Result()
+	_, err = client.Ping(context.Background()).Result()
 	if err != nil {
 		return nil, err
 	}
@@ -150,127 +157,152 @@ func NewRedisDB(uri, password string, defaultDb int) (*RedisDB, error) {
 	return db, nil
 }
 
+func addPrefix(key string) string {
+	if keyPrefix == "" {
+		return key
+	}
+
+	if strings.HasPrefix(key, keyPrefix) {
+		return key
+	}
+
+	normalizedPrefix := keyPrefix
+	if !strings.HasSuffix(normalizedPrefix, ":") {
+		normalizedPrefix += ":"
+	}
+
+	return normalizedPrefix + key
+}
+
 func (r *RedisDB) Ping() (string, error) {
-	return r.client.Ping(redisCtx).Result()
+	return r.client.Ping(context.Background()).Result()
 }
 
-func (r *RedisDB) GetKeys(pattern string) ([]string, error) {
-	return r.client.Keys(redisCtx, pattern).Result()
+func (r *RedisDB) GetKeys(ctx context.Context, pattern string) ([]string, error) {
+	return r.client.Keys(ctx, addPrefix(pattern)).Result()
 }
 
-func (r *RedisDB) GetKeyExpiry(pattern string) (time.Duration, error) {
-	return r.client.TTL(redisCtx, pattern).Result()
+func (r *RedisDB) GetKeyExpiry(ctx context.Context, pattern string) (time.Duration, error) {
+	return r.client.TTL(ctx, addPrefix(pattern)).Result()
 }
 
-func (r *RedisDB) Get(key string) (string, error) {
-	return r.client.Get(redisCtx, key).Result()
+func (r *RedisDB) Get(ctx context.Context, key string) (string, error) {
+	fmt.Printf("[RedisDB.Get] key: %s\n", key)
+	if r.client == nil {
+		return "", errors.New("redis client is nil")
+	}
+	return r.client.Get(ctx, addPrefix(key)).Result()
 }
 
-func (r *RedisDB) Set(key string, value interface{}) error {
-	return r.client.Set(redisCtx, key, value, 0).Err()
+func (r *RedisDB) Set(ctx context.Context, key string, value interface{}) error {
+	return r.client.Set(ctx, addPrefix(key), value, 0).Err()
 }
 
 // SetEx takes key, value and expiration in seconds
-func (r *RedisDB) SetEx(key string, value interface{}, expiration int) error {
-	return r.client.Set(redisCtx, key, value, time.Duration(expiration)*time.Second).Err()
+func (r *RedisDB) SetEx(ctx context.Context, key string, value interface{}, expiration int) error {
+	return r.client.Set(ctx, addPrefix(key), value, time.Duration(expiration)*time.Second).Err()
 }
 
-func (r *RedisDB) Del(keys ...string) error {
-	return r.client.Del(redisCtx, keys...).Err()
+func (r *RedisDB) Del(ctx context.Context, keys ...string) error {
+	for i, key := range keys {
+		keys[i] = addPrefix(key)
+	}
+
+	return r.client.Del(ctx, keys...).Err()
 }
 
-func (r *RedisDB) Exists(key string) (int64, error) {
-	return r.client.Exists(redisCtx, key).Result()
+func (r *RedisDB) Exists(ctx context.Context, key string) (int64, error) {
+	return r.client.Exists(ctx, addPrefix(key)).Result()
 }
 
-func (r *RedisDB) Expire(key string, expiration int) error {
-	return r.client.Expire(redisCtx, key, time.Duration(expiration)*time.Second).Err()
+func (r *RedisDB) Expire(ctx context.Context, key string, expiration int) error {
+	return r.client.Expire(ctx, addPrefix(key), time.Duration(expiration)*time.Second).Err()
 }
 
-func (r *RedisDB) Incr(key string) error {
-	return r.client.Incr(redisCtx, key).Err()
+func (r *RedisDB) Incr(ctx context.Context, key string) error {
+	return r.client.Incr(ctx, addPrefix(key)).Err()
 }
 
-func (r *RedisDB) IncrBy(key string, value int) error {
-	return r.client.IncrBy(redisCtx, key, int64(value)).Err()
+func (r *RedisDB) IncrBy(ctx context.Context, key string, value int) error {
+	return r.client.IncrBy(ctx, addPrefix(key), int64(value)).Err()
 }
 
-func (r *RedisDB) Decr(key string) error {
-	return r.client.Decr(redisCtx, key).Err()
+func (r *RedisDB) Decr(ctx context.Context, key string) error {
+	return r.client.Decr(ctx, addPrefix(key)).Err()
 }
 
-func (r *RedisDB) DecrBy(key string, value int) error {
-	return r.client.DecrBy(redisCtx, key, int64(value)).Err()
+func (r *RedisDB) DecrBy(ctx context.Context, key string, value int) error {
+	return r.client.DecrBy(ctx, addPrefix(key), int64(value)).Err()
 }
 
-func (r *RedisDB) HGet(key string, field string) (string, error) {
-	return r.client.HGet(redisCtx, key, field).Result()
+func (r *RedisDB) HGet(ctx context.Context, key string, field string) (string, error) {
+	return r.client.HGet(ctx, addPrefix(key), field).Result()
 }
 
-func (r *RedisDB) HSet(key string, field string, value interface{}) error {
-	return r.client.HSet(redisCtx, key, field, value).Err()
+func (r *RedisDB) HSet(ctx context.Context, key string, field string, value interface{}) error {
+	return r.client.HSet(ctx, addPrefix(key), field, value).Err()
 }
 
-func (r *RedisDB) HDel(key string, field string) error {
-	return r.client.HDel(redisCtx, key, field).Err()
+func (r *RedisDB) HDel(ctx context.Context, key string, field string) error {
+	return r.client.HDel(ctx, addPrefix(key), field).Err()
 }
 
-func (r *RedisDB) HExists(key string, field string) (bool, error) {
-	return r.client.HExists(redisCtx, key, field).Result()
+func (r *RedisDB) HExists(ctx context.Context, key string, field string) (bool, error) {
+	return r.client.HExists(ctx, addPrefix(key), field).Result()
 }
 
-func (r *RedisDB) HGetAll(key string) (map[string]string, error) {
-	return r.client.HGetAll(redisCtx, key).Result()
+func (r *RedisDB) HGetAll(ctx context.Context, key string) (map[string]string, error) {
+	return r.client.HGetAll(ctx, addPrefix(key)).Result()
 }
 
-func (r *RedisDB) HIncr(key string, field string) error {
-	return r.client.HIncrBy(redisCtx, key, field, 1).Err()
+func (r *RedisDB) HIncr(ctx context.Context, key string, field string) error {
+	return r.client.HIncrBy(ctx, addPrefix(key), field, 1).Err()
 }
 
-func (r *RedisDB) HIncrBy(key string, field string, value int) error {
-	return r.client.HIncrBy(redisCtx, key, field, int64(value)).Err()
+func (r *RedisDB) HIncrBy(ctx context.Context, key string, field string, value int) error {
+	return r.client.HIncrBy(ctx, addPrefix(key), field, int64(value)).Err()
 }
 
-func (r *RedisDB) HDecr(key string, field string) error {
-	return r.client.HIncrBy(redisCtx, key, field, -1).Err()
+func (r *RedisDB) HDecr(ctx context.Context, key string, field string) error {
+	return r.client.HIncrBy(ctx, addPrefix(key), field, -1).Err()
 }
 
-func (r *RedisDB) HDecrBy(key string, field string, value int) error {
-	return r.client.HIncrBy(redisCtx, key, field, int64(-value)).Err()
+func (r *RedisDB) HDecrBy(ctx context.Context, key string, field string, value int) error {
+	return r.client.HIncrBy(ctx, addPrefix(key), field, int64(-value)).Err()
 }
 
-func (r *RedisDB) LPush(key string, value interface{}) error {
-	return r.client.LPush(redisCtx, key, value).Err()
+func (r *RedisDB) LPush(ctx context.Context, key string, value interface{}) error {
+	return r.client.LPush(ctx, addPrefix(key), value).Err()
 }
 
-func (r *RedisDB) LRange(key string, start int, stop int) ([]string, error) {
-	return r.client.LRange(redisCtx, key, int64(start), int64(stop)).Result()
+func (r *RedisDB) LRange(ctx context.Context, key string, start int, stop int) ([]string, error) {
+	return r.client.LRange(ctx, addPrefix(key), int64(start), int64(stop)).Result()
 }
 
-func (r *RedisDB) LLen(key string) (int64, error) {
-	return r.client.LLen(redisCtx, key).Result()
+func (r *RedisDB) LLen(ctx context.Context, key string) (int64, error) {
+	return r.client.LLen(ctx, addPrefix(key)).Result()
 }
 
-func (r *RedisDB) LPop(key string) (string, error) {
-	return r.client.LPop(redisCtx, key).Result()
+func (r *RedisDB) LPop(ctx context.Context, key string) (string, error) {
+	return r.client.LPop(ctx, addPrefix(key)).Result()
 }
 
-func (r *RedisDB) RPush(key string, value interface{}) error {
-	return r.client.RPush(redisCtx, key, value).Err()
+func (r *RedisDB) RPush(ctx context.Context, key string, value interface{}) error {
+	return r.client.RPush(ctx, addPrefix(key), value).Err()
 }
 
-func (r *RedisDB) RPop(key string) (string, error) {
-	return r.client.RPop(redisCtx, key).Result()
+func (r *RedisDB) RPop(ctx context.Context, key string) (string, error) {
+	return r.client.RPop(ctx, addPrefix(key)).Result()
 }
 
-func (r *RedisDB) SAdd(key string, member interface{}) error {
-	return r.client.SAdd(redisCtx, key, member).Err()
+func (r *RedisDB) SAdd(ctx context.Context, key string, member interface{}) error {
+	return r.client.SAdd(ctx, addPrefix(key), member).Err()
 }
 
-func (r *RedisDB) SRem(key string, member interface{}) error {
-	return r.client.SRem(redisCtx, key, member).Err()
+func (r *RedisDB) SRem(ctx context.Context, key string, member interface{}) error {
+	return r.client.SRem(ctx, addPrefix(key), member).Err()
 }
 
-func (r *RedisDB) SIsMember(key string, member interface{}) (bool, error) {
-	return r.client.SIsMember(redisCtx, key, member).Result()
+func (r *RedisDB) SIsMember(ctx context.Context, key string, member interface{}) (bool, error) {
+	return r.client.SIsMember(ctx, addPrefix(key), member).Result()
 }

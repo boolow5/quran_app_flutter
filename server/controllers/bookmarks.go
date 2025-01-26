@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+
 	"github.com/boolow5/quran-app-api/models"
 	"github.com/gin-gonic/gin"
 )
@@ -8,14 +10,16 @@ import (
 func GetBookmarks(c *gin.Context) {
 	userID, ok := c.MustGet("user_id").(string)
 	if !ok {
+		fmt.Printf("[controllers.GetBookmarks] user_id not found\n")
 		c.JSON(400, gin.H{
 			"error": "user_id not found",
 		})
 		return
 	}
 
-	bookmarks, err := models.GetBookmarksForUser(userID)
+	bookmarks, err := models.GetBookmarksForUser(c.Request.Context(), userID)
 	if err != nil {
+		fmt.Printf("[controllers.GetBookmarks] Error getting bookmarks: %v\n", err)
 		c.JSON(500, gin.H{
 			"error": err.Error(),
 		})
@@ -28,6 +32,7 @@ func GetBookmarks(c *gin.Context) {
 func AddBookmark(c *gin.Context) {
 	userID, ok := c.MustGet("user_id").(string)
 	if !ok {
+		fmt.Printf("[controllers.AddBookmark] user_id not found\n")
 		c.JSON(400, gin.H{
 			"error": "user_id not found",
 		})
@@ -35,8 +40,9 @@ func AddBookmark(c *gin.Context) {
 	}
 
 	var bookmark models.Bookmark
-	err := c.ShouldBindJSON(&bookmark)
+	err := c.ShouldBind(&bookmark)
 	if err != nil {
+		fmt.Printf("[controllers.AddBookmark] Error binding JSON: %v\n", err)
 		c.JSON(400, gin.H{
 			"error": err.Error(),
 		})
@@ -44,8 +50,9 @@ func AddBookmark(c *gin.Context) {
 	}
 
 	bookmark.UserID = userID
-	err = bookmark.Save()
+	err = bookmark.Save(c.Request.Context())
 	if err != nil {
+		fmt.Printf("[controllers.AddBookmark] Error saving bookmark: %v\n", err)
 		c.JSON(500, gin.H{
 			"error": err.Error(),
 		})
@@ -58,6 +65,7 @@ func AddBookmark(c *gin.Context) {
 func RemoveBookmark(c *gin.Context) {
 	userID, ok := c.MustGet("user_id").(string)
 	if !ok {
+		fmt.Printf("[controllers.RemoveBookmark] user_id not found\n")
 		c.JSON(400, gin.H{
 			"error": "user_id not found",
 		})
@@ -66,14 +74,16 @@ func RemoveBookmark(c *gin.Context) {
 
 	pageNumber, ok := c.Params.Get("pageNumber")
 	if !ok {
+		fmt.Printf("[controllers.RemoveBookmark] pageNumber not found\n")
 		c.JSON(400, gin.H{
 			"error": "pageNumber not found",
 		})
 		return
 	}
 
-	err := models.RemoveBookmarkForUser(userID, pageNumber)
+	err := models.RemoveBookmarkForUser(c.Request.Context(), userID, pageNumber)
 	if err != nil {
+		fmt.Printf("[controllers.RemoveBookmark] Error removing bookmark: %v\n", err)
 		c.JSON(500, gin.H{
 			"error": err.Error(),
 		})

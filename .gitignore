@@ -50,4 +50,7 @@ GoogleService-Info.plist
 firebase.json
 server/meezansync-*.json
 
-.env*
+*.env*
+server/.env*
+.secret*
+

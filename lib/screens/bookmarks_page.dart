@@ -125,6 +125,10 @@ class _BookmarksPageState extends State<BookmarksPage> {
                       itemBuilder: (context, index) {
                         final bookmark =
                             context.watch<QuranDataProvider>().bookmarks[index];
+                        final timeSince = context
+                            .read<QuranDataProvider>()
+                            .timeSinceReading(bookmark, start: true);
+
                         return ListTile(
                           leading: IconButton(
                             icon: _selectedBookmarks.contains(bookmark)
@@ -160,10 +164,7 @@ class _BookmarksPageState extends State<BookmarksPage> {
                             ),
                           ),
                           trailing: Text(
-                            context
-                                .read<QuranDataProvider>()
-                                .timeSinceReading(bookmark, start: true)
-                                .toString(),
+                            timeSince.toString(),
                             style: TextStyle(
                               color: Theme.of(context)
                                   .colorScheme

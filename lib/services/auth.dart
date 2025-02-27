@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:quran_app_flutter/services/api_service.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -20,7 +21,12 @@ class AuthService {
   }
 
   Future<void> signOut() async {
-    await _auth.signOut();
+    try {
+      await _auth.signOut();
+    } catch (e) {}
+    try {
+      await GoogleSignIn().signOut();
+    } catch (e) {}
   }
 
   Future<void> signInWithEmailAndPassword(String email, String password) async {
@@ -52,7 +58,35 @@ class AuthService {
     );
 
     // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    final credentials =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+
+    // send the token to the API
+    try {
+      if (credentials.credential?.accessToken != null &&
+          credentials.credential!.accessToken!.isNotEmpty) {
+        final form = {
+          "uid": credentials.user?.uid,
+          "email": credentials.user?.email,
+          "name": credentials.user?.displayName ?? "Unknown",
+        };
+        print("Form: $form");
+        final resp = await apiService.post(
+          path: "/api/v1/login",
+          data: form,
+        );
+
+        if (resp != null && resp?.statusCode == 200) {
+          print("Successfully synced the user to API");
+        } else {
+          print("Failed to sync the user to API: ${resp?.data}");
+        }
+      }
+    } catch (err) {
+      print("Failed to sync the user to API ERROR: $err");
+    }
+
+    return credentials;
   }
 
   Future<UserCredential> signInWithFacebook() async {

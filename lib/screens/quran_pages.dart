@@ -217,13 +217,18 @@ class _QuranPagesState extends State<QuranPages> {
                         onSuraChange: (pageNumber, suraName) {
                           _currentSuraName = suraName;
                           _bookmarkPage = pageNumber;
-                          context
-                              .read<QuranDataProvider>()
-                              .setEndTimeForMostRecentPage(
-                                pageNumber,
-                                suraName,
-                                isDoublePage: isTablet && isLandscape,
-                              );
+                        },
+                        onPageChanged: (pageNumber, suraName, tick) {
+                          print(
+                              "onPageChanged: $pageNumber, $suraName, $tick seconds");
+                          if (tick != null && tick > 0) {
+                            context.read<QuranDataProvider>().setRecentPage(
+                                  pageNumber,
+                                  suraName,
+                                  isDoublePage: isTablet && isLandscape,
+                                  secondsOpen: tick,
+                                );
+                          }
                         },
                       );
                     },
@@ -285,13 +290,13 @@ class _QuranPagesState extends State<QuranPages> {
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back),
                   onPressed: () {
-                    context
-                        .read<QuranDataProvider>()
-                        .setEndTimeForMostRecentPage(
-                          _bookmarkPage,
-                          _currentSuraName,
-                          isDoublePage: isTablet && isLandscape,
-                        );
+                    // context
+                    //     .read<QuranDataProvider>()
+                    //     .setEndTimeForMostRecentPage(
+                    //       _bookmarkPage,
+                    //       _currentSuraName,
+                    //       isDoublePage: isTablet && isLandscape,
+                    //     );
                     context.push('/table-of-contents');
                   },
                 ),

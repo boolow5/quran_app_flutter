@@ -1,7 +1,11 @@
 package models
 
-import "github.com/boolow5/quran-app-api/db"
+import (
+	"github.com/boolow5/quran-app-api/db"
+	rdb "github.com/boolow5/redis"
+)
 
 var (
-	RedisDB *db.RedisDB
+	RedisDB *rdb.RedisDB
+	MySQLDB *db.MySQLDB
 )

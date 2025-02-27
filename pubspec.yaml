@@ -2,7 +2,7 @@ name: quran_app_flutter
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -49,6 +49,7 @@ dependencies:
   flutter_facebook_auth: ^7.1.1
   dio: ^5.7.0
   wakelock_plus: ^1.2.10
+  visibility_detector: ^0.4.0+2
 
 dev_dependencies:
   flutter_test:
@@ -67,7 +68,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -112,7 +112,7 @@ flutter:
         - asset: assets/fonts/KFGQPC_Uthmanic_Script_HAFS_Regular.otf
     - family: hafs
       fonts:
-        - asset: assets/fonts/hafs.woff2
+        - asset: assets/fonts/hafs.ttf # hafs.woff2
     - family: AmiriQuran
       fonts:
         - asset: assets/fonts/Amiri_Quran/AmiriQuran-Regular.ttf
@@ -129,4 +129,3 @@ flutter:
           weight: 400
         - asset: assets/fonts/Scheherazade_New/ScheherazadeNew-SemiBold.ttf
           weight: 600
-        

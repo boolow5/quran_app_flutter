@@ -3,11 +3,12 @@ package controllers
 import (
 	"log"
 
+	"github.com/boolow5/quran-app-api/db"
 	"github.com/boolow5/quran-app-api/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
-func SetupHandlers(router *gin.Engine) {
+func SetupHandlers(router *gin.Engine, db db.Database) {
 	// Initialize Firebase Auth
 	auth, err := middlewares.NewFirebaseAuth("./meezansync-95a7c-firebase-adminsdk-plq74-147577be30.json")
 	if err != nil {
@@ -15,11 +16,22 @@ func SetupHandlers(router *gin.Engine) {
 	}
 	router.SetTrustedProxies([]string{"127.0.0.1:1140", "localhost:1140", ""})
 	r := router.Group("/api/v1")
-	r.Use(auth.Middleware())
 
-	bookmarks := r.Group("/bookmarks")
+	authenicated := r.Group("")
+	authenicated.Use(auth.Middleware(db))
+
+	bookmarks := authenicated.Group("/bookmarks")
 	// bookmarks.Use(middlewares.JWTAuthentication())
 	bookmarks.GET("", GetBookmarks)
 	bookmarks.POST("", AddBookmark)
 	bookmarks.DELETE("/:id", RemoveBookmark)
+
+	// streak handlers
+	streaks := authenicated.Group("/streaks")
+	streaks.GET("", GetUserStreak)
+	streaks.POST("/read-event", RecordReadingEvent)
+	streaks.PUT("", UpdateDailySummary)
+
+	// /api/v1/login
+	authenicated.POST("/login", auth.Login(db))
 }

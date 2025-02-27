@@ -57,7 +57,9 @@ class _SynSectionState extends State<SynSection> {
                     child: snapshot.hasData
                         ? Text(
                             // 'Assalamu Alaikum, ${capitalize(AuthService().currentUser?.displayName ?? AuthService().currentUser?.email?.split('@').first ?? '')}!',
-                            'Assalamu Alaikum',
+                            AuthService().currentUser?.displayName != null
+                                ? 'Assalamu Alaikum, ${firstName(AuthService().currentUser?.displayName)}'
+                                : 'Assalamu Alaikum',
                           )
                         : const Text(
                             'Sign in to sync bookmarks and recent pages'),

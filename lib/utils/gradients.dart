@@ -41,4 +41,11 @@ class GradientColors {
     Color(0xFF006400), // Dark green
     Color(0xFF90EE90), // Repeat first color for smooth transition
   ];
+
+  // Grey gradient
+  static const List<Color> grey = [
+    Color(0xFFD3D3D3), // Light grey
+    Color(0xFF808080), // Dark grey
+    Color(0xFFD3D3D3), // Repeat first color for smooth transition
+  ];
 }

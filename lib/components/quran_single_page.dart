@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -12,6 +13,7 @@ import 'package:quran_app_flutter/models/model.dart';
 import 'package:quran_app_flutter/providers/quran_data_provider.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
 import 'package:quran_app_flutter/utils/utils.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class QuranSinglePage extends StatefulWidget {
   final int pageNumber;
@@ -19,6 +21,7 @@ class QuranSinglePage extends StatefulWidget {
   final bool isTablet;
   final bool isLandscape;
   final Function(int pageNumber, String suraName) onSuraChange;
+  final Function(int pageNumber, String suraName, int? tick) onPageChanged;
 
   const QuranSinglePage({
     super.key,
@@ -27,6 +30,7 @@ class QuranSinglePage extends StatefulWidget {
     required this.isTablet,
     required this.isLandscape,
     required this.onSuraChange,
+    required this.onPageChanged,
   }) : assert(pageNumber > 0);
 
   @override
@@ -42,11 +46,17 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
   bool _isLoading = true;
   int _currentPage = 1;
 
+  Timer? _timer;
+
   @override
   void initState() {
     super.initState();
     _quranDataProvider = context.read<QuranDataProvider>();
     _currentPage = widget.pageNumber;
+    print(" &&&&&&&&&&&&&&&&&& Mounted &&&&&&&&&&&&&&&&&&");
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) return;
+    });
 
     _loadVerses(_currentPage);
 
@@ -56,6 +66,24 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
         _quranDataProvider.setCurrentPage(_currentPage, _suraName);
       }
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant QuranSinglePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_currentPage != widget.pageNumber) {
+      _currentPage = widget.pageNumber;
+      // _loadVerses(_currentPage);
+      if (!mounted) {
+        print(" &&&&&&&&&&&&&&&&&& Unmounted &&&&&&&&&&&&&&&&&&");
+        _timer?.cancel();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Future<void> _loadVerses(int pageNumber) async {
@@ -309,8 +337,21 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
     // print("boxMargin: $boxMargin");
     // print(">------------------------ box size ------------------------<");
 
-    return _buildPageContent(
-        boxHeight, boxWidth, context, boxPadding, boxMargin);
+    return VisibilityDetector(
+      key: Key('quran_page_$_currentPage'),
+      onVisibilityChanged: (visibilityInfo) {
+        final isVisible = visibilityInfo.visibleFraction > 0.0;
+        print(
+            "page: $_currentPage visible: [$isVisible] ${visibilityInfo.visibleFraction}");
+        if (!isVisible) {
+          widget.onPageChanged(_currentPage, _suraName, _timer?.tick);
+
+          _timer?.cancel();
+        }
+      },
+      child: _buildPageContent(
+          boxHeight, boxWidth, context, boxPadding, boxMargin),
+    );
   }
 
   Widget _buildPageContent(double boxHeight, double boxWidth,

@@ -10,6 +10,8 @@ import (
 	"github.com/boolow5/quran-app-api/controllers"
 	"github.com/boolow5/quran-app-api/db"
 	"github.com/boolow5/quran-app-api/models"
+	"github.com/boolow5/quran-app-api/streak"
+	rdb "github.com/boolow5/redis"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -25,15 +27,17 @@ func main() {
 	// gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
-	SetupServices()
+	db := SetupServices()
 
-	controllers.SetupHandlers(router)
+	controllers.SetupHandlers(router, db)
+
+	go ProcessDailyStreaks()
 
 	router.Run("0.0.0.0:1140")
 }
 
-func SetupServices() {
-	redisDB, err := db.NewRedisDB("", "", 0)
+func SetupServices() db.Database {
+	redisDB, err := rdb.NewRedisDB("", "", 0)
 	if err != nil {
 		panic(err)
 	}
@@ -51,4 +55,25 @@ func SetupServices() {
 		panic(err)
 	}
 	fmt.Printf("Got value: %s\n", val)
+
+	mysql, err := db.NewMysqlDB(os.Getenv("QURAN_API_MYSQL_URL"))
+	if err != nil {
+		panic(err)
+	}
+	if mysql == nil {
+		panic("MySQLDB is nil")
+	}
+	fmt.Printf("Connected to MySQL\n")
+	models.MySQLDB = mysql
+
+	db.InitTables(mysql)
+	return mysql
+}
+
+func ProcessDailyStreaks() {
+	for {
+		streak.ProcessDailyStreaks(context.Background(), models.MySQLDB)
+
+		time.Sleep(24 * time.Hour)
+	}
 }

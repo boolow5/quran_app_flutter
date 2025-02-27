@@ -93,20 +93,6 @@ class _HomeState extends State<Home> {
       colors: colors,
       duration: duration ?? const Duration(seconds: 10),
       padding: const EdgeInsets.all(16.0),
-      // margin: const EdgeInsets.all(0.0),
-      // padding: const EdgeInsets.all(4.0),
-      // constraints: BoxConstraints.tight(const Size(50, 50)),
-      // decoration: BoxDecoration(
-      //   borderRadius: BorderRadius.circular(16.0),
-      //   color: Theme.of(context).colorScheme.surface,
-      //   boxShadow: [
-      //     BoxShadow(
-      //       color: Colors.black.withOpacity(0.1),
-      //       blurRadius: 4,
-      //       offset: const Offset(0, 2),
-      //     ),
-      //   ],
-      // ),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16.0),
@@ -338,15 +324,59 @@ class _HomeState extends State<Home> {
                                   'Qibla Compass',
                                   Icons.explore,
                                   () => context.go('/qibla'),
-                                  GradientColors.orange,
-                                  duration: const Duration(seconds: 26)),
-                              _buildMenuItem(
-                                  context,
-                                  'Settings',
-                                  Icons.settings,
-                                  () => context.go('/settings'),
                                   GradientColors.purple,
                                   duration: const Duration(seconds: 26)),
+                              // _buildMenuItem(
+                              //     context,
+                              //     'Streak',
+                              //     Icons.timer,
+                              //     () => context.go('/settings'),
+                              //     GradientColors.purple,
+                              //     duration: const Duration(seconds: 26)),
+                              AnimatedGradientCard(
+                                colors: context
+                                            .read<QuranDataProvider>()
+                                            .daysStreak >
+                                        0
+                                    ? GradientColors.orange
+                                    : GradientColors.grey,
+                                duration: const Duration(seconds: 26),
+                                padding: const EdgeInsets.all(16.0),
+                                child: InkWell(
+                                  onTap: () => print("Streak Clicked"),
+                                  borderRadius: BorderRadius.circular(16.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "15",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge
+                                            ?.copyWith(
+                                              color: Colors.white,
+                                              shadows: shadows,
+                                              fontSize: 32,
+                                              fontWeight: FontWeight.w800,
+                                            ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        "days streak",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleSmall
+                                            ?.copyWith(
+                                              color: Colors.white,
+                                              shadows: shadows,
+                                            ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
                             ],
                           );
                         },

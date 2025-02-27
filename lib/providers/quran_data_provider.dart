@@ -10,37 +10,42 @@ import 'package:shared_preferences/shared_preferences.dart';
 class RecentPage {
   final int pageNumber;
   final String suraName;
-  final DateTime startTime;
-  DateTime? endTime;
+  final DateTime startDate;
+  DateTime? endDate;
 
   RecentPage({
     required this.pageNumber,
     required this.suraName,
-    required this.startTime,
-    this.endTime,
+    required this.startDate,
+    this.endDate,
   });
 
   // Convert to JSON
   Map<String, dynamic> toJson() => {
         'pageNumber': pageNumber,
         'suraName': suraName,
-        'startTime': startTime.toIso8601String(),
-        'endTime': endTime?.toIso8601String(),
+        'startDate': startDate.toIso8601String(),
+        'endDate': endDate?.toIso8601String(),
       };
 
   // Create from JSON
-  factory RecentPage.fromJson(Map<String, dynamic> json) => RecentPage(
-        pageNumber: json['pageNumber'] as int,
-        suraName: json['suraName'] as String,
-        startTime: DateTime.parse(json['startTime'] as String),
-        endTime: json['endTime'] != null
-            ? DateTime.parse(json['endTime'] as String)
-            : null,
-      );
+  factory RecentPage.fromJson(Map<String, dynamic> json) {
+    final startDate = parseDateTime(json['startDate']) ?? DateTime.now();
+    print("startDate: ${json['startDate']} -> $startDate");
+    final endDate = parseDateTime(json['endDate']);
+    print("endDate: ${json['endDate']} -> $endDate");
+
+    return RecentPage(
+      pageNumber: parseField<int?>(json, 'pageNumber', null) ?? 0,
+      suraName: parseField<String?>(json, 'suraName', null) ?? "",
+      startDate: startDate,
+      endDate: endDate,
+    );
+  }
 
   @override
   String toString() {
-    return 'RecentPage(pageNumber: $pageNumber, suraName: $suraName, startTime: $startTime, endTime: $endTime)';
+    return 'RecentPage(pageNumber: $pageNumber, suraName: $suraName, startDate: $startDate, endDate: $endDate)';
   }
 }
 
@@ -50,6 +55,8 @@ class QuranDataProvider extends ChangeNotifier {
   int _currentPage = 1;
   List<RecentPage> _recentPages = [];
   List<RecentPage> _bookmarks = [];
+  int _daysStreak = 0;
+  int _maxStreak = 0;
   static const int maxRecentPages = 10;
   static const String _recentPagesKey = 'recent_pages';
   late SharedPreferences _prefs;
@@ -63,6 +70,8 @@ class QuranDataProvider extends ChangeNotifier {
       List.unmodifiable(_bookmarks.reversed.take(100).toList());
   List<RecentPage> get currentRecentPages =>
       _recentPages.isNotEmpty ? _recentPages.reversed.take(3).toList() : [];
+  int get daysStreak => _daysStreak;
+  int get maxStreak => _maxStreak;
 
   // Initialize shared preferences
   Future<void> init(Future<SharedPreferences> storage) async {
@@ -106,8 +115,8 @@ class QuranDataProvider extends ChangeNotifier {
     try {
       final pages = _recentPages
           .where((page) =>
-              page.endTime != null &&
-              page.endTime!.difference(page.startTime).inSeconds >= 30)
+              page.endDate != null &&
+              page.endDate!.difference(page.startDate).inSeconds >= 30)
           .toList();
 
       final String encoded =
@@ -137,7 +146,7 @@ class QuranDataProvider extends ChangeNotifier {
     if (_currentPage != page) {
       // End timing for previous page
       if (_recentPages.isNotEmpty) {
-        _recentPages.last.endTime = DateTime.now();
+        _recentPages.last.endDate = DateTime.now();
       }
 
       // Add new page or update existing in the recent list
@@ -148,7 +157,7 @@ class QuranDataProvider extends ChangeNotifier {
       _recentPages.add(RecentPage(
         pageNumber: page,
         suraName: suraName,
-        startTime: DateTime.now(),
+        startDate: DateTime.now(),
       ));
 
       // Keep only the last maxRecentPages entries
@@ -159,8 +168,8 @@ class QuranDataProvider extends ChangeNotifier {
       _currentPage = page;
       _recentPages = _recentPages
           .where((page) =>
-              page.endTime != null &&
-              page.endTime!.difference(page.startTime).inSeconds >= 10)
+              page.endDate != null &&
+              page.endDate!.difference(page.startDate).inSeconds >= 10)
           .toList();
       _saveRecentPages(); // Persist changes
       notifyListeners();
@@ -182,7 +191,7 @@ class QuranDataProvider extends ChangeNotifier {
         final bookmark = RecentPage(
           pageNumber: _bookmarks[index].pageNumber,
           suraName: _bookmarks[index].suraName,
-          startTime: DateTime.now(),
+          startDate: DateTime.now(),
         );
         _bookmarks[index] = bookmark;
       } else {
@@ -190,7 +199,7 @@ class QuranDataProvider extends ChangeNotifier {
         _bookmarks.add(RecentPage(
           pageNumber: page,
           suraName: suraName,
-          startTime: DateTime.now(),
+          startDate: DateTime.now(),
         ));
       }
 
@@ -210,48 +219,22 @@ class QuranDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setEndTimeForMostRecentPage(
+  void setRecentPage(
     int pageNumber,
-    String currentSuraName, {
+    String suraName, {
     bool isDoublePage = false,
+    int? secondsOpen = 0,
   }) {
-    // print("_recentPages: $_recentPages");
-    bool changed = false;
-    if (_recentPages.isNotEmpty) {
-      for (int i = _recentPages.length - 1; i >= 0; i--) {
-        if (_recentPages[i].pageNumber == pageNumber) {
-          // print(
-          //     '**************** Setting end time for recent page ****************');
-          changed = true;
-          _recentPages[i] = RecentPage(
-            pageNumber: _recentPages[i].pageNumber,
-            suraName: _recentPages[i].suraName.isEmpty
-                ? currentSuraName
-                : _recentPages[i].suraName,
-            startTime: _recentPages[i].startTime,
-            endTime: DateTime.now(),
-          );
-          print(_recentPages[i]);
-          break;
-        }
-      }
-      _saveRecentPages(); // Persist changes
-      notifyListeners();
-    }
-    if (!changed || _recentPages.isEmpty) {
-      // print('**************** Adding a new recent page ****************');
-      final now = DateTime.now();
-      _recentPages.add(RecentPage(
+    if (secondsOpen != null && secondsOpen > 0) {
+      final page = RecentPage(
         pageNumber: pageNumber,
-        suraName: currentSuraName,
-        startTime: now.subtract(Duration(seconds: 15)),
-        endTime: now,
-      ));
-      _saveRecentPages(); // Persist changes
+        suraName: suraName,
+        startDate: DateTime.now().subtract(Duration(seconds: secondsOpen)),
+        endDate: DateTime.now(),
+      );
+      _recentPages.add(page);
+      _saveRecentPages();
       notifyListeners();
-    } else {
-      // print(
-      //     '**************** End time for most recent page already set ****************');
     }
   }
 
@@ -268,16 +251,16 @@ class QuranDataProvider extends ChangeNotifier {
 
   // Get reading duration for a recent page
   String getReadingDuration(RecentPage page) {
-    if (page.endTime == null) return 'Reading...';
+    if (page.endDate == null) return 'Reading...';
 
-    final duration = page.endTime!.difference(page.startTime);
+    final duration = page.endDate!.difference(page.startDate);
     return formatDuration(duration);
   }
 
   // Get time elapsed since reading
   String timeSinceReading(RecentPage page, {bool start = false}) {
     final DateTime referenceTime =
-        (start ? page.startTime : page.endTime) ?? DateTime.now();
+        (start ? page.startDate : page.endDate) ?? DateTime.now();
     final Duration elapsed = DateTime.now().difference(referenceTime);
 
     if (elapsed.inMinutes < 1) {
@@ -288,19 +271,23 @@ class QuranDataProvider extends ChangeNotifier {
       return '${elapsed.inHours}h ago';
     } else if (elapsed.inDays < 30) {
       return '${elapsed.inDays}d ago';
+    } else if (elapsed.inDays < 365) {
+      return '${(elapsed.inDays / 30).floor()}mon ago';
     } else {
-      return '${(elapsed.inDays / 30).floor()}mo ago';
+      return '${(elapsed.inDays / 365).floor()}yr ago';
     }
   }
 
   Future<void> getBookmarks() async {
     try {
       final resp = await apiService.get(path: "/api/v1/bookmarks");
-      if (resp != null && resp?.statusCode == 200) {
-        print("getBookmarks Success: ${resp.data}");
-        final bookmarks = resp.data['data']['bookmarks'];
-        _bookmarks =
-            bookmarks.map((item) => RecentPage.fromJson(item)).toList();
+      print("getBookmarks: $resp");
+      if (resp != null && resp.isNotEmpty) {
+        print("getBookmarks Success: ${resp.length}");
+        final bookmarks = resp ?? [];
+        _bookmarks = List<RecentPage>.from(
+            bookmarks.map((item) => RecentPage.fromJson(item)));
+        print("getBookmarks: ${prettyJson(_bookmarks)}");
       } else {
         print("getBookmarks Failed: ${resp?.data}");
         throw resp?.data['message'] ?? 'Something went wrong';
@@ -344,5 +331,35 @@ class QuranDataProvider extends ChangeNotifier {
       saved = _addBookmark(pageNumber, suraName);
     }
     return saved;
+  }
+
+  Future<bool> sendReadEvent(
+    int pageNumber,
+    String suraName,
+    int seconds,
+  ) async {
+    bool sent = false;
+    try {
+      final resp = await apiService.post(
+        path: "/api/v1/read-read-event",
+        data: {
+          "page_number": pageNumber,
+          "surah_name": suraName,
+          "seconds_open": seconds,
+        },
+      );
+      if (resp != null && resp?.statusCode == 200) {
+        print("sendReadEvent Success: ${resp.data}");
+        sent = true;
+      } else {
+        print("sendReadEvent Failed: ${resp?.data}");
+        throw resp?.data['message'] ?? 'Something went wrong';
+      }
+    } on DioException catch (e) {
+      print("sendReadEvent Dio Error: $e");
+    } catch (e) {
+      print("sendReadEvent Uknown Error: $e");
+    }
+    return sent;
   }
 }

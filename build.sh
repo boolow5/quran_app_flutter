@@ -3,6 +3,7 @@
 PLATFORM_NAME=android
 RELEASE_TYPE=apk
 SYMBOLS_DIR=build/app/intermediates/merged_native_libs/release/out/lib
+BUILD_DIR=$PWD/build
 
 if [ "$1" = "ios" ]; then
   PLATFORM_NAME=ios
@@ -49,7 +50,9 @@ if [ "$PLATFORM_NAME" = "android" ]; then
     cd $SYMBOLS_DIR;
     rm .DS_Store;
     zip -r symbols.zip .
-    cp $SYMBOLS_DIR/symbols.zip build/app/outputs/bundle/release/;
+    echo "cp $SYMBOLS_DIR/symbols.zip $BUILD_DIR/app/outputs/bundle/release/;"
+    cd $BUILD_DIR/..;
+    cp -rv $SYMBOLS_DIR/symbols.zip $BUILD_DIR/app/outputs/bundle/release/;
 
     # if current os is macos, open build/app/outputs/bundle/release
     if [[ "$OSTYPE" == "darwin"* ]]; then

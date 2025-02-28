@@ -1,4 +1,4 @@
-package com.example.quran_app_flutter
+package me.bolow.MeezanSync
 
 import io.flutter.embedding.android.FlutterActivity
 

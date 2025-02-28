@@ -24,6 +24,30 @@ class _SynSectionState extends State<SynSection> {
     // });
   }
 
+  void _onLogin() {
+    // confirm logout
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Logout'),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () => context.pop(),
+          ),
+          TextButton(
+            child: const Text('Logout', style: TextStyle(color: Colors.red)),
+            onPressed: () async {
+              await AuthService().signOut();
+              context.pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -32,76 +56,67 @@ class _SynSectionState extends State<SynSection> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
           }
-          return LayoutBuilder(builder: (context, constraints) {
-            return Container(
-              height: 55,
-              padding: const EdgeInsets.all(8.0),
-              margin: EdgeInsets.only(bottom: 8.0),
-              decoration: BoxDecoration(
-                color: DEFAULT_PAGE_BG_COLOR,
-                borderRadius: BorderRadius.circular(16.0),
-                boxShadow: [
-                  // BoxShadow(
-                  //   color: Colors.black.withOpacity(0.1),
-                  //   blurRadius: 4,
-                  //   offset: const Offset(0, 2),
-                  // ),
-                ],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: constraints.maxWidth * 0.75,
-                    child: snapshot.hasData
-                        ? Text(
-                            // 'Assalamu Alaikum, ${capitalize(AuthService().currentUser?.displayName ?? AuthService().currentUser?.email?.split('@').first ?? '')}!',
-                            AuthService().currentUser?.displayName != null
-                                ? 'Assalamu Alaikum, ${firstName(AuthService().currentUser?.displayName)}'
-                                : 'Assalamu Alaikum',
-                          )
-                        : const Text(
-                            'Sign in to sync bookmarks and recent pages'),
-                  ),
-                  const Spacer(),
-                  snapshot.hasData
-                      ? IconButton(
-                          icon: const Icon(Icons.logout, color: Colors.red),
-                          onPressed: () {
-                            // confirm logout
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Logout'),
-                                content: const Text(
-                                    'Are you sure you want to logout?'),
-                                actions: [
-                                  TextButton(
-                                    child: const Text('Cancel'),
-                                    onPressed: () => context.pop(),
-                                  ),
-                                  TextButton(
-                                    child: const Text('Logout',
-                                        style: TextStyle(color: Colors.red)),
-                                    onPressed: () async {
-                                      await AuthService().signOut();
-                                      context.pop();
-                                    },
-                                  ),
-                                ],
+          return GestureDetector(
+            onTap: snapshot.hasData ? _onLogin : () => context.push('/login'),
+            child: LayoutBuilder(builder: (context, constraints) {
+              return Container(
+                height: 60,
+                padding: const EdgeInsets.all(12.0),
+                margin: EdgeInsets.only(bottom: 8.0),
+                decoration: BoxDecoration(
+                  color: snapshot.hasData
+                      ? DEFAULT_PAGE_BG_COLOR
+                      : Colors.red, // .withValues(alpha: 16),
+                  borderRadius: BorderRadius.circular(16.0),
+                  boxShadow: [
+                    // BoxShadow(
+                    //   color: Colors.black.withOpacity(0.1),
+                    //   blurRadius: 4,
+                    //   offset: const Offset(0, 2),
+                    // ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: constraints.maxWidth * 0.75,
+                      child: snapshot.hasData
+                          ? Text(
+                              // 'Assalamu Alaikum, ${capitalize(AuthService().currentUser?.displayName ?? AuthService().currentUser?.email?.split('@').first ?? '')}!',
+                              AuthService().currentUser?.displayName != null
+                                  ? 'Assalamu Alaikum, ${firstName(AuthService().currentUser?.displayName)}'
+                                  : 'Assalamu Alaikum',
+                            )
+                          : Text(
+                              'Sign in to sync bookmarks and recent pages',
+                              style: TextStyle(
+                                color: snapshot.hasData
+                                    ? Colors.black
+                                    : Colors.white,
                               ),
-                            );
-                          },
-                        )
-                      : IconButton(
-                          icon: const Icon(Icons.login, color: Colors.green),
-                          onPressed: () => context.push('/login'),
-                        ),
-                ],
-              ),
-            );
-          });
+                            ),
+                    ),
+                    const Spacer(),
+                    Icon(
+                      snapshot.hasData ? Icons.logout : Icons.login,
+                      color: snapshot.hasData ? Colors.red : Colors.white,
+                    ),
+                    // snapshot.hasData
+                    // ? IconButton(
+                    //     icon: const Icon(Icons.logout, color: Colors.red),
+                    //     onPressed: _onLogin,
+                    //   )
+                    // : IconButton(
+                    //     icon: const Icon(Icons.login, color: Colors.green),
+                    //     onPressed: ,
+                    //   ),
+                  ],
+                ),
+              );
+            }),
+          );
         });
   }
 }

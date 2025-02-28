@@ -22,6 +22,10 @@ func SetupHandlers(router *gin.Engine, db db.Database) {
 	authenicated := r.Group("")
 	authenicated.Use(auth.Middleware(db))
 
+	// recent pages
+	recentPages := authenicated.Group("/recent-pages")
+	recentPages.GET("", GetRecentPages)
+
 	bookmarks := authenicated.Group("/bookmarks")
 	// bookmarks.Use(middlewares.JWTAuthentication())
 	bookmarks.GET("", GetBookmarks)

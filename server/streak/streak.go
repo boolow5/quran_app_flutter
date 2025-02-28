@@ -37,6 +37,13 @@ type UserStreak struct {
 	LastActiveDate sql.NullTime `json:"last_active_date" db:"last_active_date"`
 }
 
+type RecentPage struct {
+	PageNumber int       `json:"page_number" db:"page_number"`
+	SurahName  string    `json:"surah_name" db:"surah_name"`
+	StartDate  time.Time `json:"start_date" db:"start_date"`
+	EndDate    time.Time `json:"end_date" db:"end_date"`
+}
+
 // RecordReadingEvent stores a new reading event
 func RecordReadingEvent(ctx context.Context, db db.Database, event ReadingEvent) error {
 	query := `
@@ -44,6 +51,18 @@ func RecordReadingEvent(ctx context.Context, db db.Database, event ReadingEvent)
 		(user_id, page_number, surah_name, seconds_open, created_at) 
 		VALUES (?, ?, ?, ?, ?)
 	`
+
+	// validation
+	if event.SecondsOpen < 30 {
+		return fmt.Errorf("seconds_open must be greater than 30")
+	}
+	if event.SecondsOpen > 600 {
+		event.SecondsOpen = 600
+	}
+	if event.PageNumber < 1 || event.PageNumber > 604 {
+		return fmt.Errorf("page_number must be between 1 and 604")
+	}
+
 	_, err := db.Insert(ctx, query, event.UserID, event.PageNumber, event.SurahName, event.SecondsOpen, event.CreatedAt)
 	if err != nil {
 		return fmt.Errorf("failed to record reading event: %w", err)
@@ -243,35 +262,22 @@ func GetUserStreak(ctx context.Context, db db.Database, userID uint64) (UserStre
 	return streak, nil
 }
 
-func NotifyUsersToKeepStreak(ctx context.Context, db db.Database) error {
-	var userIDs []uint64
+func GetRecentPages(ctx context.Context, db db.Database, userID uint64, limit int) ([]RecentPage, error) {
+	var pages []RecentPage
 	query := `
-    SELECT user_id
-    FROM user_streaks
-    WHERE current_streak >= 10
+  SELECT
+      DISTINCT page_number,
+      surah_name,
+      created_at as start_date
+  FROM meezansync_app_db.reading_events
+  WHERE user_id = ? AND seconds_open >= 30
+  ORDER BY created_at DESC
+  LIMIT ?;
   `
 
-	err := db.Select(ctx, &userIDs, query)
+	err := db.Select(ctx, &pages, query, userID, limit)
 	if err != nil {
-		return fmt.Errorf("failed to get active users: %w", err)
+		return nil, err
 	}
-
-	for _, userID := range userIDs {
-		err := NotifyUserToKeepStreak(ctx, db, userID)
-		if err != nil {
-			// Log error but continue with other users
-			fmt.Printf("Error notifying user %d: %v\n", userID, err)
-		}
-	}
-
-	return nil
-}
-
-func NotifyUserToKeepStreak(ctx context.Context, db db.Database, userID uint64) error {
-	// get firebase app instance
-
-	// get user device token
-
-	// send notification
-	return nil
+	return pages, nil
 }

@@ -58,7 +58,7 @@ func (fa *FirebaseAuth) Middleware(db db.Database) gin.HandlerFunc {
 			return
 		}
 
-		fmt.Printf("[middleware] Authorization header: \n\t%v\n", authHeader)
+		// fmt.Printf("[middleware] Authorization header: \n\t%v\n", authHeader)
 
 		// Remove 'Bearer ' prefix
 		idToken := strings.Replace(authHeader, "Bearer ", "", 1)
@@ -227,6 +227,9 @@ func SyncFirebaseUser(ctx context.Context, db db.Database, firebaseUser models.U
 	query = `
     INSERT INTO users (uid, email, name)
     VALUES (?, ?, ?)
+    ON DUPLICATE KEY UPDATE
+    email = VALUES(email),
+    name = VALUES(name)
   `
 	insertedID, err := db.Insert(ctx, query, user.UID, user.Email, user.Name)
 	if err == nil {

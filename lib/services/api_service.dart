@@ -36,7 +36,7 @@ class ApiService {
         onRequest: (options, handler) async {
           // Get fresh token before each request
           final token = await _authService.getIdToken();
-          print("[API] Token: $token");
+          // print("[API] Token: $token");
           options.headers['Content-Type'] = 'application/json';
           if (token != null) {
             options.headers['Authorization'] = 'Bearer $token';

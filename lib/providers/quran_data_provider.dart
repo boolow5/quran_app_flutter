@@ -29,16 +29,21 @@ class RecentPage {
 
   // Create from JSON
   factory RecentPage.fromJson(Map<String, dynamic> json) {
-    final startDate = parseDateTime(json['startDate']) ?? DateTime.now();
-    print("startDate: ${json['startDate']} -> $startDate");
-    final endDate = parseDateTime(json['endDate']);
-    print("endDate: ${json['endDate']} -> $endDate");
+    final startDate = parseDateTime(json['start_date']) ?? DateTime.now();
+    print("start_date: ${json['start_date']} -> $startDate");
+    final endDate = json['end_date'] != null &&
+            !json['end_date'].toString().startsWith("000")
+        ? parseDateTime(json['end_date'])
+        : null;
+    print("endDate: ${json['end_date']} -> $endDate");
 
     return RecentPage(
-      pageNumber: parseField<int?>(json, 'pageNumber', null) ?? 0,
-      suraName: parseField<String?>(json, 'suraName', null) ?? "",
+      pageNumber: parseField<int?>(json, 'page_number', null) ?? 0,
+      suraName: parseField<String?>(json, 'surah_name', null) ?? "",
       startDate: startDate,
-      endDate: endDate,
+      endDate: (endDate?.year ?? 0) == 0
+          ? startDate.add(const Duration(seconds: 30))
+          : endDate,
     );
   }
 
@@ -143,8 +148,9 @@ class QuranDataProvider extends ChangeNotifier {
       final List<dynamic> decoded = json.decode(recentPagesJson);
       _recentPages.clear();
       _recentPages.addAll(
-        decoded
-            .map((item) => RecentPage.fromJson(item as Map<String, dynamic>)),
+        decoded.map(
+          (item) => RecentPage.fromJson(item as Map<String, dynamic>),
+        ),
       );
       notifyListeners();
     }
@@ -278,7 +284,7 @@ class QuranDataProvider extends ChangeNotifier {
     bool isDoublePage = false,
     int? secondsOpen = 0,
   }) async {
-    if (secondsOpen != null && secondsOpen > 0) {
+    if (secondsOpen != null && secondsOpen > 30) {
       final page = RecentPage(
         pageNumber: pageNumber,
         suraName: suraName,
@@ -457,5 +463,27 @@ class QuranDataProvider extends ChangeNotifier {
     print("createOrUpdateFCMToken: ${resp}");
 
     return;
+  }
+
+  Future<void> getRecentPages() async {
+    try {
+      final resp = await apiService.get(path: "/api/v1/recent-pages");
+      print("getRecentPages: $resp");
+      if (resp != null && resp.isNotEmpty) {
+        print("getRecentPages Success: ${resp.length}");
+        final recentPages = resp ?? [];
+        _recentPages = List<RecentPage>.from(
+            recentPages.map((item) => RecentPage.fromJson(item)));
+        print("getRecentPages: ${prettyJson(_recentPages)}");
+        _saveRecentPages();
+      } else {
+        print("getRecentPages Failed: ${resp}");
+        throw resp['message'] ?? 'Something went wrong';
+      }
+    } on DioException catch (e) {
+      print("getRecentPages Dio Error: $e");
+    } catch (e) {
+      print("getRecentPages Uknown Error: $e");
+    }
   }
 }

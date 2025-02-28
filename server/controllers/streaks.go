@@ -9,6 +9,32 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetRecentPages(c *gin.Context) {
+	userID, ok := c.MustGet("db_user_id").(uint64)
+	if !ok {
+		fmt.Printf("[controllers.GetBookmarks] user_id not found\n")
+		c.JSON(400, gin.H{
+			"error": "user_id not found",
+		})
+		return
+	}
+
+	pages, err := streak.GetRecentPages(c.Request.Context(), models.MySQLDB, userID, 3)
+	if err != nil {
+		fmt.Printf("[controllers.GetRecentPages] Error getting recent pages: %v\n", err)
+		c.JSON(500, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if pages == nil {
+		pages = []streak.RecentPage{}
+	}
+
+	c.JSON(200, pages)
+}
+
 func RecordReadingEvent(c *gin.Context) {
 	userID, ok := c.MustGet("db_user_id").(uint64)
 	if !ok {

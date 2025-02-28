@@ -32,7 +32,8 @@ func main() {
 	}
 
 	log.Printf("Starting '%s' server...\n", os.Getenv("APP_NAME"))
-	// Just to force the github action to start, without actually doing anything
+	// Just to force the github action to start,
+	// without actually doing anything
 
 	// gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()

@@ -57,6 +57,8 @@ func UpdateDailySummary(ctx context.Context, db db.Database, userID uint64, date
 	// Format date as YYYY-MM-DD for SQL
 	dateStr := date.Format("2006-01-02")
 
+	fmt.Printf("Updating daily summary for user: %d, date: %s\n", userID, dateStr)
+
 	// Calculate total seconds for the day
 	var totalSeconds int
 	query := `
@@ -73,6 +75,8 @@ func UpdateDailySummary(ctx context.Context, db db.Database, userID uint64, date
 	// Check if threshold is met
 	thresholdMet := totalSeconds >= MinReadingTimeThreshold
 
+	fmt.Printf("Total seconds: %d, threshold met: %t\n", totalSeconds, thresholdMet)
+
 	// Upsert daily summary
 	upsertQuery := `
 		INSERT INTO daily_summaries (user_id, date, total_seconds, threshold_met)
@@ -83,9 +87,11 @@ func UpdateDailySummary(ctx context.Context, db db.Database, userID uint64, date
 	`
 	_, err = db.Exec(ctx, upsertQuery, userID, dateStr, totalSeconds, thresholdMet)
 	if err != nil {
+		fmt.Printf("Failed to upsert daily summary: %v\n", err)
 		return fmt.Errorf("failed to update daily summary: %w", err)
 	}
 
+	fmt.Printf("Updated daily summary for user: %d, date: %s\n", userID, dateStr)
 	// Update streak if needed
 	return UpdateStreak(ctx, db, userID, date, thresholdMet)
 }
@@ -188,9 +194,9 @@ func UpdateStreak(ctx context.Context, db db.Database, userID uint64, today time
 }
 
 // ProcessDailyStreaks is a function that can be run as a daily scheduled job
-func ProcessDailyStreaks(ctx context.Context, db db.Database) error {
+func ProcessDailyStreaks(ctx context.Context, db db.Database, todayDate time.Time) error {
 	// Get all users who had reading activity today
-	today := time.Now().Format("2006-01-02")
+	today := todayDate.Format("2006-01-02")
 
 	var userIDs []uint64
 	query := `
@@ -206,7 +212,7 @@ func ProcessDailyStreaks(ctx context.Context, db db.Database) error {
 
 	// Process each user's streak
 	for _, userID := range userIDs {
-		err := UpdateDailySummary(ctx, db, userID, time.Now())
+		err := UpdateDailySummary(ctx, db, userID, todayDate)
 		if err != nil {
 			// Log error but continue with other users
 			fmt.Printf("Error updating streak for user %d: %v\n", userID, err)
@@ -235,4 +241,37 @@ func GetUserStreak(ctx context.Context, db db.Database, userID uint64) (UserStre
 	}
 
 	return streak, nil
+}
+
+func NotifyUsersToKeepStreak(ctx context.Context, db db.Database) error {
+	var userIDs []uint64
+	query := `
+    SELECT user_id
+    FROM user_streaks
+    WHERE current_streak >= 10
+  `
+
+	err := db.Select(ctx, &userIDs, query)
+	if err != nil {
+		return fmt.Errorf("failed to get active users: %w", err)
+	}
+
+	for _, userID := range userIDs {
+		err := NotifyUserToKeepStreak(ctx, db, userID)
+		if err != nil {
+			// Log error but continue with other users
+			fmt.Printf("Error notifying user %d: %v\n", userID, err)
+		}
+	}
+
+	return nil
+}
+
+func NotifyUserToKeepStreak(ctx context.Context, db db.Database, userID uint64) error {
+	// get firebase app instance
+
+	// get user device token
+
+	// send notification
+	return nil
 }

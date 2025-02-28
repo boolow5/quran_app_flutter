@@ -2,7 +2,12 @@ module github.com/boolow5/quran-app-api
 
 go 1.23.4
 
-require github.com/gin-gonic/gin v1.10.0
+require (
+	github.com/boolow5/redis v0.1.1
+	github.com/gin-gonic/gin v1.10.0
+	github.com/robfig/cron/v3 v3.0.0
+	google.golang.org/api v0.170.0
+)
 
 require (
 	cloud.google.com/go v0.112.1 // indirect
@@ -14,7 +19,6 @@ require (
 	cloud.google.com/go/storage v1.40.0 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/MicahParks/keyfunc v1.9.0 // indirect
-	github.com/boolow5/redis v0.1.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
@@ -36,7 +40,6 @@ require (
 	golang.org/x/oauth2 v0.18.0 // indirect
 	golang.org/x/sync v0.6.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
-	google.golang.org/api v0.170.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/appengine/v2 v2.0.2 // indirect
 	google.golang.org/genproto v0.0.0-20240213162025-012b6fc9bca9 // indirect
@@ -46,6 +49,7 @@ require (
 )
 
 require (
+	firebase.google.com/go v3.13.0+incompatible
 	firebase.google.com/go/v4 v4.15.1
 	github.com/bytedance/sonic v1.11.6 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
@@ -68,7 +72,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
-	github.com/redis/go-redis/v9 v9.7.0
+	github.com/redis/go-redis/v9 v9.7.0 // indirect
 	github.com/sirupsen/logrus v1.9.3
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect

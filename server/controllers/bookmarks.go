@@ -26,6 +26,10 @@ func GetBookmarks(c *gin.Context) {
 		return
 	}
 
+	if bookmarks == nil {
+		bookmarks = []models.Bookmark{}
+	}
+
 	c.JSON(200, bookmarks)
 }
 

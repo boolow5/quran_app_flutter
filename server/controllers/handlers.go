@@ -10,7 +10,8 @@ import (
 
 func SetupHandlers(router *gin.Engine, db db.Database) {
 	// Initialize Firebase Auth
-	auth, err := middlewares.NewFirebaseAuth("./meezansync-95a7c-firebase-adminsdk-plq74-147577be30.json")
+	// "./meezansync-95a7c-firebase-adminsdk-plq74-147577be30.json"
+	auth, err := middlewares.NewFirebaseAuth("")
 	if err != nil {
 		log.Fatalf("Error initializing Firebase Auth: %v", err)
 	}
@@ -34,4 +35,8 @@ func SetupHandlers(router *gin.Engine, db db.Database) {
 
 	// /api/v1/login
 	authenicated.POST("/login", auth.Login(db))
+
+	// notifications
+	notifications := authenicated.Group("/notifications")
+	notifications.POST("/device-fcm-token", CreateOrUpdateFCMToken)
 }

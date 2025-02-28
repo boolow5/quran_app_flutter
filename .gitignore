@@ -53,4 +53,4 @@ server/meezansync-*.json
 *.env*
 server/.env*
 .secret*
-
+server/bin/

@@ -3,10 +3,11 @@ CREATE TABLE IF NOT EXISTS users (
   uid varchar(100) NOT NULL,
   email varchar(100) NOT NULL,
   name varchar(100) NOT NULL,
+  timezone VARCHAR(50) DEFAULT 'UTC',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY idx_uid (uid)
-)
+);
 
 ----------------------------------
 CREATE TABLE IF NOT EXISTS reading_events (
@@ -37,3 +38,12 @@ CREATE TABLE IF NOT EXISTS user_streaks (
     last_active_date DATE
 );
 
+----------------------------------
+CREATE TABLE IF NOT EXISTS user_devices (
+    id bigint unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    uid VARCHAR(255) NOT NULL,
+    user_id bigint unsigned NOT NULL,
+    device_token VARCHAR(255) NOT NULL,
+    -- add index for user_id and uid
+    INDEX idx_user_id_uid (user_id, uid)
+);

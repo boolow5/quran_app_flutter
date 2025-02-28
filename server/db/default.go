@@ -18,7 +18,13 @@ func InitTables(db Database) {
 	// read file
 	fileContent, err := os.ReadFile(filePath)
 	if err != nil {
-		panic(fmt.Sprintf("[DB] Failed to read create_tables.sql file: %v", err))
+		if err.Error() == "no such file or directory" {
+			filePath = "./create_tables.sql"
+			fileContent, err = os.ReadFile(filePath)
+		}
+		if err != nil {
+			panic(fmt.Sprintf("[DB] Failed to read create_tables.sql file: %v", err))
+		}
 	}
 
 	// trim

@@ -9,6 +9,8 @@ import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/models/sura.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
 import 'package:quran_app_flutter/providers/quran_data_provider.dart';
+import 'package:quran_app_flutter/services/auth.dart';
+import 'package:quran_app_flutter/services/push_notifications.dart';
 import 'package:quran_app_flutter/utils/gradients.dart';
 import 'package:quran_app_flutter/utils/utils.dart';
 
@@ -57,6 +59,28 @@ class _HomeState extends State<Home> {
     Future.delayed(Duration(seconds: 1), () {
       if (!mounted) return;
       context.read<QuranDataProvider>().getBookmarks();
+
+      // if logged in
+      AuthService().authStateChanges.listen((user) {
+        if (!mounted) return;
+        context.read<QuranDataProvider>().getUserStreak();
+      });
+    });
+
+    Future.delayed(const Duration(seconds: 5), () {
+      if (!mounted) return;
+      PushNotifications.init(context.read<QuranDataProvider>().fcmToken ?? "")
+          .then((token) {
+        print("\nPushNotifications.init token: $token");
+        print("\n");
+
+        if (context.read<QuranDataProvider>().fcmToken != token) {
+          context.read<QuranDataProvider>().fcmToken = token;
+        }
+
+        if (!mounted) return;
+        context.read<QuranDataProvider>().createOrUpdateFCMToken(token);
+      });
     });
   }
 
@@ -304,6 +328,53 @@ class _HomeState extends State<Home> {
                             crossAxisSpacing: 12.0,
                             childAspectRatio: 16 / 11,
                             children: [
+                              AnimatedGradientCard(
+                                colors: context
+                                            .watch<QuranDataProvider>()
+                                            .userStreakDays >
+                                        0
+                                    ? GradientColors.orange
+                                    : GradientColors.grey,
+                                duration: const Duration(seconds: 26),
+                                padding: const EdgeInsets.all(16.0),
+                                child: InkWell(
+                                  onTap: () => print("Streak Clicked"),
+                                  borderRadius: BorderRadius.circular(16.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        context
+                                            .watch<QuranDataProvider>()
+                                            .userStreakDays
+                                            .toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge
+                                            ?.copyWith(
+                                              color: Colors.white,
+                                              shadows: shadows,
+                                              fontSize: 32,
+                                              fontWeight: FontWeight.w800,
+                                            ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        "days streak",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleSmall
+                                            ?.copyWith(
+                                              color: Colors.white,
+                                              shadows: shadows,
+                                            ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                               _buildMenuItem(
                                 context,
                                 'Table of Contents',
@@ -333,50 +404,6 @@ class _HomeState extends State<Home> {
                               //     () => context.go('/settings'),
                               //     GradientColors.purple,
                               //     duration: const Duration(seconds: 26)),
-                              AnimatedGradientCard(
-                                colors: context
-                                            .read<QuranDataProvider>()
-                                            .daysStreak >
-                                        0
-                                    ? GradientColors.orange
-                                    : GradientColors.grey,
-                                duration: const Duration(seconds: 26),
-                                padding: const EdgeInsets.all(16.0),
-                                child: InkWell(
-                                  onTap: () => print("Streak Clicked"),
-                                  borderRadius: BorderRadius.circular(16.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "15",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge
-                                            ?.copyWith(
-                                              color: Colors.white,
-                                              shadows: shadows,
-                                              fontSize: 32,
-                                              fontWeight: FontWeight.w800,
-                                            ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        "days streak",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleSmall
-                                            ?.copyWith(
-                                              color: Colors.white,
-                                              shadows: shadows,
-                                            ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
                             ],
                           );
                         },

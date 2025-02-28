@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' show pi, sin, cos, tan, atan2;
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
@@ -16,6 +17,7 @@ class QiblaCompass extends StatefulWidget {
 
 class _QiblaCompassState extends State<QiblaCompass>
     with SingleTickerProviderStateMixin {
+  StreamSubscription<CompassEvent>? _subscription;
   double _qiblaDirectionDegrees = 0;
   double? heading;
   bool hasPermission = false;
@@ -35,11 +37,17 @@ class _QiblaCompassState extends State<QiblaCompass>
     _checkLocationPermission();
 
     // Initialize heading listener
-    FlutterCompass.events?.listen((event) {
+    _subscription = FlutterCompass.events?.listen((event) {
       if (event.heading != null) {
         _updateHeading(event.heading!);
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
   }
 
   void _updateHeading(double newHeading) {
@@ -121,11 +129,6 @@ class _QiblaCompassState extends State<QiblaCompass>
     qiblaDirection = (qiblaDirection * 180 / pi + 360) % 360;
 
     return qiblaDirection;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override

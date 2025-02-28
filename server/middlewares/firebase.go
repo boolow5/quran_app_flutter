@@ -2,13 +2,15 @@ package middlewares
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
-	"time"
 
 	firebase "firebase.google.com/go/v4"
 	"github.com/boolow5/quran-app-api/db"
+	"github.com/boolow5/quran-app-api/models"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/api/option"
 )
@@ -17,19 +19,22 @@ type FirebaseAuth struct {
 	app *firebase.App
 }
 
-// User represents the Firebase user information we'll attach to the request context
-type User struct {
-	ID        uint64    `json:"id" db:"id"`
-	UID       string    `json:"uid" db:"uid"`
-	Email     string    `json:"email" db:"email"`
-	Name      string    `json:"name" db:"name"`
-	CreatedAt time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
-}
-
 // NewFirebaseAuth initializes Firebase Auth
 func NewFirebaseAuth(credentialsFile string) (*FirebaseAuth, error) {
 	opt := option.WithCredentialsFile(credentialsFile)
+	if credentialsFile == "" {
+		s := os.Getenv("FIREBASE_CREDENTIALS")
+		fmt.Printf("FIREBASE_CREDENTIALS: %v...\n", s[:10])
+		credentialsJSON, err := base64.StdEncoding.DecodeString(s)
+		if err != nil {
+			return nil, err
+		}
+
+		opt = option.WithCredentialsJSON(credentialsJSON)
+	} else {
+		fmt.Printf("FIREBASE_CREDENTIALS: %v\n", credentialsFile)
+	}
+
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
 		return nil, fmt.Errorf("error initializing firebase: %v", err)
@@ -52,6 +57,8 @@ func (fa *FirebaseAuth) Middleware(db db.Database) gin.HandlerFunc {
 			})
 			return
 		}
+
+		fmt.Printf("[middleware] Authorization header: \n\t%v\n", authHeader)
 
 		// Remove 'Bearer ' prefix
 		idToken := strings.Replace(authHeader, "Bearer ", "", 1)
@@ -106,7 +113,7 @@ func (fa *FirebaseAuth) Middleware(db db.Database) gin.HandlerFunc {
 		fmt.Printf("[middleware] User ID: %s\n", token.UID)
 
 		// Create user object from token claims
-		user := User{
+		user := models.User{
 			UID:   id,
 			Email: email,
 		}
@@ -123,6 +130,8 @@ func (fa *FirebaseAuth) Middleware(db db.Database) gin.HandlerFunc {
 			return
 		}
 
+		fmt.Printf("[middleware] dbID: %v\n", dbID)
+
 		// Set user in Gin context
 		c.Set("db_user_id", dbID)
 		c.Set("user_id", id)
@@ -133,7 +142,7 @@ func (fa *FirebaseAuth) Middleware(db db.Database) gin.HandlerFunc {
 
 func (fa *FirebaseAuth) Login(db db.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		form := User{}
+		form := models.User{}
 
 		if err := c.ShouldBind(&form); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -145,7 +154,7 @@ func (fa *FirebaseAuth) Login(db db.Database) gin.HandlerFunc {
 		fmt.Printf("[middleware] Login User: %+v\n", form)
 
 		// get user by uid
-		var user User
+		var user models.User
 		query := "SELECT * FROM users WHERE uid = ?"
 		err := db.Get(c.Request.Context(), &user, query, form.UID)
 		if err != nil {
@@ -180,8 +189,8 @@ func (fa *FirebaseAuth) Login(db db.Database) gin.HandlerFunc {
 		})
 	}
 }
-func SyncFirebaseUser(ctx context.Context, db db.Database, firebaseUser User) (id uint64, err error) {
-	var user User = User{UID: firebaseUser.UID, Email: firebaseUser.Email, Name: firebaseUser.Name}
+func SyncFirebaseUser(ctx context.Context, db db.Database, firebaseUser models.User) (id uint64, err error) {
+	var user models.User = models.User{UID: firebaseUser.UID, Email: firebaseUser.Email, Name: firebaseUser.Name}
 	query := "SELECT * FROM users WHERE uid = ?"
 	err = db.Get(ctx, &user, query, firebaseUser.UID)
 	if err != nil {
@@ -193,10 +202,22 @@ func SyncFirebaseUser(ctx context.Context, db db.Database, firebaseUser User) (i
 
 	if user.ID > 0 { // Found in database
 		fmt.Printf("[middleware] User found in database: %v\n", user)
-		user.Email = firebaseUser.Email
-		user.Name = firebaseUser.Name
+		changed := false
+		if strings.TrimSpace(firebaseUser.Name) != "" {
+			user.Name = firebaseUser.Name
+			changed = true
+		}
 
-		_, err := db.Exec(ctx, "UPDATE users SET email = ?, name = ? WHERE uid = ?", user.Email, user.Name, user.UID)
+		if strings.TrimSpace(firebaseUser.Email) != "" {
+			user.Email = firebaseUser.Email
+			changed = true
+		}
+
+		if changed {
+			_, err = db.Exec(ctx, "UPDATE users SET email = ?, name = ? WHERE uid = ?", user.Email, user.Name, user.UID)
+		} else {
+			err = fmt.Errorf("Missing name or email")
+		}
 		return user.ID, err
 	}
 
@@ -216,11 +237,11 @@ func SyncFirebaseUser(ctx context.Context, db db.Database, firebaseUser User) (i
 }
 
 // GetUser helper function to get user from Gin context
-func GetUser(c *gin.Context) (*User, bool) {
+func GetUser(c *gin.Context) (*models.User, bool) {
 	user, exists := c.Get("user")
 	if !exists {
 		return nil, false
 	}
-	u, ok := user.(*User)
+	u, ok := user.(*models.User)
 	return u, ok
 }

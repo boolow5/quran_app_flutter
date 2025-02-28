@@ -10,19 +10,28 @@ import (
 	"github.com/boolow5/quran-app-api/controllers"
 	"github.com/boolow5/quran-app-api/db"
 	"github.com/boolow5/quran-app-api/models"
-	"github.com/boolow5/quran-app-api/streak"
+	"github.com/boolow5/quran-app-api/notifications"
 	rdb "github.com/boolow5/redis"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
+var (
+	Version     = ""
+	BuiltAt     = time.Now().Format("2006-01-02 15:04:05")
+	BuildCommit = ""
+	StartedAt   = time.Now()
+)
+
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		fmt.Println("⚠ Error loading .env file")
+	} else {
+		fmt.Println("✅ Loaded .env file")
 	}
 
-	log.Printf("Starting %s server...\n", os.Getenv("APP_NAME"))
+	log.Printf("Starting '%s' server...\n", os.Getenv("APP_NAME"))
 
 	// gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
@@ -31,15 +40,16 @@ func main() {
 
 	controllers.SetupHandlers(router, db)
 
-	go ProcessDailyStreaks()
+	go StartCronJobs(db)
 
 	router.Run("0.0.0.0:1140")
 }
 
 func SetupServices() db.Database {
+	fmt.Printf("Connecting to redis on %s\n", os.Getenv("REDIS_HOST"))
 	redisDB, err := rdb.NewRedisDB("", "", 0)
 	if err != nil {
-		panic(err)
+		panic(fmt.Sprintf("Failed to connect to redis: %v", err))
 	}
 	if redisDB == nil {
 		panic("RedisDB is nil")
@@ -67,13 +77,8 @@ func SetupServices() db.Database {
 	models.MySQLDB = mysql
 
 	db.InitTables(mysql)
+
+	notifications.InitFirebase()
+
 	return mysql
-}
-
-func ProcessDailyStreaks() {
-	for {
-		streak.ProcessDailyStreaks(context.Background(), models.MySQLDB)
-
-		time.Sleep(24 * time.Hour)
-	}
 }

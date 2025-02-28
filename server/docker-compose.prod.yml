@@ -1,0 +1,21 @@
+services:
+  quran_app:
+    image: ghcr.io/boolow5/quran_app:latest
+    ports:
+      - "1140:1140"
+    environment:
+      - APP_NAME=MEEZAN_SYNC
+      - QURAN_API_MYSQL_CREATE_TABLES_PATH=/app/create_tables.sql
+      - FCM_ICON=https://legal.mahad.dev/documents/icon-512.png
+      - REDIS_HOST=host.docker.internal
+    env_file:
+      - .env
+    networks:
+      - quran_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  quran_network:
+    name: quran_network
+    driver: bridge

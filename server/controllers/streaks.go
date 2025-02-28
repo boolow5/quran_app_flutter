@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/boolow5/quran-app-api/models"
@@ -11,20 +10,11 @@ import (
 )
 
 func RecordReadingEvent(c *gin.Context) {
-	userIDStr, ok := c.MustGet("db_user_id").(string)
+	userID, ok := c.MustGet("db_user_id").(uint64)
 	if !ok {
 		fmt.Printf("[controllers.GetBookmarks] user_id not found\n")
 		c.JSON(400, gin.H{
 			"error": "user_id not found",
-		})
-		return
-	}
-
-	userID, err := strconv.ParseUint(userIDStr, 10, 64)
-	if err != nil {
-		fmt.Printf("[controllers.GetBookmarks] Error parsing user_id: %v\n", err)
-		c.JSON(400, gin.H{
-			"error": err.Error(),
 		})
 		return
 	}
@@ -39,8 +29,9 @@ func RecordReadingEvent(c *gin.Context) {
 	}
 
 	form.UserID = userID
+	form.CreatedAt = time.Now()
 
-	err = streak.RecordReadingEvent(c.Request.Context(), models.MySQLDB, form)
+	err := streak.RecordReadingEvent(c.Request.Context(), models.MySQLDB, form)
 	if err != nil {
 		fmt.Printf("[controllers.GetBookmarks] Error getting bookmarks: %v\n", err)
 		c.JSON(500, gin.H{
@@ -65,20 +56,11 @@ func RecordReadingEvent(c *gin.Context) {
 }
 
 func UpdateDailySummary(c *gin.Context) {
-	userIDStr, ok := c.MustGet("db_user_id").(string)
+	userID, ok := c.MustGet("db_user_id").(uint64)
 	if !ok {
 		fmt.Printf("[controllers.GetBookmarks] user_id not found\n")
 		c.JSON(400, gin.H{
 			"error": "user_id not found",
-		})
-		return
-	}
-
-	userID, err := strconv.ParseUint(userIDStr, 10, 64)
-	if err != nil {
-		fmt.Printf("[controllers.GetBookmarks] Error parsing user_id: %v\n", err)
-		c.JSON(400, gin.H{
-			"error": err.Error(),
 		})
 		return
 	}
@@ -94,7 +76,7 @@ func UpdateDailySummary(c *gin.Context) {
 		return
 	}
 
-	err = streak.UpdateDailySummary(c.Request.Context(), models.MySQLDB, userID, form.Date)
+	err := streak.UpdateDailySummary(c.Request.Context(), models.MySQLDB, userID, form.Date)
 	if err != nil {
 		fmt.Printf("[controllers.GetBookmarks] Error getting bookmarks: %v\n", err)
 		c.JSON(500, gin.H{
@@ -110,7 +92,7 @@ func UpdateDailySummary(c *gin.Context) {
 }
 
 func UpdateStreak(c *gin.Context) {
-	userIDStr, ok := c.MustGet("db_user_id").(string)
+	userID, ok := c.MustGet("db_user_id").(uint64)
 	if !ok {
 		fmt.Printf("[controllers.GetBookmarks] user_id not found\n")
 		c.JSON(400, gin.H{
@@ -119,19 +101,10 @@ func UpdateStreak(c *gin.Context) {
 		return
 	}
 
-	userID, err := strconv.ParseUint(userIDStr, 10, 64)
-	if err != nil {
-		fmt.Printf("[controllers.GetBookmarks] Error parsing user_id: %v\n", err)
-		c.JSON(400, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
 	if userID < 1 {
-		fmt.Printf("[controllers.GetBookmarks] Error parsing user_id: %v\n", err)
+		fmt.Printf("[controllers.GetBookmarks] Invalid user ID: %v\n", userID)
 		c.JSON(400, gin.H{
-			"error": err.Error(),
+			"error": "Invalid user ID",
 		})
 		return
 	}
@@ -148,7 +121,7 @@ func UpdateStreak(c *gin.Context) {
 		return
 	}
 
-	err = streak.UpdateStreak(c.Request.Context(), models.MySQLDB, userID, form.Date, form.Seconds > 300)
+	err := streak.UpdateStreak(c.Request.Context(), models.MySQLDB, userID, form.Date, form.Seconds > 300)
 	if err != nil {
 		fmt.Printf("[controllers.GetBookmarks] Error getting bookmarks: %v\n", err)
 		c.JSON(500, gin.H{
@@ -164,7 +137,7 @@ func UpdateStreak(c *gin.Context) {
 }
 
 func GetUserStreak(c *gin.Context) {
-	userIDStr, ok := c.MustGet("db_user_id").(string)
+	userID, ok := c.MustGet("db_user_id").(uint64)
 	if !ok {
 		fmt.Printf("[controllers.GetBookmarks] user_id not found\n")
 		c.JSON(400, gin.H{
@@ -173,19 +146,10 @@ func GetUserStreak(c *gin.Context) {
 		return
 	}
 
-	userID, err := strconv.ParseUint(userIDStr, 10, 64)
-	if err != nil {
-		fmt.Printf("[controllers.GetBookmarks] Error parsing user_id: %v\n", err)
-		c.JSON(400, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
 	if userID < 1 {
-		fmt.Printf("[controllers.GetBookmarks] Error parsing user_id: %v\n", err)
+		fmt.Printf("[controllers.GetBookmarks] Invalid user ID: %v\n", userID)
 		c.JSON(400, gin.H{
-			"error": err.Error(),
+			"error": "Invalid user ID",
 		})
 		return
 	}

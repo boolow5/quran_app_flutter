@@ -1,5 +1,0 @@
-services:
-  quran_app:
-    build: .
-    ports:
-      - "4300:80"

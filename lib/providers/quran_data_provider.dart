@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/models/sura.dart';
 import 'package:quran_app_flutter/services/api_service.dart';
 import 'package:quran_app_flutter/utils/utils.dart';
@@ -49,18 +48,66 @@ class RecentPage {
   }
 }
 
+/*
+// Golang struct for UserStreak
+type UserStreak struct {
+	UserID         uint64       `json:"user_id" db:"user_id"`
+	CurrentStreak  int          `json:"current_streak" db:"current_streak"`
+	LongestStreak  int          `json:"longest_streak" db:"longest_streak"`
+	LastActiveDate sql.NullTime `json:"last_active_date" db:"last_active_date"`
+}
+
+*/
+class UserStreak {
+  final int userID;
+  final int currentStreak;
+  final int longestStreak;
+  final DateTime? lastActiveDate;
+
+  UserStreak({
+    required this.userID,
+    required this.currentStreak,
+    required this.longestStreak,
+    this.lastActiveDate,
+  }) : assert(userID >= 0);
+
+  // Convert to JSON
+  Map<String, dynamic> toJson() => {
+        'user_id': userID,
+        'current_streak': currentStreak,
+        'longest_streak': longestStreak,
+        'last_active_date': lastActiveDate?.toIso8601String(),
+      };
+
+  // Create from JSON
+  factory UserStreak.fromJson(Map<String, dynamic> json) {
+    final lastActiveDate = parseDateTime(json['last_active_date']);
+    return UserStreak(
+      userID: parseField<int?>(json, 'user_id', null) ?? 0,
+      currentStreak: parseField<int?>(json, 'current_streak', null) ?? 0,
+      longestStreak: parseField<int?>(json, 'longest_streak', null) ?? 0,
+      lastActiveDate: lastActiveDate ?? DateTime.now(),
+    );
+  }
+}
+
 class QuranDataProvider extends ChangeNotifier {
   late Future<SharedPreferences> _storage;
   List<Sura> _tableOfContents = [];
   int _currentPage = 1;
   List<RecentPage> _recentPages = [];
   List<RecentPage> _bookmarks = [];
-  int _daysStreak = 0;
-  int _maxStreak = 0;
+  String? _fcmToken;
+
   static const int maxRecentPages = 10;
   static const String _recentPagesKey = 'recent_pages';
   late SharedPreferences _prefs;
   bool _initialized = false;
+  UserStreak _userStreak = UserStreak(
+    userID: 0,
+    currentStreak: 0,
+    longestStreak: 0,
+  );
 
   // Getters
   List<Sura> get tableOfContents => _tableOfContents;
@@ -70,8 +117,14 @@ class QuranDataProvider extends ChangeNotifier {
       List.unmodifiable(_bookmarks.reversed.take(100).toList());
   List<RecentPage> get currentRecentPages =>
       _recentPages.isNotEmpty ? _recentPages.reversed.take(3).toList() : [];
-  int get daysStreak => _daysStreak;
-  int get maxStreak => _maxStreak;
+
+  int get userStreakDays => _userStreak.currentStreak;
+  String? get fcmToken => _fcmToken;
+
+  set fcmToken(String? token) {
+    _fcmToken = token;
+    notifyListeners();
+  }
 
   // Initialize shared preferences
   Future<void> init(Future<SharedPreferences> storage) async {
@@ -219,12 +272,12 @@ class QuranDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setRecentPage(
+  Future<void> setRecentPage(
     int pageNumber,
     String suraName, {
     bool isDoublePage = false,
     int? secondsOpen = 0,
-  }) {
+  }) async {
     if (secondsOpen != null && secondsOpen > 0) {
       final page = RecentPage(
         pageNumber: pageNumber,
@@ -235,6 +288,17 @@ class QuranDataProvider extends ChangeNotifier {
       _recentPages.add(page);
       _saveRecentPages();
       notifyListeners();
+
+      try {
+        final saved = await sendReadEvent(pageNumber, suraName, secondsOpen);
+        if (saved) {
+          print("Read event sent successfully");
+        } else {
+          print("Error sending read event");
+        }
+      } catch (e) {
+        print("Error sending read event: $e");
+      }
     }
   }
 
@@ -341,15 +405,16 @@ class QuranDataProvider extends ChangeNotifier {
     bool sent = false;
     try {
       final resp = await apiService.post(
-        path: "/api/v1/read-read-event",
+        path: "/api/v1/streaks/read-event",
         data: {
           "page_number": pageNumber,
           "surah_name": suraName,
           "seconds_open": seconds,
         },
       );
-      if (resp != null && resp?.statusCode == 200) {
-        print("sendReadEvent Success: ${resp.data}");
+      print("sendReadEvent: $resp");
+      if (resp != null && resp["success"] == true) {
+        print("sendReadEvent Success: ${resp['message']}");
         sent = true;
       } else {
         print("sendReadEvent Failed: ${resp?.data}");
@@ -361,5 +426,36 @@ class QuranDataProvider extends ChangeNotifier {
       print("sendReadEvent Uknown Error: $e");
     }
     return sent;
+  }
+
+  Future<void> getUserStreak() async {
+    try {
+      final resp = await apiService.get(path: "/api/v1/streaks");
+      print("getUserStreak: $resp");
+      if (resp != null && resp["user_id"] > 0) {
+        print("getUserStreak Success: ${resp['current_streak']}");
+        _userStreak = UserStreak.fromJson(resp);
+        notifyListeners();
+      } else {
+        print("getUserStreak Failed: ${resp?.data}");
+        throw resp?.data['message'] ?? 'Something went wrong';
+      }
+    } on DioException catch (e) {
+      print("getUserStreak Dio Error: $e");
+    } catch (e) {
+      print("getUserStreak Uknown Error: $e");
+    }
+  }
+
+  Future<void> createOrUpdateFCMToken(String fcmToken) async {
+    print("createOrUpdateFCMToken: $fcmToken");
+    final resp = await apiService
+        .post(path: "/api/v1/notifications/device-fcm-token", data: {
+      "device_token": fcmToken,
+    });
+
+    print("createOrUpdateFCMToken: ${resp}");
+
+    return;
   }
 }

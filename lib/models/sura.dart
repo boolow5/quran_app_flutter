@@ -1,3 +1,5 @@
+import 'package:quran_app_flutter/utils/utils.dart';
+
 class Sura {
   final int number;
   final String name;
@@ -15,14 +17,35 @@ class Sura {
     required this.startPage,
   });
 
-  factory Sura.fromJson(Map<String, dynamic> json) {
-    return Sura(
-      number: json['number'],
-      name: json['name'],
-      transliteration: json['transliteration'],
-      englishName: json['englishName'],
-      type: json['type'],
-      startPage: json['startPage'],
-    );
+  factory Sura.fromJson(int number, Map<String, dynamic> json) {
+    try {
+      if (number < 1) {
+        number = parseField<int>(json, 'index', 0);
+      }
+      return Sura(
+        number: number,
+        name: parseField<String>(json, 'name', ''),
+        transliteration: parseField<String?>(json, 'tname',
+                parseField<String>(json, 'transliteration', '')) ??
+            '',
+        englishName: parseField<String?>(
+                json, 'ename', parseField<String>(json, 'englishName', '')) ??
+            '',
+        type: parseField<String>(json, 'type', ''),
+        startPage: parseField<int>(json, 'startPage', 0),
+      );
+    } catch (err) {
+      print("Error parsing sura: $err");
+      print((json));
+
+      return Sura(
+        number: 0,
+        name: "",
+        transliteration: "",
+        englishName: "",
+        type: "",
+        startPage: 0,
+      );
+    }
   }
 }

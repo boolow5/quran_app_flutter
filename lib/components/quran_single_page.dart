@@ -10,6 +10,7 @@ import 'package:quran_app_flutter/components/rounded_box_text.dart';
 import 'package:quran_app_flutter/components/verse_number.dart';
 import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/models/model.dart';
+import 'package:quran_app_flutter/models/sura.dart';
 import 'package:quran_app_flutter/providers/quran_data_provider.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
 import 'package:quran_app_flutter/utils/utils.dart';

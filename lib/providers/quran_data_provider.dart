@@ -1,100 +1,11 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:quran_app_flutter/models/model.dart';
 import 'package:quran_app_flutter/models/sura.dart';
 import 'package:quran_app_flutter/services/api_service.dart';
 import 'package:quran_app_flutter/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-class RecentPage {
-  final int pageNumber;
-  final String suraName;
-  final DateTime startDate;
-  DateTime? endDate;
-
-  RecentPage({
-    required this.pageNumber,
-    required this.suraName,
-    required this.startDate,
-    this.endDate,
-  });
-
-  // Convert to JSON
-  Map<String, dynamic> toJson() => {
-        'pageNumber': pageNumber,
-        'suraName': suraName,
-        'startDate': startDate.toIso8601String(),
-        'endDate': endDate?.toIso8601String(),
-      };
-
-  // Create from JSON
-  factory RecentPage.fromJson(Map<String, dynamic> json) {
-    final startDate = parseDateTime(json['start_date']) ?? DateTime.now();
-    print("start_date: ${json['start_date']} -> $startDate");
-    final endDate = json['end_date'] != null &&
-            !json['end_date'].toString().startsWith("000")
-        ? parseDateTime(json['end_date'])
-        : null;
-    print("endDate: ${json['end_date']} -> $endDate");
-
-    return RecentPage(
-      pageNumber: parseField<int?>(json, 'page_number', null) ?? 0,
-      suraName: parseField<String?>(json, 'surah_name', null) ?? "",
-      startDate: startDate,
-      endDate: (endDate?.year ?? 0) == 0
-          ? startDate.add(const Duration(seconds: 30))
-          : endDate,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'RecentPage(pageNumber: $pageNumber, suraName: $suraName, startDate: $startDate, endDate: $endDate)';
-  }
-}
-
-/*
-// Golang struct for UserStreak
-type UserStreak struct {
-	UserID         uint64       `json:"user_id" db:"user_id"`
-	CurrentStreak  int          `json:"current_streak" db:"current_streak"`
-	LongestStreak  int          `json:"longest_streak" db:"longest_streak"`
-	LastActiveDate sql.NullTime `json:"last_active_date" db:"last_active_date"`
-}
-
-*/
-class UserStreak {
-  final int userID;
-  final int currentStreak;
-  final int longestStreak;
-  final DateTime? lastActiveDate;
-
-  UserStreak({
-    required this.userID,
-    required this.currentStreak,
-    required this.longestStreak,
-    this.lastActiveDate,
-  }) : assert(userID >= 0);
-
-  // Convert to JSON
-  Map<String, dynamic> toJson() => {
-        'user_id': userID,
-        'current_streak': currentStreak,
-        'longest_streak': longestStreak,
-        'last_active_date': lastActiveDate?.toIso8601String(),
-      };
-
-  // Create from JSON
-  factory UserStreak.fromJson(Map<String, dynamic> json) {
-    final lastActiveDate = parseDateTime(json['last_active_date']);
-    return UserStreak(
-      userID: parseField<int?>(json, 'user_id', null) ?? 0,
-      currentStreak: parseField<int?>(json, 'current_streak', null) ?? 0,
-      longestStreak: parseField<int?>(json, 'longest_streak', null) ?? 0,
-      lastActiveDate: lastActiveDate ?? DateTime.now(),
-    );
-  }
-}
 
 class QuranDataProvider extends ChangeNotifier {
   late Future<SharedPreferences> _storage;
@@ -308,46 +219,6 @@ class QuranDataProvider extends ChangeNotifier {
     }
   }
 
-  // Helper method to format duration
-  String formatDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    String hours = twoDigits(duration.inHours);
-    String minutes = twoDigits(duration.inMinutes.remainder(60));
-    String seconds = twoDigits(duration.inSeconds.remainder(60));
-    return duration.inHours > 0
-        ? '$hours:$minutes:$seconds'
-        : '$minutes:$seconds';
-  }
-
-  // Get reading duration for a recent page
-  String getReadingDuration(RecentPage page) {
-    if (page.endDate == null) return 'Reading...';
-
-    final duration = page.endDate!.difference(page.startDate);
-    return formatDuration(duration);
-  }
-
-  // Get time elapsed since reading
-  String timeSinceReading(RecentPage page, {bool start = false}) {
-    final DateTime referenceTime =
-        (start ? page.startDate : page.endDate) ?? DateTime.now();
-    final Duration elapsed = DateTime.now().difference(referenceTime);
-
-    if (elapsed.inMinutes < 1) {
-      return 'Just now';
-    } else if (elapsed.inHours < 1) {
-      return '${elapsed.inMinutes}m ago';
-    } else if (elapsed.inDays < 1) {
-      return '${elapsed.inHours}h ago';
-    } else if (elapsed.inDays < 30) {
-      return '${elapsed.inDays}d ago';
-    } else if (elapsed.inDays < 365) {
-      return '${(elapsed.inDays / 30).floor()}mon ago';
-    } else {
-      return '${(elapsed.inDays / 365).floor()}yr ago';
-    }
-  }
-
   Future<void> getBookmarks() async {
     try {
       final resp = await apiService.get(path: "/api/v1/bookmarks");
@@ -454,15 +325,17 @@ class QuranDataProvider extends ChangeNotifier {
   }
 
   Future<void> createOrUpdateFCMToken(String fcmToken) async {
-    print("createOrUpdateFCMToken: $fcmToken");
-    final resp = await apiService
-        .post(path: "/api/v1/notifications/device-fcm-token", data: {
-      "device_token": fcmToken,
-    });
+    try {
+      print("createOrUpdateFCMToken: $fcmToken");
+      final resp = await apiService
+          .post(path: "/api/v1/notifications/device-fcm-token", data: {
+        "device_token": fcmToken,
+      });
 
-    print("createOrUpdateFCMToken: ${resp}");
-
-    return;
+      print("createOrUpdateFCMToken: ${resp}");
+    } catch (err) {
+      print("createOrUpdateFCMToken error: $err");
+    }
   }
 
   Future<void> getRecentPages() async {

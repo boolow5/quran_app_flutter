@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:quran_app_flutter/screens/about_page.dart';
 import 'package:quran_app_flutter/screens/bookmarks_page.dart';
 import 'package:quran_app_flutter/screens/home_page.dart';
+import 'package:quran_app_flutter/screens/leader_board_page.dart';
 import 'package:quran_app_flutter/screens/login_page.dart';
 import 'package:quran_app_flutter/screens/qibla_compass_page.dart';
 import 'package:quran_app_flutter/screens/quran_pages.dart';
@@ -49,6 +50,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/about',
       builder: (context, state) => const AboutPage(),
+    ),
+    GoRoute(
+      path: "/leader-board",
+      builder: (context, state) => LeaderBoardPage(),
     ),
   ],
   errorBuilder: (context, state) {

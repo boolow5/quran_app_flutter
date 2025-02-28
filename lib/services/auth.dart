@@ -15,7 +15,11 @@ class AuthService {
     User? user = _auth.currentUser;
     if (user != null) {
       // Force token refresh if needed
-      return await user.getIdToken(true);
+      try {
+        return await user.getIdToken(true);
+      } catch (err) {
+        print("getIdToken error: $err");
+      }
     }
     return null;
   }

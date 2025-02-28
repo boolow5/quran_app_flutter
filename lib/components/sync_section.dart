@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/providers/quran_data_provider.dart';
+import 'package:quran_app_flutter/providers/theme_provider.dart';
 import 'package:quran_app_flutter/services/auth.dart';
 import 'package:quran_app_flutter/utils/utils.dart';
 
@@ -50,6 +51,7 @@ class _SynSectionState extends State<SynSection> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.read<ThemeProvider>().isDarkMode;
     return StreamBuilder(
         stream: AuthService().authStateChanges,
         builder: (context, snapshot) {
@@ -65,7 +67,9 @@ class _SynSectionState extends State<SynSection> {
                 margin: EdgeInsets.only(bottom: 8.0),
                 decoration: BoxDecoration(
                   color: snapshot.hasData
-                      ? DEFAULT_PAGE_BG_COLOR
+                      ? isDark
+                          ? Colors.black
+                          : Colors.white
                       : Colors.red, // .withValues(alpha: 16),
                   borderRadius: BorderRadius.circular(16.0),
                   boxShadow: [

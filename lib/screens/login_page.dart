@@ -21,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
 
   String? _errorMessage;
   bool _isLogin = true;
+  bool _emailLogin = false;
 
   @override
   void initState() {
@@ -84,39 +85,74 @@ class _LoginPageState extends State<LoginPage> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      if (_errorMessage != null)
-                        Text(
-                          _errorMessage!,
-                          style: const TextStyle(color: Colors.red),
+                      if (_emailLogin) ...[
+                        if (_errorMessage != null)
+                          Text(
+                            _errorMessage!,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        _buildInputField('Email', _emailController),
+                        _buildInputField('Password', _passwordController),
+                        const SizedBox(
+                          height: 16,
                         ),
-                      _buildInputField('Email', _emailController),
-                      _buildInputField('Password', _passwordController),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      ElevatedButton(
-                        onPressed: _signIn,
-                        child: Text(!_isLogin ? "Sign up" : "Sign in"),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(_isLogin
-                              ? "Don't have an account?"
-                              : "Already have an account?"),
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                _isLogin = !_isLogin;
-                              });
-                            },
-                            child: Text(_isLogin ? "Sign up" : "Sign in"),
-                          )
-                        ],
-                      ),
+                        ElevatedButton(
+                          onPressed: _signIn,
+                          child: Text(!_isLogin ? "Sign up" : "Sign in"),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(_isLogin
+                                ? "Don't have an account?"
+                                : "Already have an account?"),
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _isLogin = !_isLogin;
+                                });
+                              },
+                              child: Text(_isLogin ? "Sign up" : "Sign in"),
+                            )
+                          ],
+                        ),
+                      ] else ...[
+                        // or login with google
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                          ),
+                          onPressed: () async {
+                            setState(() {
+                              _emailLogin = true;
+                            });
+                          },
+                          child: SizedBox(
+                            width: 200,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.email,
+                                  size: 16,
+                                ),
+                                SizedBox(
+                                  width: 180,
+                                  child: Center(
+                                    child: const Text('Use email and password'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+
                       const SizedBox(
                         height: 20,
                       ),
@@ -130,17 +166,26 @@ class _LoginPageState extends State<LoginPage> {
                           await AuthService().signInWithGoogle();
                           context.go('/');
                         },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SvgPicture.asset(
-                              'assets/images/google-logo.svg',
-                              height: 16,
-                            ),
-                            const SizedBox(width: 8),
-                            const Text('Sign in with Google'),
-                          ],
+                        child: SizedBox(
+                          width: 200,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/images/google-logo.svg',
+                                height: 16,
+                              ),
+                              SizedBox(
+                                width: 180,
+                                child: Center(
+                                  child: Text(
+                                    'Sign ${_isLogin ? "in" : "up"} with Google',
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],

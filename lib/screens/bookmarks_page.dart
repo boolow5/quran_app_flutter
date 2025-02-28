@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:quran_app_flutter/constants.dart';
+import 'package:quran_app_flutter/models/model.dart';
 import 'package:quran_app_flutter/providers/quran_data_provider.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
 import 'package:quran_app_flutter/utils/utils.dart';
@@ -125,9 +126,8 @@ class _BookmarksPageState extends State<BookmarksPage> {
                       itemBuilder: (context, index) {
                         final bookmark =
                             context.watch<QuranDataProvider>().bookmarks[index];
-                        final timeSince = context
-                            .read<QuranDataProvider>()
-                            .timeSinceReading(bookmark, start: true);
+                        final timeSince =
+                            timeSinceReading(bookmark, start: true);
 
                         return ListTile(
                           leading: IconButton(

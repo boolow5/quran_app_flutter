@@ -44,7 +44,7 @@ class _TableOfContentsState extends State<TableOfContents> {
           await rootBundle.loadString('assets/quran/suras-toc.json');
       final List<dynamic> jsonList = json.decode(jsonString);
       setState(() {
-        _suras = jsonList.map((json) => Sura.fromJson(json)).toList();
+        _suras = jsonList.map((json) => Sura.fromJson(0, json)).toList();
         _isLoading = false;
         _filteredSuras = _suras;
       });

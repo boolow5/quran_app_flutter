@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:quran_app_flutter/models/model.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
 
 String toArabicNumber(int number) {
@@ -182,4 +184,64 @@ String firstName(String? fullName) {
     return parts.join(' ');
   }
   return fullName;
+}
+
+// Helper method to format duration
+String formatDuration(Duration duration) {
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
+  String hours = twoDigits(duration.inHours);
+  String minutes = twoDigits(duration.inMinutes.remainder(60));
+  String seconds = twoDigits(duration.inSeconds.remainder(60));
+  return duration.inHours > 0
+      ? '$hours:$minutes:$seconds'
+      : '$minutes:$seconds';
+}
+
+// Get reading duration for a recent page
+String getReadingDuration(RecentPage page) {
+  if (page.endDate == null) return 'Reading...';
+
+  final duration = page.endDate!.difference(page.startDate);
+  return formatDuration(duration);
+}
+
+// Get time elapsed since reading
+String timeSinceReading(RecentPage page, {bool start = false}) {
+  final DateTime referenceTime =
+      (start ? page.startDate : page.endDate) ?? DateTime.now();
+  final Duration elapsed = DateTime.now().difference(referenceTime);
+
+  if (elapsed.inMinutes < 1) {
+    return 'Just now';
+  } else if (elapsed.inHours < 1) {
+    return '${elapsed.inMinutes}m ago';
+  } else if (elapsed.inDays < 1) {
+    return '${elapsed.inHours}h ago';
+  } else if (elapsed.inDays < 30) {
+    return '${elapsed.inDays}d ago';
+  } else if (elapsed.inDays < 365) {
+    return '${(elapsed.inDays / 30).floor()}mon ago';
+  } else {
+    return '${(elapsed.inDays / 365).floor()}yr ago';
+  }
+}
+
+void warnAboutLogin(BuildContext context) {
+  // show scaffold message with login button
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      backgroundColor: Colors.red,
+      content: Text(
+        "Please login first",
+        style: TextStyle(color: Colors.white),
+      ),
+      action: SnackBarAction(
+        label: "Login",
+        textColor: Colors.white,
+        onPressed: () {
+          context.push('/login');
+        },
+      ),
+    ),
+  );
 }

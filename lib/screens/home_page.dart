@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hijri/hijri_calendar.dart';
 import 'package:provider/provider.dart';
 import 'package:quran_app_flutter/components/animated_card_gradient.dart';
 import 'package:quran_app_flutter/components/sync_section.dart';
@@ -50,38 +51,58 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<Sura> _suras = [];
+  bool _loadedUserData = false;
   bool _isLoading = true;
+  String _currentHijriDate = '';
 
   @override
   void initState() {
     super.initState();
     updateThemeScale(context);
     _loadSuras();
+
+    HijriCalendar.setLocal('ar');
+    final date = HijriCalendar.now();
+
+    String month = date.getLongMonthName();
+    if (month.length > 12) {
+      month = date.getShortMonthName();
+    }
+
+    // '1 Ramadan, 1446'
+    _currentHijriDate =
+        "${month} ${toArabicNumber(date.hDay)}, ${toArabicNumber(date.hYear)}"; // date.toString();
+
     Future.delayed(Duration(seconds: 3), () {
       if (!mounted) return;
-      context.read<QuranDataProvider>().getBookmarks();
 
       // if logged in
       AuthService().authStateChanges.listen((user) {
         if (!mounted || user == null) return;
+        if (_loadedUserData) return;
+
+        _loadedUserData = true;
+
+        context.read<QuranDataProvider>().getBookmarks();
         context.read<QuranDataProvider>().getUserStreak();
         context.read<QuranDataProvider>().getRecentPages();
-      });
-    });
 
-    Future.delayed(const Duration(seconds: 5), () {
-      if (!mounted) return;
-      PushNotifications.init(context.read<QuranDataProvider>().fcmToken ?? "")
-          .then((token) {
-        print("\nPushNotifications.init token: $token");
-        print("\n");
+        Future.delayed(const Duration(seconds: 5), () {
+          if (!mounted) return;
+          PushNotifications.init(
+                  context.read<QuranDataProvider>().fcmToken ?? "")
+              .then((token) {
+            print("\nPushNotifications.init token: $token");
+            print("\n");
 
-        if (context.read<QuranDataProvider>().fcmToken != token) {
-          context.read<QuranDataProvider>().fcmToken = token;
-        }
+            if (context.read<QuranDataProvider>().fcmToken != token) {
+              context.read<QuranDataProvider>().fcmToken = token;
+            }
 
-        if (!mounted) return;
-        context.read<QuranDataProvider>().createOrUpdateFCMToken(token);
+            if (!mounted) return;
+            context.read<QuranDataProvider>().createOrUpdateFCMToken(token);
+          });
+        });
       });
     });
   }
@@ -92,7 +113,7 @@ class _HomeState extends State<Home> {
           await rootBundle.loadString('assets/quran/suras-toc.json');
       final List<dynamic> jsonList = json.decode(jsonString);
       setState(() {
-        _suras = jsonList.map((json) => Sura.fromJson(json)).toList();
+        _suras = jsonList.map((json) => Sura.fromJson(0, json)).toList();
         _isLoading = false;
       });
     } catch (e) {
@@ -151,8 +172,21 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: const Text('MeezanSync'),
-        centerTitle: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('MeezanSync'),
+            Directionality(
+              textDirection: TextDirection.rtl,
+              child: Text(_currentHijriDate,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  )),
+            ),
+          ],
+        ),
+        centerTitle: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -295,8 +329,7 @@ class _HomeState extends State<Home> {
                                                   .bodySmall,
                                             ),
                                             trailing: Text(
-                                              quranData
-                                                  .timeSinceReading(recentPage)
+                                              timeSinceReading(recentPage)
                                                   .toString(),
                                               style: Theme.of(context)
                                                   .textTheme
@@ -347,7 +380,9 @@ class _HomeState extends State<Home> {
                                       duration: const Duration(seconds: 26),
                                       padding: const EdgeInsets.all(16.0),
                                       child: InkWell(
-                                        onTap: () => print("Streak Clicked"),
+                                        onTap: snapshot.hasData
+                                            ? () => context.go("/leader-board")
+                                            : () => warnAboutLogin(context),
                                         borderRadius:
                                             BorderRadius.circular(16.0),
                                         child: Column(

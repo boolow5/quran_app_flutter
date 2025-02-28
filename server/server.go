@@ -27,11 +27,13 @@ func main() {
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Println("⚠ Error loading .env file")
+		fmt.Println(err)
 	} else {
 		fmt.Println("✅ Loaded .env file")
 	}
 
-	log.Printf("Starting '%s' server...\n", os.Getenv("APP_NAME"))
+	appName := os.Getenv("APP_NAME")
+	log.Printf("Starting '%s' server...\n", appName)
 	// Just to force the github action to start,
 	// without actually doing anything
 
@@ -40,6 +42,15 @@ func main() {
 
 	db := SetupServices()
 
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"name":        appName,
+			"version":     Version,
+			"builtAt":     BuiltAt,
+			"buildCommit": BuildCommit,
+			"uptime":      time.Since(StartedAt).Truncate(time.Second).String(),
+		})
+	})
 	controllers.SetupHandlers(router, db)
 
 	go StartCronJobs(db)

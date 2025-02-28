@@ -16,6 +16,7 @@ func SetupHandlers(router *gin.Engine, db db.Database) {
 		log.Fatalf("Error initializing Firebase Auth: %v", err)
 	}
 	router.SetTrustedProxies([]string{"127.0.0.1:1140", "localhost:1140", ""})
+
 	r := router.Group("/api/v1")
 
 	authenicated := r.Group("")

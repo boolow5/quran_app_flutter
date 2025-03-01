@@ -351,7 +351,7 @@ class QuranDataProvider extends ChangeNotifier {
         _saveRecentPages();
       } else {
         print("getRecentPages Failed: ${resp}");
-        throw resp['message'] ?? 'Something went wrong';
+        throw resp ?? 'Something went wrong';
       }
     } on DioException catch (e) {
       print("getRecentPages Dio Error: $e");

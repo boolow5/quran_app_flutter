@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,9 @@ class _SynSectionState extends State<SynSection> {
     // });
   }
 
-  void _onLogin() {
+  void _onLogout() async {
+    print("_onLogout");
+
     // confirm logout
     showDialog(
       context: context,
@@ -49,6 +52,20 @@ class _SynSectionState extends State<SynSection> {
     );
   }
 
+  // void _onLogout() async {
+  //   // crash to test crashlytics
+  //
+  //   bool isEnabled =
+  //       await FirebaseCrashlytics.instance.isCrashlyticsCollectionEnabled;
+  //   print('Crashlytics collection enabled: $isEnabled');
+  //
+  //   // Log something before crash
+  //   FirebaseCrashlytics.instance.log('About to crash');
+  //
+  //   // Option 1: Force a crash
+  //   FirebaseCrashlytics.instance.crash();
+  // }
+
   @override
   Widget build(BuildContext context) {
     final isDark = context.read<ThemeProvider>().isDarkMode;
@@ -59,7 +76,7 @@ class _SynSectionState extends State<SynSection> {
             return const CircularProgressIndicator();
           }
           return GestureDetector(
-            onTap: snapshot.hasData ? _onLogin : () => context.push('/login'),
+            onTap: snapshot.hasData ? _onLogout : () => context.push('/login'),
             child: LayoutBuilder(builder: (context, constraints) {
               return Container(
                 height: 60,
@@ -110,7 +127,7 @@ class _SynSectionState extends State<SynSection> {
                     // snapshot.hasData
                     // ? IconButton(
                     //     icon: const Icon(Icons.logout, color: Colors.red),
-                    //     onPressed: _onLogin,
+                    //     onPressed: _onLogout,
                     //   )
                     // : IconButton(
                     //     icon: const Icon(Icons.login, color: Colors.green),

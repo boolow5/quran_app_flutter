@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/models/model.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
 
@@ -244,4 +245,89 @@ void warnAboutLogin(BuildContext context) {
       ),
     ),
   );
+}
+
+enum AlertMessageType {
+  info,
+  success,
+  fail,
+}
+
+extension AlertMessageTypeExtension on AlertMessageType {
+  String get name {
+    switch (this) {
+      case AlertMessageType.success:
+        return 'SUCCESS';
+      case AlertMessageType.fail:
+        return 'FAIL';
+      default:
+        return 'INFO';
+    }
+  }
+}
+
+void showMessage(
+  String msg, {
+  AlertMessageType type = AlertMessageType.info,
+  Duration? duration,
+  FontWeight? fontWeight,
+  double? fontSize,
+  String? actionText,
+  Future<void> Function()? action,
+}) {
+  // Don't try to get context, just use the key directly
+  if (scaffoldMessengerKey.currentState == null) {
+    print("showMessage: scaffoldMessengerKey.currentState is null");
+    return;
+  }
+
+  Color bgColor = Colors.grey;
+  Color textColor = Colors.white;
+
+  switch (type) {
+    case AlertMessageType.success:
+      bgColor = Colors.teal;
+      textColor = Colors.white;
+      break;
+    case AlertMessageType.fail:
+      bgColor = Colors.red;
+      textColor = Colors.white;
+      break;
+    default:
+      bgColor = Colors.blue;
+      textColor = Colors.white;
+      break;
+  }
+
+  SnackBar message = SnackBar(
+      duration: duration ?? const Duration(seconds: 5),
+      content: Text(
+        msg,
+        style: TextStyle(
+          color: textColor,
+          fontWeight: fontWeight ?? FontWeight.bold,
+          fontSize: fontSize ?? 16,
+        ),
+      ),
+      backgroundColor: bgColor,
+      action: actionText != null && action != null
+          ? SnackBarAction(
+              label: actionText,
+              textColor: textColor,
+              onPressed: () async {
+                await action();
+                scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
+              },
+            )
+          : null);
+
+  print("[${type.name} ALERT] '$msg'");
+  try {
+    // Use the key directly
+    scaffoldMessengerKey.currentState!.showSnackBar(message);
+  } catch (err) {
+    print("[${type.name} ALERT] ERROR: $err");
+    print("[${type.name} ALERT] Failed to show message");
+    print("[${type.name} ALERT] Message: '$msg'");
+  }
 }

@@ -6,11 +6,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
+const String notificationsKey = "notifications";
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
 
-const IS_DEBUG = true;
+const isDebug = false;
 const APP_NAME = "MeezanSync";
 const BASE_URL =
-    IS_DEBUG ? "http://192.168.100.50:1140" : "https://quran-api.mahad.dev";
+    isDebug ? "http://192.168.100.50:1140" : "https://quran-api.mahad.dev";
 
 const MAX_FONT_SIZE = 24.5;
 const DEFAULT_FONT_SIZE = 19.0;

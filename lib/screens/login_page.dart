@@ -22,6 +22,11 @@ class _LoginPageState extends State<LoginPage> {
   String? _errorMessage;
   bool _isLogin = true;
   bool _emailLogin = false;
+  bool _showPassword = false;
+
+  bool _googleLoginLoading = false;
+  bool _facebookLoginLoading = false;
+  bool _emailLoginLoading = false;
 
   @override
   void initState() {
@@ -31,19 +36,70 @@ class _LoginPageState extends State<LoginPage> {
 
   void _signIn() async {
     try {
+      setState(() {
+        _errorMessage = null;
+        _emailLoginLoading = true;
+      });
       final fun = _isLogin
           ? () => AuthService().signInWithEmailAndPassword(
               _emailController.text, _passwordController.text)
           : () => AuthService().registerUserWithEmailAndPassword(
               _emailController.text, _passwordController.text);
-      await fun().then((value) {
+
+      print("[${_isLogin ? 'Login' : 'Register'}] Signing in...");
+      await fun();
+      print("[${_isLogin ? 'Login' : 'Register'}] Signed in");
+
+      bool success = context.mounted || navigatorKey.currentContext != null;
+      if (!success) {
+        Future.microtask(() {
+          showMessage(
+            "Successfully signed in with email",
+            type: AlertMessageType.success,
+          );
+        });
+      } else {
+        Future.microtask(() {
+          showMessage(
+            "Successfully signed in with email",
+            type: AlertMessageType.success,
+          );
+        });
+      }
+      if (context.mounted) {
         context.go('/');
-      });
+      } else if (navigatorKey.currentContext != null) {
+        navigatorKey.currentContext?.go('/');
+      }
     } catch (e) {
+      final isInvalidCredentials =
+          e.toString().contains("Invalid email or password");
+      if (isInvalidCredentials) {
+        setState(() {
+          _errorMessage = "Invalid email or password";
+        });
+        Future.microtask(() {
+          showMessage(
+            "Invalid email or password",
+            type: AlertMessageType.fail,
+          );
+        });
+      }
       final message = e.toString().split("]").last.trim();
-      print("Error logging in: $e");
+      print("[${_isLogin ? 'Login' : 'Register'}] Error logging in: $e");
+      print("[${_isLogin ? 'Login' : 'Register'}] Error message: $message");
       setState(() {
         _errorMessage = message;
+      });
+      Future.microtask(() {
+        showMessage(
+          "Failed to login. We are working on it",
+          type: AlertMessageType.fail,
+        );
+      });
+    } finally {
+      setState(() {
+        _emailLoginLoading = false;
       });
     }
   }
@@ -98,7 +154,15 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         ElevatedButton(
                           onPressed: _signIn,
-                          child: Text(!_isLogin ? "Sign up" : "Sign in"),
+                          child: Center(
+                            child: Text(_isLogin
+                                ? _emailLoginLoading
+                                    ? "Signing up..."
+                                    : "Sign up"
+                                : _emailLoginLoading
+                                    ? "Signing in..."
+                                    : "Sign in"),
+                          ),
                         ),
                         const SizedBox(
                           height: 20,
@@ -119,6 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                             )
                           ],
                         ),
+                        const SizedBox(height: 200),
                       ] else ...[
                         // or login with google
                         ElevatedButton(
@@ -151,7 +216,42 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                         ),
+
+                        const SizedBox(
+                          height: 20,
+                        ),
                       ],
+
+                      // or login with google
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // line separator
+                          SizedBox(
+                            width: 60,
+                            child: Divider(
+                              thickness: 1,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Text('or'),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          // line separator
+                          SizedBox(
+                            width: 60,
+                            child: Divider(
+                              thickness: 1,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
 
                       const SizedBox(
                         height: 20,
@@ -163,8 +263,49 @@ class _LoginPageState extends State<LoginPage> {
                           foregroundColor: Colors.black,
                         ),
                         onPressed: () async {
-                          await AuthService().signInWithGoogle();
-                          context.go('/');
+                          try {
+                            setState(() {
+                              _googleLoginLoading = true;
+                            });
+
+                            final user = await AuthService().signInWithGoogle();
+
+                            if (user == null) {
+                              print("User is null");
+                              throw "User is null";
+                            }
+
+                            print("Login successful: $user");
+
+                            // Show success message after sign-in
+                            Future.microtask(() {
+                              showMessage(
+                                "Successfully signed in with Google",
+                                type: AlertMessageType.success,
+                              );
+                            });
+
+                            // Navigate only if context is still valid
+                            if (context.mounted) {
+                              context.go('/');
+                            } else if (navigatorKey.currentContext != null) {
+                              navigatorKey.currentContext?.go('/');
+                            }
+                          } catch (err) {
+                            print("Error signing in with Google: $err");
+
+                            // Show error message with a microtask to ensure UI is ready
+                            Future.microtask(() {
+                              showMessage(
+                                "Google sign in failed. We are working on the issue and will fix it soon.",
+                                type: AlertMessageType.fail,
+                              );
+                            });
+                          } finally {
+                            setState(() {
+                              _googleLoginLoading = false;
+                            });
+                          }
                         },
                         child: SizedBox(
                           width: 200,
@@ -172,10 +313,19 @@ class _LoginPageState extends State<LoginPage> {
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              SvgPicture.asset(
-                                'assets/images/google-logo.svg',
-                                height: 16,
-                              ),
+                              // if loading show loading spinner
+                              _googleLoginLoading
+                                  ? SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : SvgPicture.asset(
+                                      'assets/images/google-logo.svg',
+                                      height: 16,
+                                    ),
                               SizedBox(
                                 width: 180,
                                 child: Center(
@@ -188,6 +338,20 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
+
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      // test showMessage button
+                      // ElevatedButton(
+                      //   onPressed: () {
+                      //     showMessage(
+                      //       "Test message",
+                      //       type: AlertMessageType.fail,
+                      //     );
+                      //   },
+                      //   child: const Text('Show message'),
+                      // ),
                     ],
                   ),
                 ),
@@ -200,14 +364,38 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildInputField(String label, TextEditingController controller) {
-    return TextField(
+    final isPassword = label.toLowerCase() == 'password';
+    final input = TextField(
       controller: controller,
       decoration: InputDecoration(labelText: label),
+      obscureText: isPassword && !_showPassword,
+      onChanged: (value) {
+        print("[$label][$isPassword ? 'password' : 'email'] changed: $value");
+      },
       onSubmitted: (value) {
-        if (label == 'Password' && controller.text.isNotEmpty) {
+        if (isPassword && controller.text.isNotEmpty) {
           _signIn();
         }
       },
     );
+    return isPassword
+        ? Stack(
+            children: [
+              input,
+              Positioned(
+                right: 0,
+                child: IconButton(
+                  icon: Icon(
+                      _showPassword ? Icons.visibility : Icons.visibility_off),
+                  onPressed: () {
+                    setState(() {
+                      _showPassword = !_showPassword;
+                    });
+                  },
+                ),
+              ),
+            ],
+          )
+        : input;
   }
 }

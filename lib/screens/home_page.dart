@@ -73,6 +73,10 @@ class _HomeState extends State<Home> {
     _currentHijriDate =
         "${month} ${toArabicNumber(date.hDay)}, ${toArabicNumber(date.hYear)}"; // date.toString();
 
+    Future.delayed(Duration.zero, () {
+      context.read<QuranDataProvider>().getVersionDetails();
+    });
+
     Future.delayed(Duration(seconds: 3), () {
       if (!mounted) return;
 
@@ -99,7 +103,7 @@ class _HomeState extends State<Home> {
               context.read<QuranDataProvider>().fcmToken = token;
             }
 
-            if (!mounted) return;
+            if (!mounted || user.uid.isEmpty) return;
             context.read<QuranDataProvider>().createOrUpdateFCMToken(token);
           });
         });
@@ -481,6 +485,10 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                     ),
+
+                    Center(
+                        child: Text(
+                            context.watch<QuranDataProvider>().appVersion)),
                     const SizedBox(height: 32),
                   ],
                 ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:quran_app_flutter/providers/quran_data_provider.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
 import 'package:quran_app_flutter/utils/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -100,7 +101,9 @@ class _AboutPageState extends State<AboutPage> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          _buildRow(context, 'Version', '1.0.0'),
+          // _buildRow(context, 'Version',
+          //     context.watch<QuranDataProvider>().appVersion),
+          Text(context.watch<QuranDataProvider>().appVersion),
           const Divider(),
           SizedBox(
             width: 320,

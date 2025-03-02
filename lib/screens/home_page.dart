@@ -9,6 +9,7 @@ import 'package:quran_app_flutter/components/animated_card_gradient.dart';
 import 'package:quran_app_flutter/components/sync_section.dart';
 import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/models/sura.dart';
+import 'package:quran_app_flutter/providers/onboarding_provider.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
 import 'package:quran_app_flutter/providers/quran_data_provider.dart';
 import 'package:quran_app_flutter/services/auth.dart';
@@ -109,6 +110,75 @@ class _HomeState extends State<Home> {
         });
       });
     });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final quranData = Provider.of<QuranDataProvider>(context, listen: false);
+      quranData.init();
+
+      final onboarding =
+          Provider.of<OnboardingProvider>(context, listen: false);
+      onboarding.init(context); // Important for overlay access
+
+      // Configure steps for this page
+      onboarding.clearSteps(); // Clear previous steps
+      onboarding.addSteps([
+        OnboardingStep(
+          id: "step-1",
+          title: "Read Quran",
+          description:
+              "To read Quran, tap the table of contents to see all the suras.",
+          position: TooltipPosition.left,
+          targetKey: tableOfContentsKey,
+        ),
+        OnboardingStep(
+          id: "step-2",
+          title: "Bookmark",
+          description:
+              "To see bookmarked pages, tap the bookmark icon at the top right.",
+          position: TooltipPosition.right,
+          targetKey: bookmarksKey,
+        ),
+        OnboardingStep(
+          id: "step-3",
+          title: "Streak",
+          description:
+              "To track your reading streak, tap the streak icon to see the leader-board (coming soon)",
+          position: TooltipPosition.right,
+          targetKey: streaksKey,
+        ),
+        OnboardingStep(
+          id: "step-4",
+          title: "Settings",
+          description:
+              "To customize your reading experience, tap the settings icon at the top right.",
+          position: TooltipPosition.bottom,
+          targetKey: settingsKey,
+        ),
+        // recent pages
+        OnboardingStep(
+          id: "step-5",
+          title: "Recent Pages",
+          description:
+              "The recent pages you read will appear here. Tap on the page to read it.",
+          position: TooltipPosition.bottom,
+          targetKey: recentPagesKey,
+        ),
+        // Compass
+        OnboardingStep(
+          id: "step-6",
+          title: "Compass",
+          description:
+              "To find out the direction of Kaaba, tap the compass icon at the top right.",
+          position: TooltipPosition.left,
+          targetKey: qiblaCompassKey,
+        ),
+      ], "homepage_onboarding");
+
+      Future.delayed(const Duration(seconds: 5), () {
+        if (!mounted) return;
+        onboarding.startTour();
+      });
+    });
   }
 
   Future<void> _loadSuras() async {
@@ -139,12 +209,14 @@ class _HomeState extends State<Home> {
     VoidCallback onTap,
     List<Color> colors, {
     Duration? duration,
+    GlobalKey? targetKey,
   }) {
     return AnimatedGradientCard(
       colors: colors,
       duration: duration ?? const Duration(seconds: 10),
       padding: const EdgeInsets.all(16.0),
       child: InkWell(
+        key: targetKey,
         onTap: onTap,
         borderRadius: BorderRadius.circular(16.0),
         child: Column(
@@ -193,6 +265,7 @@ class _HomeState extends State<Home> {
         centerTitle: false,
         actions: [
           IconButton(
+            key: settingsKey,
             icon: const Icon(Icons.settings),
             onPressed: () => context.go('/settings'),
           ),
@@ -281,6 +354,7 @@ class _HomeState extends State<Home> {
                               final recentPages = quranData.currentRecentPages;
                               if (recentPages.isEmpty) {
                                 return Container(
+                                  key: recentPagesKey,
                                   width: double.infinity,
                                   padding: EdgeInsets.all(8.0),
                                   decoration: BoxDecoration(
@@ -303,6 +377,7 @@ class _HomeState extends State<Home> {
                                 );
                               }
                               return Container(
+                                key: recentPagesKey,
                                 padding: EdgeInsets.only(
                                   left: 8.0,
                                 ),
@@ -384,6 +459,7 @@ class _HomeState extends State<Home> {
                                       duration: const Duration(seconds: 26),
                                       padding: const EdgeInsets.all(16.0),
                                       child: InkWell(
+                                        key: streaksKey,
                                         onTap: snapshot.hasData
                                             ? () => context.go("/leader-board")
                                             : () => warnAboutLogin(context),
@@ -441,21 +517,26 @@ class _HomeState extends State<Home> {
                                 () => context.go('/table-of-contents'),
                                 GradientColors.teal,
                                 duration: const Duration(seconds: 26),
+                                targetKey: tableOfContentsKey,
                               ),
                               _buildMenuItem(
-                                  context,
-                                  'Bookmarks',
-                                  Icons.bookmark,
-                                  () => context.go('/bookmarks'),
-                                  GradientColors.blue,
-                                  duration: const Duration(seconds: 26)),
+                                context,
+                                'Bookmarks',
+                                Icons.bookmark,
+                                () => context.go('/bookmarks'),
+                                GradientColors.blue,
+                                duration: const Duration(seconds: 26),
+                                targetKey: bookmarksKey,
+                              ),
                               _buildMenuItem(
-                                  context,
-                                  'Qibla Compass',
-                                  Icons.explore,
-                                  () => context.go('/qibla'),
-                                  GradientColors.purple,
-                                  duration: const Duration(seconds: 26)),
+                                context,
+                                'Qibla Compass',
+                                Icons.explore,
+                                () => context.go('/qibla'),
+                                GradientColors.purple,
+                                duration: const Duration(seconds: 26),
+                                targetKey: qiblaCompassKey,
+                              ),
                               // _buildMenuItem(
                               //     context,
                               //     'Streak',

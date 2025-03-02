@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:quran_app_flutter/components/quran_single_page.dart';
+import 'package:quran_app_flutter/constants.dart';
+import 'package:quran_app_flutter/providers/onboarding_provider.dart';
 import 'package:quran_app_flutter/providers/quran_data_provider.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
 import 'package:quran_app_flutter/services/auth.dart';
@@ -90,6 +92,37 @@ class _QuranPagesState extends State<QuranPages> {
             MediaQuery.sizeOf(context).width > 600,
             MediaQuery.orientationOf(context) == Orientation.landscape,
           );
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final onboarding =
+          Provider.of<OnboardingProvider>(context, listen: false);
+      onboarding.init(context); // Important for overlay access
+
+      // Configure steps for this page
+      onboarding.clearSteps(); // Clear previous steps
+      onboarding.addSteps([
+        OnboardingStep(
+          id: "step-1",
+          title: "Bookmark this page",
+          description:
+              "To bookmark this page, tap this icon. It turns green when is saved.",
+          position: TooltipPosition.bottom,
+          targetKey: bookmarkButtonKey,
+        ),
+        OnboardingStep(
+          id: "step-2",
+          title: "Go back",
+          description: "To go back to the table of contents, tap here.",
+          position: TooltipPosition.bottom,
+          targetKey: backButtonKey,
+        )
+      ], "quran_pages_onboarding");
+
+      Future.delayed(const Duration(seconds: 5), () {
+        if (!mounted) return;
+        onboarding.startTour();
+      });
     });
   }
 
@@ -243,6 +276,7 @@ class _QuranPagesState extends State<QuranPages> {
                   color: Colors.transparent,
                 ),
                 child: IconButton(
+                  key: bookmarkButtonKey,
                   icon: Icon(
                     isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
                     color: isBookmarked
@@ -282,6 +316,7 @@ class _QuranPagesState extends State<QuranPages> {
               top: 4,
               left: 4,
               child: Container(
+                key: backButtonKey,
                 // width: 50,
                 // height: 50,
                 decoration: BoxDecoration(

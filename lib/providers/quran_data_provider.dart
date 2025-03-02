@@ -46,10 +46,13 @@ class QuranDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Initialize shared preferences
-  Future<void> init(Future<SharedPreferences> storage) async {
-    if (_initialized) return;
+  QuranDataProvider(Future<SharedPreferences> storage) {
     _storage = storage;
+  }
+
+  // Initialize shared preferences
+  Future<void> init() async {
+    if (_initialized) return;
     _prefs = await _storage;
     _loadRecentPages();
     _loadBookmarks();

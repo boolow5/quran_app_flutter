@@ -9,6 +9,15 @@ final navigatorKey = GlobalKey<NavigatorState>();
 const String notificationsKey = "notifications";
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
+final GlobalKey buttonKey = GlobalKey();
+final GlobalKey tableOfContentsKey = GlobalKey();
+final GlobalKey bookmarksKey = GlobalKey();
+final GlobalKey bookmarkButtonKey = GlobalKey();
+final GlobalKey streaksKey = GlobalKey();
+final GlobalKey recentPagesKey = GlobalKey();
+final GlobalKey qiblaCompassKey = GlobalKey();
+final GlobalKey settingsKey = GlobalKey();
+final GlobalKey backButtonKey = GlobalKey();
 
 const isDebug = false;
 const APP_NAME = "MeezanSync";

@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:quran_app_flutter/constants.dart';
 import 'package:quran_app_flutter/models/notifications.dart';
 import 'package:quran_app_flutter/providers/leader_board_provider.dart';
+import 'package:quran_app_flutter/providers/onboarding_provider.dart';
 import 'package:quran_app_flutter/providers/theme_provider.dart';
 import 'package:quran_app_flutter/providers/quran_data_provider.dart';
 import 'package:quran_app_flutter/router/app_router.dart';
@@ -97,13 +98,10 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider(storage)),
         ChangeNotifierProvider(
-          create: (_) {
-            final provider = QuranDataProvider();
-            provider.init(storage); // Initialize shared preferences
-            return provider;
-          },
+          create: (_) => QuranDataProvider(storage),
         ),
         ChangeNotifierProvider(create: (_) => LeaderBoardProvider()),
+        ChangeNotifierProvider(create: (_) => OnboardingProvider(storage)),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) => MaterialApp.router(

@@ -5,8 +5,8 @@ import 'package:flutter_compass/flutter_compass.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:quran_app_flutter/screens/home_page.dart';
-import 'package:quran_app_flutter/utils/utils.dart';
+import 'package:MeezanSync/screens/home_page.dart';
+import 'package:MeezanSync/utils/utils.dart';
 
 class QiblaCompass extends StatefulWidget {
   const QiblaCompass({super.key});

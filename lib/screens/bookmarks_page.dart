@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:quran_app_flutter/constants.dart';
-import 'package:quran_app_flutter/models/model.dart';
-import 'package:quran_app_flutter/providers/quran_data_provider.dart';
-import 'package:quran_app_flutter/providers/theme_provider.dart';
-import 'package:quran_app_flutter/utils/utils.dart';
+import 'package:MeezanSync/constants.dart';
+import 'package:MeezanSync/models/model.dart';
+import 'package:MeezanSync/providers/quran_data_provider.dart';
+import 'package:MeezanSync/providers/theme_provider.dart';
+import 'package:MeezanSync/utils/utils.dart';
 
 class BookmarksPage extends StatefulWidget {
   const BookmarksPage({super.key});

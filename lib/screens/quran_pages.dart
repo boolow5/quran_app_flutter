@@ -2,13 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:quran_app_flutter/components/quran_single_page.dart';
-import 'package:quran_app_flutter/constants.dart';
-import 'package:quran_app_flutter/providers/onboarding_provider.dart';
-import 'package:quran_app_flutter/providers/quran_data_provider.dart';
-import 'package:quran_app_flutter/providers/theme_provider.dart';
-import 'package:quran_app_flutter/services/auth.dart';
-import 'package:quran_app_flutter/utils/utils.dart';
+import 'package:MeezanSync/components/quran_single_page.dart';
+import 'package:MeezanSync/constants.dart';
+import 'package:MeezanSync/providers/onboarding_provider.dart';
+import 'package:MeezanSync/providers/quran_data_provider.dart';
+import 'package:MeezanSync/providers/theme_provider.dart';
+import 'package:MeezanSync/services/auth.dart';
+import 'package:MeezanSync/utils/utils.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class QuranPages extends StatefulWidget {
@@ -16,7 +16,9 @@ class QuranPages extends StatefulWidget {
   const QuranPages({
     super.key,
     required this.routePageNumber,
+    required this.onPageChange,
   });
+  final Function(int pageNumber) onPageChange;
 
   @override
   State<QuranPages> createState() => _QuranPagesState();
@@ -68,7 +70,8 @@ class _QuranPagesState extends State<QuranPages> {
             print("\n\tPage Changed: ${widget.routePageNumber} -> $newPage");
             print(
                 "\n\tCurrent Page: $_currentPage, New Page: $newPage -> '/page/$newPage'");
-            context.go('/page/$newPage');
+            // context.go('/page/$newPage');
+            widget.onPageChange(newPage);
             setState(() {});
             // _loadVerses(newPage);
             // if (_suraName.isNotEmpty) {
@@ -325,13 +328,6 @@ class _QuranPagesState extends State<QuranPages> {
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back),
                   onPressed: () {
-                    // context
-                    //     .read<QuranDataProvider>()
-                    //     .setEndTimeForMostRecentPage(
-                    //       _bookmarkPage,
-                    //       _currentSuraName,
-                    //       isDoublePage: isTablet && isLandscape,
-                    //     );
                     context.push('/table-of-contents');
                   },
                 ),
@@ -374,7 +370,7 @@ class _QuranPagesState extends State<QuranPages> {
                     ),
                     onTap: () {
                       print("GO to next page ${widget.routePageNumber + 1}");
-                      context.push('/page/${widget.routePageNumber + 1}');
+                      widget.onPageChange(widget.routePageNumber + 1);
                     },
                   ),
                 ),
@@ -393,7 +389,7 @@ class _QuranPagesState extends State<QuranPages> {
                         ? () {
                             print(
                                 "GO to prev page ${widget.routePageNumber - 1}");
-                            context.push('/page/${widget.routePageNumber - 1}');
+                            widget.onPageChange(widget.routePageNumber - 1);
                           }
                         : null,
                     child: Container(

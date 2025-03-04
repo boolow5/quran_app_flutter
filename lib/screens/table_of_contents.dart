@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:quran_app_flutter/constants.dart';
-import 'package:quran_app_flutter/models/sura.dart';
-import 'package:quran_app_flutter/providers/theme_provider.dart';
-import 'package:quran_app_flutter/utils/utils.dart';
+import 'package:MeezanSync/constants.dart';
+import 'package:MeezanSync/models/sura.dart';
+import 'package:MeezanSync/providers/theme_provider.dart';
+import 'package:MeezanSync/utils/utils.dart';
 
 class TableOfContents extends StatefulWidget {
   const TableOfContents({super.key});
@@ -105,8 +105,9 @@ class _TableOfContentsState extends State<TableOfContents> {
             Container(
               height: 48,
               margin: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
               decoration: BoxDecoration(
-                color: Colors.white,
+                // color: Colors.white,
                 borderRadius: BorderRadius.circular(32),
               ),
               child: TextField(
@@ -244,7 +245,8 @@ class _TableOfContentsState extends State<TableOfContents> {
             ],
           ),
           onTap: () {
-            context.push('/page/${sura.startPage}');
+            print("/page/${sura.startPage}");
+            context.go('/page/${sura.startPage}');
           },
         ),
       );

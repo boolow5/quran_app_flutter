@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:quran_app_flutter/main.dart';
+import 'package:MeezanSync/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

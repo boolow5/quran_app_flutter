@@ -1,11 +1,11 @@
 {
-    "name": "quran_app_flutter",
-    "short_name": "quran_app_flutter",
+    "name": "MeezanSync",
+    "short_name": "MeezanSync",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#008080",
-    "description": "A new Flutter project.",
+    "description": "A Quran app that helps with consistency, like a streak system (inspired by Duolingo), bookmarks, recent pages, and even a Qibla compass.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

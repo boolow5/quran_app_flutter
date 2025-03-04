@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:quran_app_flutter/constants.dart';
-import 'package:quran_app_flutter/services/auth.dart';
+import 'package:MeezanSync/constants.dart';
+import 'package:MeezanSync/services/auth.dart';
 
 // Initialize ApiService
 ApiService apiService = ApiService(
@@ -226,39 +226,35 @@ class ApiService {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        FirebaseCrashlytics.instance.recordError(
-          error.error,
-          StackTrace.current,
-          reason: "Connection timeout: ${error.message}",
-          fatal: true,
-        );
         return TimeoutException('Connection timeout');
       case DioExceptionType.badResponse:
-        FirebaseCrashlytics.instance.recordError(
-          error.error,
-          StackTrace.current,
-          reason: "Bad response: ${error.message}",
-          fatal: true,
-        );
+        if (!(error.message ?? error.response?.statusMessage ?? "")
+            .toLowerCase()
+            .contains("no token available")) {
+          FirebaseCrashlytics.instance.recordError(
+            error.error,
+            StackTrace.current,
+            reason: "Bad response: ${error.message}",
+            fatal: true,
+          );
+        }
         return ApiException(
           error.response?.data['message'] ?? 'Something went wrong',
           error.response?.statusCode,
         );
       case DioExceptionType.cancel:
-        FirebaseCrashlytics.instance.recordError(
-          error.error,
-          StackTrace.current,
-          reason: "Request cancelled: ${error.message}",
-          fatal: true,
-        );
         return RequestCancelledException('Request cancelled');
       default:
-        FirebaseCrashlytics.instance.recordError(
-          error.error,
-          StackTrace.current,
-          reason: "Network error occurred: ${error.message}",
-          fatal: true,
-        );
+        if (!(error.message ?? error.response?.statusMessage ?? "")
+            .toLowerCase()
+            .contains("no token available")) {
+          FirebaseCrashlytics.instance.recordError(
+            error.error,
+            StackTrace.current,
+            reason: "Network error occurred: ${error.message}",
+            fatal: true,
+          );
+        }
         return NetworkException('Network error occurred');
     }
   }

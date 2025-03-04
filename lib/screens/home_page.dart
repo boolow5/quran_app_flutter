@@ -5,17 +5,17 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:provider/provider.dart';
-import 'package:quran_app_flutter/components/animated_card_gradient.dart';
-import 'package:quran_app_flutter/components/sync_section.dart';
-import 'package:quran_app_flutter/constants.dart';
-import 'package:quran_app_flutter/models/sura.dart';
-import 'package:quran_app_flutter/providers/onboarding_provider.dart';
-import 'package:quran_app_flutter/providers/theme_provider.dart';
-import 'package:quran_app_flutter/providers/quran_data_provider.dart';
-import 'package:quran_app_flutter/services/auth.dart';
-import 'package:quran_app_flutter/services/push_notifications.dart';
-import 'package:quran_app_flutter/utils/gradients.dart';
-import 'package:quran_app_flutter/utils/utils.dart';
+import 'package:MeezanSync/components/animated_card_gradient.dart';
+import 'package:MeezanSync/components/sync_section.dart';
+import 'package:MeezanSync/constants.dart';
+import 'package:MeezanSync/models/sura.dart';
+import 'package:MeezanSync/providers/onboarding_provider.dart';
+import 'package:MeezanSync/providers/theme_provider.dart';
+import 'package:MeezanSync/providers/quran_data_provider.dart';
+import 'package:MeezanSync/services/auth.dart';
+import 'package:MeezanSync/services/push_notifications.dart';
+import 'package:MeezanSync/utils/gradients.dart';
+import 'package:MeezanSync/utils/utils.dart';
 
 final shadows = [
   Shadow(

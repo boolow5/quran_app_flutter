@@ -1,5 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:quran_app_flutter/utils/utils.dart';
+import 'package:MeezanSync/utils/utils.dart';
 
 class NotificationModel {
   final int? id;

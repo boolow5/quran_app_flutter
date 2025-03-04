@@ -1,4 +1,4 @@
-import 'package:quran_app_flutter/utils/utils.dart';
+import 'package:MeezanSync/utils/utils.dart';
 
 class Sura {
   final int number;

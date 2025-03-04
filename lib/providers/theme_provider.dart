@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:quran_app_flutter/constants.dart';
+import 'package:MeezanSync/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 bool _isIOS = false;
@@ -39,8 +39,12 @@ class ThemeProvider extends ChangeNotifier {
     this._storage = _storage;
     _storage.then((prefs) {
       _isDarkMode = prefs.getBool('isDarkMode') ?? false;
+      bool isIOS = false;
+      if (!kIsWeb) {
+        isIOS = Platform.isIOS;
+      }
       _fontSizePercentage =
-          prefs.getDouble('fontSizePercentage') ?? (Platform.isIOS ? 1.2 : 1.1);
+          prefs.getDouble('fontSizePercentage') ?? (isIOS ? 1.2 : 1.1);
       notifyListeners();
     });
   }

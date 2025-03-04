@@ -4,16 +4,15 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:quran_app_flutter/components/rounded_box_text.dart';
-import 'package:quran_app_flutter/components/verse_number.dart';
-import 'package:quran_app_flutter/constants.dart';
-import 'package:quran_app_flutter/models/model.dart';
-import 'package:quran_app_flutter/models/sura.dart';
-import 'package:quran_app_flutter/providers/quran_data_provider.dart';
-import 'package:quran_app_flutter/providers/theme_provider.dart';
-import 'package:quran_app_flutter/utils/utils.dart';
+import 'package:MeezanSync/components/rounded_box_text.dart';
+import 'package:MeezanSync/components/verse_number.dart';
+import 'package:MeezanSync/constants.dart';
+import 'package:MeezanSync/models/model.dart';
+import 'package:MeezanSync/models/sura.dart';
+import 'package:MeezanSync/providers/quran_data_provider.dart';
+import 'package:MeezanSync/providers/theme_provider.dart';
+import 'package:MeezanSync/utils/utils.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class QuranSinglePage extends StatefulWidget {

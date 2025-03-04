@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:quran_app_flutter/constants.dart';
-import 'package:quran_app_flutter/screens/about_page.dart';
-import 'package:quran_app_flutter/screens/bookmarks_page.dart';
-import 'package:quran_app_flutter/screens/home_page.dart';
-import 'package:quran_app_flutter/screens/leader_board_page.dart';
-import 'package:quran_app_flutter/screens/login_page.dart';
-import 'package:quran_app_flutter/screens/qibla_compass_page.dart';
-import 'package:quran_app_flutter/screens/quran_pages.dart';
-import 'package:quran_app_flutter/screens/settings_page.dart';
-import 'package:quran_app_flutter/screens/table_of_contents.dart';
+import 'package:MeezanSync/constants.dart';
+import 'package:MeezanSync/screens/about_page.dart';
+import 'package:MeezanSync/screens/bookmarks_page.dart';
+import 'package:MeezanSync/screens/home_page.dart';
+import 'package:MeezanSync/screens/leader_board_page.dart';
+import 'package:MeezanSync/screens/login_page.dart';
+import 'package:MeezanSync/screens/qibla_compass_page.dart';
+import 'package:MeezanSync/screens/quran_pages.dart';
+import 'package:MeezanSync/screens/settings_page.dart';
+import 'package:MeezanSync/screens/table_of_contents.dart';
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: navigatorKey,
@@ -29,7 +29,11 @@ final GoRouter appRouter = GoRouter(
         final pageNumber =
             int.tryParse(state.pathParameters['pageNumber'] ?? '1') ?? 1;
         return NoTransitionPage(
-          child: QuranPages(routePageNumber: pageNumber),
+          child: QuranPages(
+            routePageNumber: pageNumber,
+            onPageChange: (pageNumber) =>
+                navigatorKey.currentContext?.go('/page/$pageNumber'),
+          ),
         );
       },
     ),

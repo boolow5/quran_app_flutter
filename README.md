@@ -1,4 +1,4 @@
-# quran_app_flutter
+# MeezanSync
 
 A new Flutter project.
 

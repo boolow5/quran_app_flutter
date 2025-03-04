@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app_flutter/models/model.dart';
+import 'package:MeezanSync/models/model.dart';
 
 class LeaderBoardProvider extends ChangeNotifier {
   List<LeaderBoardItem> _leaderBoard = [];

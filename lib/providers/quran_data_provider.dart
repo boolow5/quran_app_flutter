@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:quran_app_flutter/models/model.dart';
-import 'package:quran_app_flutter/models/sura.dart';
-import 'package:quran_app_flutter/services/api_service.dart';
-import 'package:quran_app_flutter/utils/utils.dart';
+import 'package:MeezanSync/models/model.dart';
+import 'package:MeezanSync/models/sura.dart';
+import 'package:MeezanSync/services/api_service.dart';
+import 'package:MeezanSync/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -35,8 +35,9 @@ class QuranDataProvider extends ChangeNotifier {
   List<RecentPage> get recentPages => List.unmodifiable(_recentPages);
   List<RecentPage> get bookmarks =>
       List.unmodifiable(_bookmarks.reversed.take(100).toList());
-  List<RecentPage> get currentRecentPages =>
-      _recentPages.isNotEmpty ? _recentPages.reversed.take(3).toList() : [];
+  List<RecentPage> get currentRecentPages => _recentPages.isNotEmpty
+      ? _recentPages.reversed.where((e) => e.pageNumber > 0).take(3).toList()
+      : [];
 
   int get userStreakDays => _userStreak.currentStreak;
   String? get fcmToken => _fcmToken;
@@ -48,6 +49,9 @@ class QuranDataProvider extends ChangeNotifier {
 
   QuranDataProvider(Future<SharedPreferences> storage) {
     _storage = storage;
+    storage.then((prefs) {
+      _prefs = prefs;
+    });
   }
 
   // Initialize shared preferences
@@ -66,9 +70,12 @@ class QuranDataProvider extends ChangeNotifier {
       final List<dynamic> decoded = json.decode(recentPagesJson);
       _recentPages.clear();
       _recentPages.addAll(
-        decoded.map(
-          (item) => RecentPage.fromJson(item as Map<String, dynamic>),
-        ),
+        decoded
+            .map(
+              (item) => RecentPage.fromJson(item as Map<String, dynamic>),
+            )
+            .where((e) => e.pageNumber > 0)
+            .toList(),
       );
       notifyListeners();
     }
@@ -101,12 +108,14 @@ class QuranDataProvider extends ChangeNotifier {
       await _prefs.setString(_recentPagesKey, encoded);
     } catch (err) {
       print("Error saving recent pages: $err");
-      FirebaseCrashlytics.instance.recordError(
-        err,
-        StackTrace.current,
-        reason: "Error saving recent pages: $err",
-        fatal: false,
-      );
+      if (!err.toString().contains('no token available')) {
+        FirebaseCrashlytics.instance.recordError(
+          err,
+          StackTrace.current,
+          reason: "Error saving recent pages: $err",
+          fatal: false,
+        );
+      }
     } finally {
       notifyListeners();
     }
@@ -190,12 +199,14 @@ class QuranDataProvider extends ChangeNotifier {
       return true;
     } catch (err) {
       // print('**************** Error adding bookmark: $err ****************');
-      FirebaseCrashlytics.instance.recordError(
-        err,
-        StackTrace.current,
-        reason: "Error adding bookmark: $err",
-        fatal: true,
-      );
+      if (!err.toString().contains('no token available')) {
+        FirebaseCrashlytics.instance.recordError(
+          err,
+          StackTrace.current,
+          reason: "Error adding bookmark: $err",
+          fatal: true,
+        );
+      }
       return false;
     } finally {
       notifyListeners();
@@ -234,12 +245,14 @@ class QuranDataProvider extends ChangeNotifier {
         }
       } catch (err) {
         print("Error sending read event: $err");
-        FirebaseCrashlytics.instance.recordError(
-          err,
-          StackTrace.current,
-          reason: "Error sending read event: $err",
-          fatal: false,
-        );
+        if (!err.toString().contains('no token available')) {
+          FirebaseCrashlytics.instance.recordError(
+            err,
+            StackTrace.current,
+            reason: "Error sending read event: $err",
+            fatal: false,
+          );
+        }
       }
     }
   }
@@ -260,12 +273,14 @@ class QuranDataProvider extends ChangeNotifier {
       }
     } on DioException catch (err) {
       print("getBookmarks Dio Error: $err");
-      FirebaseCrashlytics.instance.recordError(
-        err,
-        StackTrace.current,
-        reason: "getBookmarks API Error: $err",
-        fatal: true,
-      );
+      if (!err.toString().contains('no token available')) {
+        FirebaseCrashlytics.instance.recordError(
+          err,
+          StackTrace.current,
+          reason: "getBookmarks API Error: $err",
+          fatal: true,
+        );
+      }
     } catch (e) {
       print("getBookmarks Uknown Error: $e");
     }
@@ -297,20 +312,24 @@ class QuranDataProvider extends ChangeNotifier {
       }
     } on DioException catch (err) {
       print("addBookmark Dio Error: $err");
-      FirebaseCrashlytics.instance.recordError(
-        err,
-        StackTrace.current,
-        reason: "addBookmark API Error: $err",
-        fatal: true,
-      );
+      if (!err.toString().contains('no token available')) {
+        FirebaseCrashlytics.instance.recordError(
+          err,
+          StackTrace.current,
+          reason: "addBookmark API Error: $err",
+          fatal: true,
+        );
+      }
     } catch (err) {
       print("addBookmark Uknown Error: $err");
-      FirebaseCrashlytics.instance.recordError(
-        err,
-        StackTrace.current,
-        reason: "addBookmark Uknown Error: $err",
-        fatal: true,
-      );
+      if (!err.toString().contains('no token available')) {
+        FirebaseCrashlytics.instance.recordError(
+          err,
+          StackTrace.current,
+          reason: "addBookmark Uknown Error: $err",
+          fatal: true,
+        );
+      }
     } finally {
       saved = _addBookmark(pageNumber, suraName);
     }
@@ -342,20 +361,24 @@ class QuranDataProvider extends ChangeNotifier {
       }
     } on DioException catch (err) {
       print("sendReadEvent Dio Error: $err");
-      FirebaseCrashlytics.instance.recordError(
-        err,
-        StackTrace.current,
-        reason: "sendReadEvent API Error: $err",
-        fatal: false,
-      );
+      if (!err.toString().contains('no token available')) {
+        FirebaseCrashlytics.instance.recordError(
+          err,
+          StackTrace.current,
+          reason: "sendReadEvent API Error: $err",
+          fatal: false,
+        );
+      }
     } catch (err) {
       print("sendReadEvent Uknown Error: $err");
-      FirebaseCrashlytics.instance.recordError(
-        err,
-        StackTrace.current,
-        reason: "sendReadEvent Uknown Error: $err",
-        fatal: false,
-      );
+      if (!err.toString().contains('no token available')) {
+        FirebaseCrashlytics.instance.recordError(
+          err,
+          StackTrace.current,
+          reason: "sendReadEvent Uknown Error: $err",
+          fatal: false,
+        );
+      }
     }
     return sent;
   }
@@ -374,20 +397,24 @@ class QuranDataProvider extends ChangeNotifier {
       }
     } on DioException catch (err) {
       print("getUserStreak Dio Error: $err");
-      FirebaseCrashlytics.instance.recordError(
-        err,
-        StackTrace.current,
-        reason: "getUserStreak API Error: $err",
-        fatal: true,
-      );
+      if (!err.toString().contains('no token available')) {
+        FirebaseCrashlytics.instance.recordError(
+          err,
+          StackTrace.current,
+          reason: "getUserStreak API Error: $err",
+          fatal: true,
+        );
+      }
     } catch (err) {
       print("getUserStreak Uknown Error: $err");
-      FirebaseCrashlytics.instance.recordError(
-        err,
-        StackTrace.current,
-        reason: "getUserStreak Uknown Error: $err",
-        fatal: true,
-      );
+      if (!err.toString().contains('no token available')) {
+        FirebaseCrashlytics.instance.recordError(
+          err,
+          StackTrace.current,
+          reason: "getUserStreak Uknown Error: $err",
+          fatal: true,
+        );
+      }
     }
   }
 
@@ -402,15 +429,14 @@ class QuranDataProvider extends ChangeNotifier {
       print("createOrUpdateFCMToken: ${resp}");
     } catch (err) {
       print("createOrUpdateFCMToken error: $err");
-      if (err.toString().contains("No token available")) {
-        return;
+      if (!err.toString().contains('no token available')) {
+        FirebaseCrashlytics.instance.recordError(
+          err,
+          StackTrace.current,
+          reason: "createOrUpdateFCMToken error: $err",
+          fatal: true,
+        );
       }
-      FirebaseCrashlytics.instance.recordError(
-        err,
-        StackTrace.current,
-        reason: "createOrUpdateFCMToken error: $err",
-        fatal: true,
-      );
     }
   }
 
@@ -431,20 +457,24 @@ class QuranDataProvider extends ChangeNotifier {
       }
     } on DioException catch (err) {
       print("getRecentPages Dio Error: $err");
-      FirebaseCrashlytics.instance.recordError(
-        err,
-        StackTrace.current,
-        reason: "getRecentPages API Error: $err",
-        fatal: false,
-      );
+      if (!err.toString().contains('no token available')) {
+        FirebaseCrashlytics.instance.recordError(
+          err,
+          StackTrace.current,
+          reason: "getRecentPages API Error: $err",
+          fatal: false,
+        );
+      }
     } catch (err) {
       print("getRecentPages Uknown Error: $err");
-      FirebaseCrashlytics.instance.recordError(
-        err,
-        StackTrace.current,
-        reason: "getRecentPages Uknown Error: $err",
-        fatal: false,
-      );
+      if (!err.toString().contains('no token available')) {
+        FirebaseCrashlytics.instance.recordError(
+          err,
+          StackTrace.current,
+          reason: "getRecentPages Uknown Error: $err",
+          fatal: false,
+        );
+      }
     }
   }
 
@@ -468,12 +498,14 @@ class QuranDataProvider extends ChangeNotifier {
       _appVersion = "$appName v$version ($buildNumber)";
     } catch (err) {
       print("_getVersionDetails: $err");
-      FirebaseCrashlytics.instance.recordError(
-        err,
-        StackTrace.current,
-        reason: "_getVersionDetails: $err",
-        fatal: true,
-      );
+      if (!err.toString().contains('no token available')) {
+        FirebaseCrashlytics.instance.recordError(
+          err,
+          StackTrace.current,
+          reason: "_getVersionDetails: $err",
+          fatal: true,
+        );
+      }
     }
   }
 }

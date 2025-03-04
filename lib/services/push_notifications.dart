@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:quran_app_flutter/constants.dart';
-import 'package:quran_app_flutter/main.dart';
-import 'package:quran_app_flutter/models/notifications.dart';
+import 'package:MeezanSync/constants.dart';
+import 'package:MeezanSync/main.dart';
+import 'package:MeezanSync/models/notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 @pragma('vm:entry-point')

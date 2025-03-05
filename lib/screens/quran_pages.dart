@@ -9,7 +9,6 @@ import 'package:MeezanSync/providers/quran_data_provider.dart';
 import 'package:MeezanSync/providers/theme_provider.dart';
 import 'package:MeezanSync/services/auth.dart';
 import 'package:MeezanSync/utils/utils.dart';
-import 'package:wakelock_plus/wakelock_plus.dart';
 
 class QuranPages extends StatefulWidget {
   final int routePageNumber;
@@ -37,7 +36,7 @@ class _QuranPagesState extends State<QuranPages> {
   @override
   void initState() {
     super.initState();
-    WakelockPlus.enable();
+
     updateThemeScale(context);
 
     Future.delayed(const Duration(microseconds: 100), () {
@@ -146,7 +145,6 @@ class _QuranPagesState extends State<QuranPages> {
 
   @override
   void dispose() {
-    WakelockPlus.disable();
     super.dispose();
 
     _pageController.dispose();

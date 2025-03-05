@@ -12,6 +12,7 @@ import 'package:MeezanSync/providers/theme_provider.dart';
 import 'package:MeezanSync/providers/quran_data_provider.dart';
 import 'package:MeezanSync/router/app_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 @pragma('vm:entry-point')
 Future<void> onFCMBackgroundMessage(RemoteMessage message) async {
@@ -37,6 +38,7 @@ Future<void> onFCMBackgroundMessage(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  WakelockPlus.enable();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   if (!kIsWeb) {
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);

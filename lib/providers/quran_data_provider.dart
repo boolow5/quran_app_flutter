@@ -33,8 +33,8 @@ class QuranDataProvider extends ChangeNotifier {
   List<Sura> get tableOfContents => _tableOfContents;
   int get currentPage => _currentPage;
   List<RecentPage> get recentPages => List.unmodifiable(_recentPages);
-  List<RecentPage> get bookmarks =>
-      List.unmodifiable(_bookmarks.reversed.take(100).toList());
+  List<RecentPage> get bookmarks => List.unmodifiable(
+      _bookmarks.reversed.where((e) => e.pageNumber > 0).take(100).toList());
   List<RecentPage> get currentRecentPages => _recentPages.isNotEmpty
       ? _recentPages.reversed.where((e) => e.pageNumber > 0).take(3).toList()
       : [];
@@ -109,7 +109,7 @@ class QuranDataProvider extends ChangeNotifier {
     } catch (err) {
       print("Error saving recent pages: $err");
       if (!err.toString().contains('no token available')) {
-        FirebaseCrashlytics.instance.recordError(
+        FirebaseCrashlyticsRecordError(
           err,
           StackTrace.current,
           reason: "Error saving recent pages: $err",
@@ -200,7 +200,7 @@ class QuranDataProvider extends ChangeNotifier {
     } catch (err) {
       // print('**************** Error adding bookmark: $err ****************');
       if (!err.toString().contains('no token available')) {
-        FirebaseCrashlytics.instance.recordError(
+        FirebaseCrashlyticsRecordError(
           err,
           StackTrace.current,
           reason: "Error adding bookmark: $err",
@@ -246,7 +246,7 @@ class QuranDataProvider extends ChangeNotifier {
       } catch (err) {
         print("Error sending read event: $err");
         if (!err.toString().contains('no token available')) {
-          FirebaseCrashlytics.instance.recordError(
+          FirebaseCrashlyticsRecordError(
             err,
             StackTrace.current,
             reason: "Error sending read event: $err",
@@ -274,7 +274,7 @@ class QuranDataProvider extends ChangeNotifier {
     } on DioException catch (err) {
       print("getBookmarks Dio Error: $err");
       if (!err.toString().contains('no token available')) {
-        FirebaseCrashlytics.instance.recordError(
+        FirebaseCrashlyticsRecordError(
           err,
           StackTrace.current,
           reason: "getBookmarks API Error: $err",
@@ -313,7 +313,7 @@ class QuranDataProvider extends ChangeNotifier {
     } on DioException catch (err) {
       print("addBookmark Dio Error: $err");
       if (!err.toString().contains('no token available')) {
-        FirebaseCrashlytics.instance.recordError(
+        FirebaseCrashlyticsRecordError(
           err,
           StackTrace.current,
           reason: "addBookmark API Error: $err",
@@ -323,7 +323,7 @@ class QuranDataProvider extends ChangeNotifier {
     } catch (err) {
       print("addBookmark Uknown Error: $err");
       if (!err.toString().contains('no token available')) {
-        FirebaseCrashlytics.instance.recordError(
+        FirebaseCrashlyticsRecordError(
           err,
           StackTrace.current,
           reason: "addBookmark Uknown Error: $err",
@@ -362,7 +362,7 @@ class QuranDataProvider extends ChangeNotifier {
     } on DioException catch (err) {
       print("sendReadEvent Dio Error: $err");
       if (!err.toString().contains('no token available')) {
-        FirebaseCrashlytics.instance.recordError(
+        FirebaseCrashlyticsRecordError(
           err,
           StackTrace.current,
           reason: "sendReadEvent API Error: $err",
@@ -372,7 +372,7 @@ class QuranDataProvider extends ChangeNotifier {
     } catch (err) {
       print("sendReadEvent Uknown Error: $err");
       if (!err.toString().contains('no token available')) {
-        FirebaseCrashlytics.instance.recordError(
+        FirebaseCrashlyticsRecordError(
           err,
           StackTrace.current,
           reason: "sendReadEvent Uknown Error: $err",
@@ -398,7 +398,7 @@ class QuranDataProvider extends ChangeNotifier {
     } on DioException catch (err) {
       print("getUserStreak Dio Error: $err");
       if (!err.toString().contains('no token available')) {
-        FirebaseCrashlytics.instance.recordError(
+        FirebaseCrashlyticsRecordError(
           err,
           StackTrace.current,
           reason: "getUserStreak API Error: $err",
@@ -408,7 +408,7 @@ class QuranDataProvider extends ChangeNotifier {
     } catch (err) {
       print("getUserStreak Uknown Error: $err");
       if (!err.toString().contains('no token available')) {
-        FirebaseCrashlytics.instance.recordError(
+        FirebaseCrashlyticsRecordError(
           err,
           StackTrace.current,
           reason: "getUserStreak Uknown Error: $err",
@@ -430,7 +430,7 @@ class QuranDataProvider extends ChangeNotifier {
     } catch (err) {
       print("createOrUpdateFCMToken error: $err");
       if (!err.toString().contains('no token available')) {
-        FirebaseCrashlytics.instance.recordError(
+        FirebaseCrashlyticsRecordError(
           err,
           StackTrace.current,
           reason: "createOrUpdateFCMToken error: $err",
@@ -458,7 +458,7 @@ class QuranDataProvider extends ChangeNotifier {
     } on DioException catch (err) {
       print("getRecentPages Dio Error: $err");
       if (!err.toString().contains('no token available')) {
-        FirebaseCrashlytics.instance.recordError(
+        FirebaseCrashlyticsRecordError(
           err,
           StackTrace.current,
           reason: "getRecentPages API Error: $err",
@@ -468,7 +468,7 @@ class QuranDataProvider extends ChangeNotifier {
     } catch (err) {
       print("getRecentPages Uknown Error: $err");
       if (!err.toString().contains('no token available')) {
-        FirebaseCrashlytics.instance.recordError(
+        FirebaseCrashlyticsRecordError(
           err,
           StackTrace.current,
           reason: "getRecentPages Uknown Error: $err",
@@ -499,7 +499,7 @@ class QuranDataProvider extends ChangeNotifier {
     } catch (err) {
       print("_getVersionDetails: $err");
       if (!err.toString().contains('no token available')) {
-        FirebaseCrashlytics.instance.recordError(
+        FirebaseCrashlyticsRecordError(
           err,
           StackTrace.current,
           reason: "_getVersionDetails: $err",

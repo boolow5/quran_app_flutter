@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -330,4 +332,23 @@ void showMessage(
     print("[${type.name} ALERT] Failed to show message");
     print("[${type.name} ALERT] Message: '$msg'");
   }
+}
+
+void FirebaseCrashlyticsRecordError(dynamic exception, StackTrace? stack,
+    {dynamic reason,
+    Iterable<Object> information = const [],
+    bool? printDetails,
+    bool fatal = false}) {
+  if (kIsWeb) {
+    print("FirebaseCrashlyticsRecordError: $exception");
+    return;
+  }
+  FirebaseCrashlytics.instance.recordError(
+    exception,
+    stack,
+    reason: reason,
+    information: information,
+    printDetails: printDetails,
+    fatal: false,
+  );
 }

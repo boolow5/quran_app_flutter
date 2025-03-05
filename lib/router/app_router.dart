@@ -31,8 +31,9 @@ final GoRouter appRouter = GoRouter(
         return NoTransitionPage(
           child: QuranPages(
             routePageNumber: pageNumber,
-            onPageChange: (pageNumber) =>
-                navigatorKey.currentContext?.go('/page/$pageNumber'),
+            onPageChange: (pageNumber) {
+              navigatorKey.currentContext?.go('/page/$pageNumber');
+            },
           ),
         );
       },

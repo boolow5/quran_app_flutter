@@ -1,3 +1,4 @@
+import 'package:MeezanSync/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -20,7 +21,7 @@ class AuthService {
         return await user.getIdToken(true);
       } catch (err) {
         print("getIdToken error: $err");
-        FirebaseCrashlytics.instance.recordError(
+        FirebaseCrashlyticsRecordError(
           err,
           StackTrace.current,
           reason: "getIdToken error: $err",
@@ -35,7 +36,7 @@ class AuthService {
     try {
       await _auth.signOut();
     } catch (err) {
-      FirebaseCrashlytics.instance.recordError(
+      FirebaseCrashlyticsRecordError(
         err,
         StackTrace.current,
         reason: "_auth.signOut error: $err",
@@ -45,7 +46,7 @@ class AuthService {
     try {
       await GoogleSignIn().signOut();
     } catch (err) {
-      FirebaseCrashlytics.instance.recordError(
+      FirebaseCrashlyticsRecordError(
         err,
         StackTrace.current,
         reason: "GoogleSignIn().signOut error: $err",
@@ -66,7 +67,7 @@ class AuthService {
           .contains("The supplied auth credential is incorrect")) {
         throw "Invalid email or password";
       }
-      FirebaseCrashlytics.instance.recordError(
+      FirebaseCrashlyticsRecordError(
         err,
         StackTrace.current,
         reason: "_auth.signInWithEmailAndPassword error: $err",
@@ -83,7 +84,7 @@ class AuthService {
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
     } catch (err) {
-      FirebaseCrashlytics.instance.recordError(
+      FirebaseCrashlyticsRecordError(
         err,
         StackTrace.current,
         reason: "_auth.createUserWithEmailAndPassword error: $err",
@@ -97,7 +98,7 @@ class AuthService {
     try {
       await _auth.sendPasswordResetEmail(email: email);
     } catch (err) {
-      FirebaseCrashlytics.instance.recordError(
+      FirebaseCrashlyticsRecordError(
         err,
         StackTrace.current,
         reason: "_auth.sendPasswordResetEmail error: $err",
@@ -152,7 +153,7 @@ class AuthService {
         }
       } catch (err) {
         print("Failed to sync the user to API ERROR: $err");
-        FirebaseCrashlytics.instance.recordError(
+        FirebaseCrashlyticsRecordError(
           err,
           StackTrace.current,
           reason: "signInWithGoogle API Error: $err",
@@ -162,7 +163,7 @@ class AuthService {
 
       return credentials;
     } catch (err) {
-      FirebaseCrashlytics.instance.recordError(
+      FirebaseCrashlyticsRecordError(
         err,
         StackTrace.current,
         reason: "signInWithGoogle: $err",
@@ -192,7 +193,7 @@ class AuthService {
       // Once signed in, return the UserCredential
       return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
     } catch (err) {
-      FirebaseCrashlytics.instance.recordError(
+      FirebaseCrashlyticsRecordError(
         err,
         StackTrace.current,
         reason: "signInWithFacebook: $err",

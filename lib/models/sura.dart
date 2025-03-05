@@ -20,7 +20,9 @@ class Sura {
   factory Sura.fromJson(int number, Map<String, dynamic> json) {
     try {
       if (number < 1) {
-        number = parseField<int>(json, 'index', 0);
+        number = parseField<int?>(
+                json, "number", parseField<int>(json, 'index', 0)) ??
+            0;
       }
       return Sura(
         number: number,

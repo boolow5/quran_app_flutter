@@ -369,6 +369,9 @@ class _QuranPagesState extends State<QuranPages> {
                     onTap: () {
                       print("GO to next page ${widget.routePageNumber + 1}");
                       widget.onPageChange(widget.routePageNumber + 1);
+                      Future.delayed(const Duration(microseconds: 500), () {
+                        setState(() {});
+                      });
                     },
                   ),
                 ),

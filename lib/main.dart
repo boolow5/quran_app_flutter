@@ -1,3 +1,4 @@
+import 'package:MeezanSync/utils/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -41,20 +42,30 @@ void main() async {
   WakelockPlus.enable();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   if (!kIsWeb) {
-    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+    if (!kDebugMode) {
+      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+    } else {
+      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+    }
     const fatalError = true;
     // Non-async exceptions
     // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
     // Catch Flutter errors
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    FlutterError.onError =
+        (FlutterErrorDetails flutterErrorDetails, {bool fatal = false}) {
+      if (!kDebugMode && !kIsWeb) {
+        FirebaseCrashlytics.instance
+            .recordFlutterError(flutterErrorDetails, fatal: fatal);
+      }
+    };
 
     // FlutterError.onError = (errorDetails) {
     //   if (fatalError) {
     //     print("[FLUTTER FATAL ERROR] ${errorDetails.exceptionAsString()}");
     //     // If you want to record a "fatal" exception
     //     // FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-    //     FirebaseCrashlytics.instance.recordError(
+    //     FirebaseCrashlyticsRecordError(
     //       errorDetails.exception,
     //       errorDetails.stack,
     //       fatal: fatalError,
@@ -70,11 +81,11 @@ void main() async {
     PlatformDispatcher.instance.onError = (error, stack) {
       if (fatalError) {
         // If you want to record a "fatal" exception
-        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+        FirebaseCrashlyticsRecordError(error, stack, fatal: true);
         // ignore: dead_code
       } else {
         // If you want to record a "non-fatal" exception
-        FirebaseCrashlytics.instance.recordError(error, stack);
+        FirebaseCrashlyticsRecordError(error, stack);
       }
       return true;
     };

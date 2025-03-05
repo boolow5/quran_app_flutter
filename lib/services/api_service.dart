@@ -1,5 +1,5 @@
+import 'package:MeezanSync/utils/utils.dart';
 import 'package:dio/dio.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:MeezanSync/constants.dart';
 import 'package:MeezanSync/services/auth.dart';
 
@@ -231,7 +231,7 @@ class ApiService {
         if (!(error.message ?? error.response?.statusMessage ?? "")
             .toLowerCase()
             .contains("no token available")) {
-          FirebaseCrashlytics.instance.recordError(
+          FirebaseCrashlyticsRecordError(
             error.error,
             StackTrace.current,
             reason: "Bad response: ${error.message}",
@@ -248,7 +248,7 @@ class ApiService {
         if (!(error.message ?? error.response?.statusMessage ?? "")
             .toLowerCase()
             .contains("no token available")) {
-          FirebaseCrashlytics.instance.recordError(
+          FirebaseCrashlyticsRecordError(
             error.error,
             StackTrace.current,
             reason: "Network error occurred: ${error.message}",

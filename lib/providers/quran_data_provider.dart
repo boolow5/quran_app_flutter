@@ -420,11 +420,14 @@ class QuranDataProvider extends ChangeNotifier {
 
   Future<void> createOrUpdateFCMToken(String fcmToken) async {
     try {
-      print("createOrUpdateFCMToken: $fcmToken");
-      final resp = await apiService
-          .post(path: "/api/v1/notifications/device-fcm-token", data: {
+      final form = {
         "device_token": fcmToken,
-      });
+      };
+      print("createOrUpdateFCMToken: $form");
+      final resp = await apiService.post(
+        path: "/api/v1/notifications/device-fcm-token",
+        data: form,
+      );
 
       print("createOrUpdateFCMToken: ${resp}");
     } catch (err) {

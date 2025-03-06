@@ -34,27 +34,34 @@ class ApiService {
   void _setupInterceptors() {
     _dio.interceptors.add(
       InterceptorsWrapper(
+        onResponse: (response, handler) {
+          handler.next(response);
+        },
         onRequest: (options, handler) async {
-          // Get fresh token before each request
-          final token = await _authService.getIdToken();
-          // print("[API] Token: $token");
-          options.headers['Content-Type'] = 'application/json';
-          if (token != null) {
-            options.headers['Authorization'] = 'Bearer $token';
-          } else {
-            return handler.reject(DioException(
-              requestOptions: options,
-              type: DioExceptionType.badResponse,
-              error: 'No token available',
-              response: Response(
+          try {
+            // Get fresh token before each request
+            final token = await _authService.getIdToken();
+            // print("[API] Token: $token");
+            options.headers['Content-Type'] = 'application/json';
+            if (token != null) {
+              options.headers['Authorization'] = 'Bearer $token';
+            } else {
+              return handler.reject(DioException(
                 requestOptions: options,
-                statusCode: 401,
-                statusMessage: 'Unauthorized',
-                data: {
-                  "message": "No token available",
-                },
-              ),
-            ));
+                type: DioExceptionType.badResponse,
+                error: 'No token available',
+                response: Response(
+                  requestOptions: options,
+                  statusCode: 401,
+                  statusMessage: 'Unauthorized',
+                  data: {
+                    "message": "No token available",
+                  },
+                ),
+              ));
+            }
+          } catch (err) {
+            print("[API] InterceptorsWrapper.onRequest Error: $err");
           }
           return handler.next(options);
         },

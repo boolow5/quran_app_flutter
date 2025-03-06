@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/boolow5/quran-app-api/db"
@@ -48,24 +47,24 @@ func SetupHandlers(router *gin.Engine, db db.Database) {
 	notifications := authenicated.Group("/notifications")
 	notifications.POST("/device-fcm-token", CreateOrUpdateFCMToken)
 
-	// handle all OPTIONS requests
-	r.OPTIONS("/*any", func(c *gin.Context) {
-		headerOrigin := c.Request.Header.Get("Origin")
-		if headerOrigin == "" {
-			c.AbortWithStatus(204)
-			return
-		}
+	// // handle all OPTIONS requests
+	// r.OPTIONS("/*any", func(c *gin.Context) {
+	// 	headerOrigin := c.Request.Header.Get("Origin")
+	// 	if headerOrigin == "" {
+	// 		c.AbortWithStatus(204)
+	// 		return
+	// 	}
 
-		if middlewares.IsAllowedOrigin(headerOrigin) {
-			fmt.Printf("[any] Origin allowed: %s\n", headerOrigin)
-			c.Writer.Header().Set("Access-Control-Allow-Origin", headerOrigin)
-		} else {
-			fmt.Printf("[any] Origin not allowed: '%s'\n", headerOrigin)
-			c.AbortWithStatus(403)
-			return
-		}
+	// 	if middlewares.IsAllowedOrigin(headerOrigin) {
+	// 		fmt.Printf("[any] Origin allowed: %s\n", headerOrigin)
+	// 		c.Writer.Header().Set("Access-Control-Allow-Origin", headerOrigin)
+	// 	} else {
+	// 		fmt.Printf("[any] Origin not allowed: '%s'\n", headerOrigin)
+	// 		c.AbortWithStatus(403)
+	// 		return
+	// 	}
 
-		fmt.Printf("[any] OPTIONS request\n")
-		c.AbortWithStatus(204)
-	})
+	// 	fmt.Printf("[any] OPTIONS request\n")
+	// 	c.AbortWithStatus(204)
+	// })
 }

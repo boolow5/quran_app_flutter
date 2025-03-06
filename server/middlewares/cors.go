@@ -20,7 +20,7 @@ func Cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		headerOrigin := c.Request.Header.Get("Origin")
 		if headerOrigin == "" {
-			c.AbortWithStatus(204)
+			c.Next()
 			return
 		}
 

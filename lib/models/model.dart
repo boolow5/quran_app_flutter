@@ -73,21 +73,21 @@ class RecentPage {
 
   // Create from JSON
   factory RecentPage.fromJson(Map<String, dynamic> json) {
-    final startDate = parseDateTime(json['start_date']) ?? DateTime.now();
-    print("start_date: ${json['start_date']} -> $startDate");
-    final endDate = json['end_date'] != null &&
-            !json['end_date'].toString().startsWith("000")
-        ? parseDateTime(json['end_date'])
+    final startDate = parseDateTime(json['start_date']) ?? parseDateTime(json['startDate']);
+    print("start_date: ${json['start_date'] ?? json['startDate']} -> $startDate");
+    final endDate = (json['end_date'] ?? json['endDate']) != null &&
+            !(json['end_date'] ?? json['endDate']).toString().startsWith("000")
+        ? parseDateTime((json['end_date'] ?? json['endDate']))
         : null;
-    print("endDate: ${json['end_date']} -> $endDate");
+    print("endDate: ${(json['end_date'] ?? json['endDate'])} -> $endDate");
 
     return RecentPage(
-      pageNumber: parseField<int?>(json, 'page_number', null) ?? 0,
-      suraName: parseField<String?>(json, 'surah_name', null) ?? "",
-      startDate: startDate,
-      endDate: (endDate?.year ?? 0) == 0
-          ? startDate.add(const Duration(seconds: 30))
-          : endDate,
+      pageNumber: parseField<int?>(json, 'page_number', parseField<int?>(json, 'pageNumber', null)) ?? 0,
+      suraName: parseField<String?>(json, 'surah_name', parseField<String?>(json, 'surahName', null)) ?? "",
+      startDate: startDate ?? DateTime.now(),
+      endDate: ((endDate?.year ?? 0) == 0
+          ? startDate?.add(const Duration(seconds: 30))
+          : endDate) ?? DateTime.now(),
     );
   }
 
@@ -130,12 +130,13 @@ class UserStreak {
 
   // Create from JSON
   factory UserStreak.fromJson(Map<String, dynamic> json) {
-    final lastActiveDate = parseDateTime(json['last_active_date']);
+    final lastActiveDate = parseDateTime(json['last_active_date']) ??  parseDateTime(json['last_active_date']['Time']);
+    print("last_active_date: ${json['last_active_date']} -> $lastActiveDate");
     return UserStreak(
       userID: parseField<int?>(json, 'user_id', null) ?? 0,
       currentStreak: parseField<int?>(json, 'current_streak', null) ?? 0,
       longestStreak: parseField<int?>(json, 'longest_streak', null) ?? 0,
-      lastActiveDate: lastActiveDate ?? DateTime.now(),
+      lastActiveDate: lastActiveDate,
     );
   }
 }

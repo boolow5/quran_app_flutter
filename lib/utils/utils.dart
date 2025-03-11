@@ -288,7 +288,7 @@ void showMessage(
 
   switch (type) {
     case AlertMessageType.success:
-      bgColor = Colors.teal;
+      bgColor = Colors.green;
       textColor = Colors.white;
       break;
     case AlertMessageType.fail:
@@ -351,4 +351,17 @@ void FirebaseCrashlyticsRecordError(dynamic exception, StackTrace? stack,
     printDetails: printDetails,
     fatal: false,
   );
+}
+
+bool isToday(DateTime? date) {
+  if (date == null) return false;
+
+  final today = DateTime.now();
+  final isToday = date.year == today.year &&
+      date.month == today.month &&
+      date.day == today.day;
+
+  print("isToday: $isToday date: $date");
+
+  return isToday;
 }

@@ -78,18 +78,31 @@ class _HomeState extends State<Home> {
       context.read<QuranDataProvider>().getVersionDetails();
     });
 
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration(seconds: 1), () {
       if (!mounted) return;
 
       // if logged in
-      AuthService().authStateChanges.listen((user) {
+      AuthService().authStateChanges.listen((user) async {
         if (!mounted || user == null) return;
         if (_loadedUserData) return;
 
         _loadedUserData = true;
 
+        try {
+
+          final changes = await context.read<QuranDataProvider>().getUserStreak();
+          if (!mounted) return;
+          if (changes[0] != changes[1] && changes[0] == changes[1] - 1) {
+            showMessage(
+              "Congrats! You have increased your streak from ${changes[0]} to ${changes[1]} days",
+              type: AlertMessageType.success,
+            );
+          }
+        } catch (err) {
+          print("getUserStreak error: $err");
+        }
+
         context.read<QuranDataProvider>().getBookmarks();
-        context.read<QuranDataProvider>().getUserStreak();
         context.read<QuranDataProvider>().getRecentPages();
 
         Future.delayed(const Duration(seconds: 5), () {
@@ -452,8 +465,7 @@ class _HomeState extends State<Home> {
                                     return AnimatedGradientCard(
                                       colors: context
                                                   .watch<QuranDataProvider>()
-                                                  .userStreakDays >
-                                              0
+                                                  .userStreakWasActiveToday
                                           ? GradientColors.orange
                                           : GradientColors.grey,
                                       duration: const Duration(seconds: 26),

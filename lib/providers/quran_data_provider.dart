@@ -40,6 +40,7 @@ class QuranDataProvider extends ChangeNotifier {
       : [];
 
   int get userStreakDays => _userStreak.currentStreak;
+  bool get userStreakWasActiveToday => isToday(_userStreak.lastActiveDate);
   String? get fcmToken => _fcmToken;
 
   set fcmToken(String? token) {
@@ -82,16 +83,18 @@ class QuranDataProvider extends ChangeNotifier {
   }
 
   void _loadBookmarks() {
-    final String? bookmarksJson = _prefs.getString('bookmarks');
-    if (bookmarksJson != null) {
-      final List<dynamic> decoded = json.decode(bookmarksJson);
-      _bookmarks.clear();
-      _bookmarks.addAll(
-        decoded
-            .map((item) => RecentPage.fromJson(item as Map<String, dynamic>)),
-      );
-      notifyListeners();
-    }
+    // final String? bookmarksJson = _prefs.getString('bookmarks');
+    // if (bookmarksJson != null) {
+    //   final List<dynamic> decoded = json.decode(bookmarksJson);
+    //   if (_bookmarks.isNotEmpty && decoded.isNotEmpty) {
+    //     _bookmarks.clear();
+    //   }
+    //   _bookmarks.addAll(
+    //     decoded
+    //         .map((item) => RecentPage.fromJson(item as Map<String, dynamic>)),
+    //   );
+    //   notifyListeners();
+    // }
   }
 
   // Save recent pages to SharedPreferences
@@ -260,12 +263,19 @@ class QuranDataProvider extends ChangeNotifier {
   Future<void> getBookmarks() async {
     try {
       final resp = await apiService.get(path: "/api/v1/bookmarks");
-      print("getBookmarks: $resp");
+      // print("getBookmarks: $resp");
       if (resp != null && resp.isNotEmpty) {
         print("getBookmarks Success: ${resp.length}");
-        final bookmarks = resp ?? [];
+        List<dynamic> bookmarks = (resp ?? []);
+        if (bookmarks.isNotEmpty) {
+          bookmarks = bookmarks
+              .where((item) => item["pageNumber"] > 0) 
+              .toList();
+        }
+
+        print("getBookmarks: $bookmarks");
         _bookmarks = List<RecentPage>.from(
-            bookmarks.map((item) => RecentPage.fromJson(item)));
+            bookmarks.map((item) =>  RecentPage.fromJson(item)));
         print("getBookmarks: ${prettyJson(_bookmarks)}");
       } else {
         print("getBookmarks Failed: ${resp?.data}");
@@ -290,7 +300,7 @@ class QuranDataProvider extends ChangeNotifier {
       {DateTime? startDate, DateTime? endDate}) async {
     bool saved = false;
     try {
-      final resp = await apiService.post(
+      final bookmark = await apiService.post(
         path: "/api/v1/bookmarks",
         data: {
           "user_id": userID,
@@ -302,13 +312,13 @@ class QuranDataProvider extends ChangeNotifier {
           "endDate": toUTCRFC3339(endDate ?? DateTime.now()),
         },
       );
-      if (resp != null && resp?.statusCode == 200) {
-        print("addBookmark Success: ${resp.data}");
-        final bookmark = resp.data['data']['bookmark'];
+      print("addBookmark: $bookmark");
+      if (bookmark != null) {
+        print("addBookmark Success: ${bookmark}");
         _bookmarks.add(RecentPage.fromJson(bookmark));
       } else {
-        print("addBookmark Failed: ${resp?.data}");
-        throw resp?.data['message'] ?? 'Something went wrong';
+        print("addBookmark Failed: ${bookmark}");
+        throw 'Something went wrong';
       }
     } on DioException catch (err) {
       print("addBookmark Dio Error: $err");
@@ -383,18 +393,27 @@ class QuranDataProvider extends ChangeNotifier {
     return sent;
   }
 
-  Future<void> getUserStreak() async {
+  Future<List<int>> getUserStreak() async {
+    List<int> changes = [0, 0];
+    if (_userStreak != null) {
+      changes[0] = _userStreak!.currentStreak;
+    }
+
     try {
       final resp = await apiService.get(path: "/api/v1/streaks");
       print("getUserStreak: $resp");
       if (resp != null && resp["user_id"] > 0) {
-        print("getUserStreak Success: ${resp['current_streak']}");
+        print("getUserStreak Success: ${resp['current_streak']} ${resp['last_active_date']}");
         _userStreak = UserStreak.fromJson(resp);
+        if (_userStreak != null) {
+          changes[1] = _userStreak!.currentStreak;
+        }
         notifyListeners();
       } else {
         print("getUserStreak Failed: ${resp?.data}");
         throw resp?.data['message'] ?? 'Something went wrong';
       }
+
     } on DioException catch (err) {
       print("getUserStreak Dio Error: $err");
       if (!err.toString().contains('no token available')) {
@@ -416,6 +435,8 @@ class QuranDataProvider extends ChangeNotifier {
         );
       }
     }
+
+    return changes;
   }
 
   Future<void> createOrUpdateFCMToken(String fcmToken) async {

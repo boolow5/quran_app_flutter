@@ -73,7 +73,7 @@ class RecentPage {
 
   // Create from JSON
   factory RecentPage.fromJson(Map<String, dynamic> json) {
-    final startDate = parseDateTime(json['start_date']) ?? parseDateTime(json['startDate']);
+    final startDate = parseDateTime(json['start_date'] ?? json['startDate']);
     print("start_date: ${json['start_date'] ?? json['startDate']} -> $startDate");
     final endDate = (json['end_date'] ?? json['endDate']) != null &&
             !(json['end_date'] ?? json['endDate']).toString().startsWith("000")
@@ -81,9 +81,15 @@ class RecentPage {
         : null;
     print("endDate: ${(json['end_date'] ?? json['endDate'])} -> $endDate");
 
+    final page_number = parseField<int?>(json, 'page_number', parseField<int?>(json, 'pageNumber', null)) ?? 0;
+    print("page_number: ${json['page_number'] ?? json['pageNumber']} -> $page_number");
+
+    final sura_name = parseField<String?>(json, 'surah_name', parseField<String?>(json, 'surahName', parseField<String?>(json, 'suraName', null))) ?? "";
+    print("sura_name: ${json['surah_name'] ?? json['surahName']?? json['suraName']} -> $sura_name");
+
     return RecentPage(
-      pageNumber: parseField<int?>(json, 'page_number', parseField<int?>(json, 'pageNumber', null)) ?? 0,
-      suraName: parseField<String?>(json, 'surah_name', parseField<String?>(json, 'surahName', null)) ?? "",
+      pageNumber: page_number,
+      suraName: sura_name,
       startDate: startDate ?? DateTime.now(),
       endDate: ((endDate?.year ?? 0) == 0
           ? startDate?.add(const Duration(seconds: 30))

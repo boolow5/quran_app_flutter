@@ -128,7 +128,8 @@ T parseField<T>(Map<String, dynamic> map, String key, T defaultValue,
         return map[key] as T;
       case String:
         try {
-          return map[key] as T;
+          final val = map[key].toString().trim();
+          return (val == "null" || val == "NaN" || val.isEmpty ? defaultValue ?? "" : val) as T;
         } catch (e) {
           return map[key].toString() as T;
         }

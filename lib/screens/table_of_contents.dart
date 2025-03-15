@@ -84,13 +84,14 @@ class _TableOfContentsState extends State<TableOfContents> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
+            print("Going home");
             context.go('/');
           },
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () => context.go('/settings'),
+            onPressed: () => context.push('/settings'),
           ),
         ],
       ),
@@ -246,7 +247,7 @@ class _TableOfContentsState extends State<TableOfContents> {
           ),
           onTap: () {
             print("/page/${sura.startPage}");
-            context.go('/page/${sura.startPage}');
+            context.push('/page/${sura.startPage}');
           },
         ),
       );

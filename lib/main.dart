@@ -39,6 +39,9 @@ Future<void> onFCMBackgroundMessage(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await routeNotifier.loadSavedLocation();
+
   WakelockPlus.enable();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   if (!kIsWeb) {

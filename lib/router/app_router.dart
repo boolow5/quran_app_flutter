@@ -10,10 +10,50 @@ import 'package:MeezanSync/screens/qibla_compass_page.dart';
 import 'package:MeezanSync/screens/quran_pages.dart';
 import 'package:MeezanSync/screens/settings_page.dart';
 import 'package:MeezanSync/screens/table_of_contents.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class RouteNotifier extends ChangeNotifier {
+  String _currentLocation = '/';
+
+  String get currentLocation => _currentLocation;
+
+  void updateLocation(String location) {
+    _currentLocation = location;
+    _saveLocation();
+    notifyListeners();
+  }
+
+  Future<void> _saveLocation() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('last_route', _currentLocation);
+  }
+
+  Future<void> loadSavedLocation() async {
+    final prefs = await SharedPreferences.getInstance();
+    _currentLocation = prefs.getString('last_route') ?? '/';
+    notifyListeners();
+  }
+}
+
+final routeNotifier = RouteNotifier();
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: navigatorKey,
   initialLocation: '/',
+  refreshListenable: routeNotifier,
+  redirect: (context, state) {
+    // On first app load, redirect to saved route
+    if (state.uri.path == '/' && routeNotifier.currentLocation != '/') {
+      return routeNotifier.currentLocation;
+    }
+    // Otherwise, update the saved location
+    if (state.uri.path.startsWith("/page/")) {
+      routeNotifier.updateLocation(state.uri.path);
+    } else {
+      routeNotifier.updateLocation('/');
+    }
+    return null;
+  },
   routes: [
     GoRoute(
       path: '/',
@@ -21,7 +61,11 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/table-of-contents',
-      builder: (context, state) => const TableOfContents(),
+      pageBuilder: (context, state) => NoTransitionPage(
+        key: ValueKey('table-of-contents'),
+        restorationId: 'table-of-contents',
+        child: const TableOfContents(),
+      ),
     ),
     GoRoute(
       path: '/page/:pageNumber',

@@ -326,6 +326,12 @@ class _QuranPagesState extends State<QuranPages> {
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back),
                   onPressed: () {
+                    if (context.canPop()) {
+                      print("Going back");
+                      context.pop();
+                      return;
+                    }
+                    print("Going to table of contents");
                     context.push('/table-of-contents');
                   },
                 ),

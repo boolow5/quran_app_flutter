@@ -155,7 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                         ElevatedButton(
                           onPressed: _signIn,
                           child: Center(
-                            child: Text(_isLogin
+                            child: Text(!_isLogin
                                 ? _emailLoginLoading
                                     ? "Signing up..."
                                     : "Sign up"
@@ -370,7 +370,7 @@ class _LoginPageState extends State<LoginPage> {
       decoration: InputDecoration(labelText: label),
       obscureText: isPassword && !_showPassword,
       onChanged: (value) {
-        print("[$label][$isPassword ? 'password' : 'email'] changed: $value");
+        // print("[$label][$isPassword ? 'password' : 'email'] changed: $value");
       },
       onSubmitted: (value) {
         if (isPassword && controller.text.isNotEmpty) {

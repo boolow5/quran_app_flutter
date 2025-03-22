@@ -297,7 +297,7 @@ class _LoginPageState extends State<LoginPage> {
                             // Show error message with a microtask to ensure UI is ready
                             Future.microtask(() {
                               showMessage(
-                                "Google sign in failed. We are working on the issue and will fix it soon.",
+                                "Google sign in failed!",
                                 type: AlertMessageType.fail,
                               );
                             });

@@ -183,3 +183,55 @@ class LeaderBoardItem {
     return 'LeaderBoardItem(userID: $userID, name: $name, score: $score, streak: $streak)';
   }
 }
+
+class ReadEvent {
+  final int pageNumber;
+  final String suraName;
+  final int seconds;
+  final bool sent;
+
+  ReadEvent({
+    required this.pageNumber,
+    required this.suraName,
+    required this.seconds,
+    this.sent = false,
+  });
+
+  // Convert to JSON
+  Map<String, dynamic> toJson() => {
+        'page_number': pageNumber,
+        'surah_name': suraName,
+        'seconds_open': seconds,
+        'sent': sent,
+      };
+
+  // Create from JSON
+  factory ReadEvent.fromJson(Map<String, dynamic> json) {
+    return ReadEvent(
+      pageNumber: parseField<int?>(json, 'page_number', null) ?? 0,
+      suraName: parseField<String?>(json, 'surah_name', null) ?? "",
+      seconds: parseField<int?>(json, 'seconds_open', null) ?? 0,
+      sent: parseField<bool?>(json, 'sent', null) ?? false,
+    );
+  }
+
+  // copyWith
+  ReadEvent copyWith({
+    int? pageNumber,
+    String? suraName,
+    int? seconds,
+    bool? sent,
+  }) {
+    return ReadEvent(
+      pageNumber: pageNumber ?? this.pageNumber,
+      suraName: suraName ?? this.suraName,
+      seconds: seconds ?? this.seconds,
+      sent: sent ?? this.sent,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'ReadEvent(pageNumber: $pageNumber, suraName: $suraName, seconds: $seconds, sent: $sent)';
+  }
+}

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:MeezanSync/components/loading_spinner.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -285,7 +286,7 @@ class _HomeState extends State<Home> {
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const LoadingSpinner() 
           : Center(
               child: Container(
                 constraints: BoxConstraints(
@@ -401,7 +402,7 @@ class _HomeState extends State<Home> {
                                       .withValues(alpha: 0.5),
                                   borderRadius: BorderRadius.circular(2.0),
                                 ),
-                                child: Column(
+                          child: context.watch<QuranDataProvider>().recentPagesLoading ? const LoadingSpinner() : Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: recentPages
                                       .map((recentPage) => ListTile(
@@ -455,73 +456,73 @@ class _HomeState extends State<Home> {
                             crossAxisSpacing: 12.0,
                             childAspectRatio: 16 / 11,
                             children: [
-                              StreamBuilder<User?>(
-                                  stream: AuthService().authStateChanges,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return const CircularProgressIndicator();
+                        StreamBuilder<User?>(
+                          stream: AuthService().authStateChanges,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                        ConnectionState.waiting || context.watch<QuranDataProvider>().userStreakLoading) {
+                                      return  LoadingSpinner();
                                     }
-                                    return AnimatedGradientCard(
-                                      colors: context
-                                                  .watch<QuranDataProvider>()
-                                                  .userStreakWasActiveToday
-                                          ? GradientColors.orange
-                                          : GradientColors.grey,
-                                      duration: const Duration(seconds: 26),
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: InkWell(
-                                        key: streaksKey,
-                                        onTap: snapshot.hasData
-                                            ? () => context.go("/leader-board")
-                                            : () => warnAboutLogin(context),
-                                        borderRadius:
-                                            BorderRadius.circular(16.0),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              snapshot.hasData
-                                                  ? context
-                                                      .watch<
-                                                          QuranDataProvider>()
-                                                      .userStreakDays
-                                                      .toString()
-                                                  : "0",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleLarge
-                                                  ?.copyWith(
-                                                    color: Colors.white,
-                                                    shadows: shadows,
-                                                    fontSize: 32,
-                                                    fontWeight: FontWeight.w800,
-                                                  ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Text(
-                                              snapshot.hasData
-                                                  ? "days streak"
-                                                  : "Login to see your streak",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleSmall
-                                                  ?.copyWith(
-                                                    color: Colors.white,
-                                                    shadows: shadows,
-                                                    fontSize: snapshot.hasData
-                                                        ? 14
-                                                        : 12,
-                                                  ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ],
-                                        ),
+                            return AnimatedGradientCard(
+                              colors: context
+                              .watch<QuranDataProvider>()
+                              .userStreakWasActiveToday
+                              ? GradientColors.orange
+                              : GradientColors.grey,
+                              duration: const Duration(seconds: 26),
+                              padding: const EdgeInsets.all(16.0),
+                              child: InkWell(
+                                key: streaksKey,
+                                onTap: snapshot.hasData
+                                ? () => context.go("/leader-board")
+                                : () => warnAboutLogin(context),
+                                borderRadius:
+                                BorderRadius.circular(16.0),
+                                child: Column(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      snapshot.hasData
+                                      ? context
+                                      .watch<
+                                      QuranDataProvider>()
+                                      .userStreakDays
+                                      .toString()
+                                      : "0",
+                                      style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(
+                                        color: Colors.white,
+                                        shadows: shadows,
+                                        fontSize: 32,
+                                        fontWeight: FontWeight.w800,
                                       ),
-                                    );
-                                  }),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      snapshot.hasData
+                                      ? "days streak"
+                                      : "Login to see your streak",
+                                      style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall
+                                      ?.copyWith(
+                                        color: Colors.white,
+                                        shadows: shadows,
+                                        fontSize: snapshot.hasData
+                                        ? 14
+                                        : 12,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
                               _buildMenuItem(
                                 context,
                                 'Table of Contents',

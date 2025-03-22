@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:MeezanSync/components/auto_scroller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -465,8 +466,10 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
                               width: 2.0,
                             ),
                     ),
-                    child: SingleChildScrollView(
-                      child: Container(
+                    child: AutoScroller(
+                        initialDelay: const Duration(seconds: 1),
+                        scrollDuration: const Duration(seconds: 10),
+                        child: Container(
                         decoration: _isSpecialPage()
                             ? BoxDecoration(
                                 border: Border.all(

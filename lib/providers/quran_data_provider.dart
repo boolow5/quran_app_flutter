@@ -15,8 +15,12 @@ class QuranDataProvider extends ChangeNotifier {
   List<Sura> _tableOfContents = [];
   int _currentPage = 1;
   List<RecentPage> _recentPages = [];
+  bool _recentPagesLoading = false;
   List<RecentPage> _bookmarks = [];
   String? _fcmToken;
+
+  // queues
+  List<ReadEvent> _readEventsQueue = [];
 
   static const int maxRecentPages = 10;
   static const String _recentPagesKey = 'recent_pages';
@@ -27,6 +31,7 @@ class QuranDataProvider extends ChangeNotifier {
     currentStreak: 0,
     longestStreak: 0,
   );
+  bool _userStreakLoading = false;
 
   // Getters
   String get appVersion => _appVersion;
@@ -42,6 +47,9 @@ class QuranDataProvider extends ChangeNotifier {
   int get userStreakDays => _userStreak.currentStreak;
   bool get userStreakWasActiveToday => isToday(_userStreak.lastActiveDate);
   String? get fcmToken => _fcmToken;
+
+  bool get recentPagesLoading => _recentPagesLoading;
+  bool get userStreakLoading => _userStreakLoading;
 
   set fcmToken(String? token) {
     _fcmToken = token;
@@ -61,7 +69,36 @@ class QuranDataProvider extends ChangeNotifier {
     _prefs = await _storage;
     _loadRecentPages();
     _loadBookmarks();
+
+    _loadReadEvents();
     _initialized = true;
+
+    _loopReadEvents();
+    notifyListeners();
+  }
+
+  // Loop read events every minute
+  void _loopReadEvents() {
+    Future.delayed(const Duration(minutes: 1), () {
+      sendReadEventsQueue();
+      _loopReadEvents();
+    });
+  }
+
+  // Load read events from SharedPreferences
+  void _loadReadEvents() {
+    final String? readEventsJson = _prefs.getString('read_events');
+    if (readEventsJson != null) {
+      final List<dynamic> decoded = json.decode(readEventsJson);
+      _readEventsQueue.clear();
+      _readEventsQueue.addAll(
+        decoded
+            .map((item) => ReadEvent.fromJson(item as Map<String, dynamic>))
+            .where((e) => e.pageNumber > 0 && !e.sent)
+            .toList(),
+      );
+      notifyListeners();
+    }
   }
 
   // Load recent pages from SharedPreferences
@@ -276,6 +313,9 @@ class QuranDataProvider extends ChangeNotifier {
         print("getBookmarks: $bookmarks");
         _bookmarks = List<RecentPage>.from(
             bookmarks.map((item) =>  RecentPage.fromJson(item)));
+        if (_bookmarks.isNotEmpty) {
+          _bookmarks.sort((a, b) => a.startDate.compareTo(b.startDate));
+        }
         print("getBookmarks: ${prettyJson(_bookmarks)}");
       } else {
         print("getBookmarks Failed: ${resp?.data}");
@@ -346,51 +386,72 @@ class QuranDataProvider extends ChangeNotifier {
     return saved;
   }
 
-  Future<bool> sendReadEvent(
-    int pageNumber,
-    String suraName,
-    int seconds,
-  ) async {
-    bool sent = false;
+  Future<bool> sendReadEvent(int pageNumber, String suraName, int seconds) async {
+    _readEventsQueue.add(ReadEvent(pageNumber: pageNumber, suraName: suraName, seconds: seconds, sent: false));
+
     try {
-      final resp = await apiService.post(
-        path: "/api/v1/streaks/read-event",
-        data: {
-          "page_number": pageNumber,
-          "surah_name": suraName,
-          "seconds_open": seconds,
-        },
-      );
-      print("sendReadEvent: $resp");
-      if (resp != null && resp["success"] == true) {
-        print("sendReadEvent Success: ${resp['message']}");
-        sent = true;
-      } else {
-        print("sendReadEvent Failed: ${resp?.data}");
-        throw resp?.data['message'] ?? 'Something went wrong';
-      }
-    } on DioException catch (err) {
-      print("sendReadEvent Dio Error: $err");
-      if (!err.toString().contains('no token available')) {
-        FirebaseCrashlyticsRecordError(
-          err,
-          StackTrace.current,
-          reason: "sendReadEvent API Error: $err",
-          fatal: false,
-        );
-      }
+      // save read event
+      final ref = await _storage;
+      await ref.setString("read_events", jsonEncode(_readEventsQueue));
     } catch (err) {
-      print("sendReadEvent Uknown Error: $err");
-      if (!err.toString().contains('no token available')) {
-        FirebaseCrashlyticsRecordError(
-          err,
-          StackTrace.current,
-          reason: "sendReadEvent Uknown Error: $err",
-          fatal: false,
-        );
-      }
+      print("Error saving read events: $err");
+      return false;
     }
-    return sent;
+    return true;
+  }
+
+  Future<void> sendReadEventsQueue() async {
+    for (int i = 0; i < _readEventsQueue.length; i++) {
+      final event = _readEventsQueue[i];
+      bool sent = false;
+      try {
+        final resp = await apiService.post(
+          path: "/api/v1/streaks/read-event",
+          data: {
+          "page_number": event.pageNumber,
+          "surah_name": event.suraName,
+          "seconds_open": event.seconds,
+        },
+        );
+        print("sendReadEvent: $resp");
+        if (resp != null && resp["success"] == true) {
+          print("sendReadEvent Success: ${resp['message']}");
+          sent = true;
+        } else {
+          print("sendReadEvent Failed: ${resp?.data}");
+          throw resp?.data['message'] ?? 'Something went wrong';
+        }
+        
+        if (sent) {
+          _readEventsQueue[i] = _readEventsQueue[i].copyWith(sent: sent);
+        }
+      } on DioException catch (err) {
+        print("sendReadEvent Dio Error: $err");
+        if (!err.toString().contains('no token available')) {
+          FirebaseCrashlyticsRecordError(
+            err,
+            StackTrace.current,
+            reason: "sendReadEvent API Error: $err",
+            fatal: false,
+          );
+        }
+      } catch (err) {
+        print("sendReadEvent Uknown Error: $err");
+        if (!err.toString().contains('no token available')) {
+          FirebaseCrashlyticsRecordError(
+            err,
+            StackTrace.current,
+            reason: "sendReadEvent Uknown Error: $err",
+            fatal: false,
+          );
+        }
+      }
+    } 
+
+    // remove all sent events
+    _readEventsQueue.removeWhere((element) => element.sent);
+
+    notifyListeners();
   }
 
   Future<List<int>> getUserStreak() async {
@@ -398,6 +459,9 @@ class QuranDataProvider extends ChangeNotifier {
     if (_userStreak != null) {
       changes[0] = _userStreak!.currentStreak;
     }
+
+    _userStreakLoading = true;
+    notifyListeners();
 
     try {
       final resp = await apiService.get(path: "/api/v1/streaks");
@@ -434,6 +498,9 @@ class QuranDataProvider extends ChangeNotifier {
           fatal: true,
         );
       }
+    } finally {
+      _userStreakLoading = false;
+      notifyListeners();
     }
 
     return changes;
@@ -465,6 +532,8 @@ class QuranDataProvider extends ChangeNotifier {
   }
 
   Future<void> getRecentPages() async {
+    _recentPagesLoading = true;
+    notifyListeners();
     try {
       final resp = await apiService.get(path: "/api/v1/recent-pages");
       print("getRecentPages: $resp");
@@ -499,6 +568,9 @@ class QuranDataProvider extends ChangeNotifier {
           fatal: false,
         );
       }
+    } finally {
+      _recentPagesLoading = false;
+      notifyListeners();
     }
   }
 

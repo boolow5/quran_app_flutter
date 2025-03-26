@@ -26,6 +26,7 @@ class _BookmarksPageState extends State<BookmarksPage> {
       setState(() {
         _selectedBookmarks = [];
       });
+      context.read<QuranDataProvider>().getBookmarks();
     });
   }
 
@@ -111,7 +112,7 @@ class _BookmarksPageState extends State<BookmarksPage> {
                           child: const Row(
                             children: [
                               Icon(Icons.delete),
-                              Text('Select All'),
+                              Text('Delete'),
                             ],
                           ),
                         ),

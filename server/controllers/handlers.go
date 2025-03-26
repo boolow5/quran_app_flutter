@@ -32,7 +32,7 @@ func SetupHandlers(router *gin.Engine, db db.Database) {
 	// bookmarks.Use(middlewares.JWTAuthentication())
 	bookmarks.GET("", GetBookmarks)
 	bookmarks.POST("", AddBookmark)
-	bookmarks.DELETE("/:id", RemoveBookmark)
+	bookmarks.DELETE("/:pageNumber", RemoveBookmark)
 
 	// streak handlers
 	streaks := authenicated.Group("/streaks")

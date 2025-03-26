@@ -41,7 +41,7 @@ class QuranDataProvider extends ChangeNotifier {
   List<RecentPage> get bookmarks => List.unmodifiable(
       _bookmarks.reversed.where((e) => e.pageNumber > 0).take(100).toList());
   List<RecentPage> get currentRecentPages => _recentPages.isNotEmpty
-      ? _recentPages.reversed.where((e) => e.pageNumber > 0).take(3).toList()
+      ? _recentPages.where((e) => e.pageNumber > 0).take(3).toList()
       : [];
 
   int get userStreakDays => _userStreak.currentStreak;
@@ -253,10 +253,29 @@ class QuranDataProvider extends ChangeNotifier {
     }
   }
 
-  void removeBookmark(List<int> pages) {
-    _bookmarks.removeWhere((bookmark) => pages.contains(bookmark.pageNumber));
-    _saveBookmarks();
-    notifyListeners();
+  void removeBookmark(List<int> pages) async {
+    final pageNumbers = pages.map((page) => page).toList();
+
+    print("removeBookmark: $pageNumbers");
+
+    try {
+      await apiService.delete(path: "/api/v1/bookmarks/${pageNumbers.join(",")}");
+      _bookmarks.removeWhere((bookmark) => pageNumbers.contains(bookmark.pageNumber));
+      _saveBookmarks();
+      getBookmarks();
+    } catch (e) {
+      print("Error deleting bookmarks: $e");
+      if (!e.toString().contains('no token available')) {
+        FirebaseCrashlyticsRecordError(
+          e,
+          StackTrace.current,
+          reason: "Error deleting bookmarks: $e",
+          fatal: false,
+        );
+      }
+    } finally {
+       notifyListeners();
+    }
   }
 
   Future<void> setRecentPage(

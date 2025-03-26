@@ -12,7 +12,7 @@ type Bookmark struct {
 	ID         uint64     `json:"id" db:"id"`
 	UserID     string     `json:"user_id" db:"user_id"`
 	PageNumber int        `json:"pageNumber" db:"page_number"`
-	SuraName   string     `json:"suraName" db:"sura_name"`
+	SuraName   string     `json:"suraName" db:"surah_name"`
 	CreatedAt  time.Time  `json:"created_at" db:"created_at"`
 }
 
@@ -21,16 +21,20 @@ func (b *Bookmark) GetKey() string {
 }
 
 func (b *Bookmark) Save(ctx context.Context, db db.Database) error {
+	if b.CreatedAt.IsZero() {
+		b.CreatedAt = time.Now()
+	}
+
 	query := `
 	INSERT INTO bookmarks
-		(user_id, page_number, sura_name, created_at)
+		(user_id, page_number, surah_name, created_at)
 	VALUES
 		(?, ?, ?, ?)
 	ON DUPLICATE KEY UPDATE
 		created_at = ?
 	`
 
-	id, err := db.Insert(ctx, query, b.UserID, b.PageNumber, b.SuraName, b.CreatedAt)
+	id, err := db.Insert(ctx, query, b.UserID, b.PageNumber, b.SuraName, b.CreatedAt, b.CreatedAt)
 	if err != nil {
 		return err
 	}
@@ -72,7 +76,7 @@ func GetBookmarksForUser(ctx context.Context, db db.Database, userID string) ([]
 		id,
 		user_id,
 		page_number,
-		sura_name,
+		surah_name,
 		created_at
 	FROM bookmarks
 	WHERE user_id = ?

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/boolow5/quran-app-api/models"
 	"github.com/gin-gonic/gin"
@@ -76,7 +77,7 @@ func RemoveBookmark(c *gin.Context) {
 		return
 	}
 
-	pageNumber, ok := c.Params.Get("pageNumber")
+	pageNumberStr, ok := c.Params.Get("pageNumber")
 	if !ok {
 		fmt.Printf("[controllers.RemoveBookmark] pageNumber not found\n")
 		c.JSON(400, gin.H{
@@ -85,11 +86,31 @@ func RemoveBookmark(c *gin.Context) {
 		return
 	}
 
-	err := models.RemoveBookmarkForUser(c.Request.Context(), models.MySQLDB, userID, pageNumber)
-	if err != nil {
-		fmt.Printf("[controllers.RemoveBookmark] Error removing bookmark: %v\n", err)
+	pageNumbers := []string{}
+
+	if strings.Contains(pageNumberStr, ",") {
+		pageNumbers = strings.Split(pageNumberStr, ",")
+	} else {
+		pageNumbers = append(pageNumbers, pageNumberStr)
+	}
+
+	fmt.Printf("[controllers.RemoveBookmark] pageNumbers: %v\t pageNumberStr: %v\n", pageNumbers, pageNumberStr)
+
+	errMsgs := []string{}
+
+	for _, p := range pageNumbers {
+		err := models.RemoveBookmarkForUser(c.Request.Context(), models.MySQLDB, userID, p)
+		if err != nil {
+			fmt.Printf("[controllers.RemoveBookmark] Error removing bookmark: %v\n", err)
+			errMsgs = append(errMsgs, err.Error())
+		} else {
+			fmt.Printf("[controllers.RemoveBookmark] Bookmark for page %s removed successfully\n", p)
+		}
+	}
+
+	if len(errMsgs) > 0 {
 		c.JSON(500, gin.H{
-			"error": err.Error(),
+			"error": strings.Join(errMsgs, ", "),
 		})
 		return
 	}

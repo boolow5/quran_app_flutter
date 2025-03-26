@@ -108,23 +108,23 @@ final ScrollController _scrollController = ScrollController();
           child: widget.child,
         ),
 
-        // Optional indicator showing scrolling status - only shown if auto-scrolling is enabled and active
-        if (_isScrolling && widget.enableAutoScroll)
-        Positioned(
-          bottom: 16,
-          right: 16,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 200),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Text(
-              'Auto-scrolling',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ),
+        // // Optional indicator showing scrolling status - only shown if auto-scrolling is enabled and active
+        // if (_isScrolling && widget.enableAutoScroll)
+        //Positioned(
+        //  bottom: 16,
+        //  right: 16,
+        //  child: Container(
+        //    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        //    decoration: BoxDecoration(
+        //      color: Colors.black.withValues(alpha: 200),
+        //      borderRadius: BorderRadius.circular(20),
+        //    ),
+        //    child: const Text(
+        //      'Auto-scrolling',
+        //      style: TextStyle(color: Colors.white),
+        //    ),
+        //  ),
+        //),
       ],
     ); 
   }

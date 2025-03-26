@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:MeezanSync/components/auto_scroller.dart';
+import 'package:MeezanSync/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -66,6 +67,21 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
       if (_suraName.isNotEmpty && widget.updatePageNumber) {
         _quranDataProvider.setCurrentPage(_currentPage, _suraName);
       }
+    });
+
+    Future.delayed(const Duration(seconds: 1), () {
+      AuthService().authStateChanges.listen((user) async {
+        if (!mounted || user == null) return;
+
+        try {
+          final changes = await context.read<QuranDataProvider>().getUserStreak();
+          if (!mounted) return;
+          if (changes[0] != changes[1] && changes[0] == changes[1] - 1) {
+            showMessage("Congrats! You have increased your streak to ${changes[1]} days", type: AlertMessageType.success,);}
+        } catch (err) {
+          print("getUserStreak error: $err");
+        }
+      });
     });
   }
 
@@ -285,6 +301,8 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
       }
     }
 
+    spans.add(const TextSpan(text: '\n'));
+
     return spans;
   }
 
@@ -406,6 +424,7 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
                   ),
                   RoundedBoxText(
                     text: "رقم السورة ${toArabicNumber(_suraNumber)}",
+                    // text: "Streak ${context.watch<QuranDataProvider>().userStreakDays ?? '...'}",
                     width: 110,
                     height: 22,
                     fontSize: 13,
@@ -421,7 +440,7 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
             child: Stack(
               children: [
                 Container(
-                  margin: EdgeInsets.all(0),
+                  margin: EdgeInsets.only(bottom: 8),
                   padding: EdgeInsets.all(0),
                   decoration: BoxDecoration(
                     color: Colors.transparent,
@@ -435,7 +454,7 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
                   child: Container(
                     // height: _isSpecialPage() ? boxHeight : null,
                     // width: _isSpecialPage() ? boxWidth : null,
-                    height: pageHeight,
+                    height: pageHeight - 8,
                     width: pageWidth,
                     // constraints: BoxConstraints(
                     //   maxWidth: _isSpecialPage() ? 350 : pageWidth,
@@ -467,8 +486,8 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
                             ),
                     ),
                     child: AutoScroller(
-                        initialDelay: const Duration(seconds: 1),
-                        scrollDuration: const Duration(seconds: 10),
+                        // initialDelay: const Duration(seconds: 1),
+                        // scrollDuration: const Duration(seconds: 10),
                         child: Container(
                         decoration: _isSpecialPage()
                             ? BoxDecoration(
@@ -544,7 +563,22 @@ class _QuranSinglePageState extends State<QuranSinglePage> {
                       ),
                     ),
                   ),
-                ]
+                ] else ...[
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: RoundedBoxText(
+                        text: context.watch<QuranDataProvider>().userStreakLoading ? "Loading..." : "Streak ${context.watch<QuranDataProvider>().userStreakDays} days",
+                        width: 120 + ((context.watch<QuranDataProvider>().userStreakDays > 9 ? context.watch<QuranDataProvider>().userStreakDays : 10) / 10),
+                        height: 22,
+                        fontSize: 13,
+                        color: context.watch<QuranDataProvider>().userStreakWasActiveToday ? DEFAULT_PRIMARY_COLOR : Colors.grey,
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),

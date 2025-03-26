@@ -95,7 +95,7 @@ class _HomeState extends State<Home> {
           if (!mounted) return;
           if (changes[0] != changes[1] && changes[0] == changes[1] - 1) {
             showMessage(
-              "Congrats! You have increased your streak from ${changes[0]} to ${changes[1]} days",
+              "Congrats! You have increased your streak to ${changes[1]} days",
               type: AlertMessageType.success,
             );
           }

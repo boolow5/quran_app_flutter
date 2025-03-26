@@ -11,6 +11,7 @@ class RoundedBoxText extends StatelessWidget {
     this.width,
     this.border,
     this.fontSize,
+    this.color,
   });
 
   final String text;
@@ -18,6 +19,7 @@ class RoundedBoxText extends StatelessWidget {
   final double? width;
   final BoxBorder? border;
   final double? fontSize;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class RoundedBoxText extends StatelessWidget {
         vertical: 4,
       ),
       decoration: BoxDecoration(
-        color: DEFAULT_PRIMARY_COLOR,
+        color: color ?? DEFAULT_PRIMARY_COLOR,
         borderRadius: BorderRadius.circular(calculatedHeight / 2),
         border: border,
       ),

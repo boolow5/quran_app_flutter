@@ -47,3 +47,53 @@ CREATE TABLE IF NOT EXISTS user_devices (
     -- add index for user_id and uid
     INDEX idx_user_id_uid (user_id, uid)
 );
+
+----------------------------------
+CREATE TABLE user_daily_scores (
+    id bigint unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id bigint unsigned NOT NULL,
+    date DATE NOT NULL,
+    reading_time_score INT NOT NULL DEFAULT 0,
+    consistency_score INT NOT NULL DEFAULT 0,
+    progress_score INT NOT NULL DEFAULT 0,
+    engagement_score INT NOT NULL DEFAULT 0,
+    total_score INT NOT NULL DEFAULT 0,
+    pages_read INT NOT NULL DEFAULT 0,
+    reading_minutes INT NOT NULL DEFAULT 0,
+    UNIQUE INDEX idx_user_date (user_id, date)
+);
+
+----------------------------------
+CREATE TABLE user_weekly_scores (
+    id bigint unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    year INT NOT NULL,
+    week INT NOT NULL, -- Week number (1-53)
+    total_score INT NOT NULL DEFAULT 0,
+    days_active INT NOT NULL DEFAULT 0,
+    total_reading_minutes INT NOT NULL DEFAULT 0,
+    total_pages_read INT NOT NULL DEFAULT 0,
+    UNIQUE INDEX idx_user_week (user_id, year, week)
+);
+
+----------------------------------
+CREATE TABLE user_reading_progress (
+    user_id BIGINT NOT NULL,
+    page_number INT NOT NULL,
+    surah_name VARCHAR(100) NOT NULL,
+    first_read_date DATE,
+    read_count INT NOT NULL DEFAULT 0,
+    PRIMARY KEY (user_id, page_number)
+);
+
+----------------------------------
+CREATE TABLE IF NOT EXISTS bookmarks (
+    id bigint unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    page_number INT NOT NULL,
+    surah_name VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    -- unique page number
+    UNIQUE KEY idx_page_number (page_number)
+);
+

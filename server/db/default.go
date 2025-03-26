@@ -44,6 +44,10 @@ func InitTables(db Database) {
 		tableName := getTableName(statement)
 		_, err = db.Exec(context.Background(), statement)
 		if err != nil {
+			if (strings.Contains(err.Error(), "already exists") || strings.Contains(err.Error(), "Duplicate table")) {
+				fmt.Printf("[DB] Table %s already exists\n", tableName)
+				continue
+			}
 			panic(fmt.Sprintf("[DB] Failed to create table: %s, ERROR: %v", tableName, err))
 		}
 

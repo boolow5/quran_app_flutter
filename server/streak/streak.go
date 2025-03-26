@@ -264,15 +264,49 @@ func GetUserStreak(ctx context.Context, db db.Database, userID uint64) (UserStre
 
 func GetRecentPages(ctx context.Context, db db.Database, userID uint64, limit int) ([]RecentPage, error) {
 	var pages []RecentPage
-	query := `
-  SELECT
-      DISTINCT page_number,
-      surah_name,
-      created_at as start_date
-  FROM meezansync_app_db.reading_events
-  WHERE user_id = ? AND seconds_open >= 30
-  ORDER BY created_at DESC
-  LIMIT ?;
+
+	query := ` 
+	WITH RankedPages AS (
+		SELECT 
+			page_number,
+			surah_name,
+			created_at as start_date,
+			page_number - CAST(ROW_NUMBER() OVER (ORDER BY page_number) AS SIGNED) AS sequence_group
+		FROM (
+			SELECT DISTINCT
+				page_number,
+				surah_name,
+				created_at
+			FROM meezansync_app_db.reading_events
+			WHERE user_id = ? AND seconds_open >= 30
+		) AS distinct_pages
+	), 
+	LastPagesInSequence AS (
+		SELECT 
+			page_number,
+			surah_name,
+			start_date,
+			sequence_group,
+			ROW_NUMBER() OVER (PARTITION BY sequence_group ORDER BY start_date DESC) AS seq_rank
+		FROM RankedPages
+	),
+	LatestDistinctPages AS (
+		SELECT 
+			page_number,
+			surah_name,
+			start_date,
+			ROW_NUMBER() OVER (PARTITION BY page_number ORDER BY start_date DESC) AS page_rank
+		FROM LastPagesInSequence
+		WHERE seq_rank = 1
+	)
+	SELECT 
+		page_number,
+		surah_name,
+		start_date
+	FROM LatestDistinctPages
+	WHERE page_rank = 1
+	ORDER BY start_date DESC
+	LIMIT ?; 
   `
 
 	err := db.Select(ctx, &pages, query, userID, limit)

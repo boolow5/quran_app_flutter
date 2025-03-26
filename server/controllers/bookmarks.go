@@ -17,7 +17,7 @@ func GetBookmarks(c *gin.Context) {
 		return
 	}
 
-	bookmarks, err := models.GetBookmarksForUser(c.Request.Context(), userID)
+	bookmarks, err := models.GetBookmarksForUser(c.Request.Context(), models.MySQLDB, userID)
 	if err != nil {
 		fmt.Printf("[controllers.GetBookmarks] Error getting bookmarks: %v\n", err)
 		c.JSON(500, gin.H{
@@ -54,7 +54,7 @@ func AddBookmark(c *gin.Context) {
 	}
 
 	bookmark.UserID = userID
-	err = bookmark.Save(c.Request.Context())
+	err = bookmark.Save(c.Request.Context(), models.MySQLDB)
 	if err != nil {
 		fmt.Printf("[controllers.AddBookmark] Error saving bookmark: %v\n", err)
 		c.JSON(500, gin.H{
@@ -85,7 +85,7 @@ func RemoveBookmark(c *gin.Context) {
 		return
 	}
 
-	err := models.RemoveBookmarkForUser(c.Request.Context(), userID, pageNumber)
+	err := models.RemoveBookmarkForUser(c.Request.Context(), models.MySQLDB, userID, pageNumber)
 	if err != nil {
 		fmt.Printf("[controllers.RemoveBookmark] Error removing bookmark: %v\n", err)
 		c.JSON(500, gin.H{

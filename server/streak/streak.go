@@ -159,31 +159,38 @@ func UpdateStreak(ctx context.Context, db db.Database, userID uint64, today time
 	if thresholdMet {
 		if streak.LastActiveDate.Valid {
 			lastActiveDate := streak.LastActiveDate.Time.Format("2006-01-02")
+			fmt.Printf("Threshold met for user: %d\tLast active date: %s\n", userID, lastActiveDate)
 
 			// Check if last active date was yesterday
 			if lastActiveDate == yesterdayDate {
 				// Continue streak
 				newStreak = streak.CurrentStreak + 1
+				fmt.Printf("Continuing streak for user: %d\tNew streak: %d\n", userID, newStreak)
 			} else if lastActiveDate == todayDate {
 				// Already processed today, keep current streak
 				newStreak = streak.CurrentStreak
+				fmt.Printf("Already processed today for user: %d\tNew streak: %d\n", userID, newStreak)
 			} else {
 				// Streak broken, start new streak
 				newStreak = 1
+				fmt.Printf("Streak broken for user: %d\tNew streak: %d\n", userID, newStreak)
 			}
 		} else {
 			// First time reading, start streak at 1
 			newStreak = 1
+			fmt.Printf("First time reading for user: %d\tNew streak: %d\n", userID, newStreak)
 		}
 	} else {
 		// Threshold not met, keep existing streak
 		newStreak = streak.CurrentStreak
+		fmt.Printf("Threshold not met for user: %d\tNew streak: %d\n", userID, newStreak)
 	}
 
 	// Calculate longest streak
 	longestStreak := streak.LongestStreak
 	if newStreak > longestStreak {
 		longestStreak = newStreak
+		fmt.Printf("Longest streak updated for user: %d\tNew longest streak: %d\n", userID, longestStreak)
 	}
 
 	// Update or insert streak record

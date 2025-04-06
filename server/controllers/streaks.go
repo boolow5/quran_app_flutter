@@ -118,10 +118,16 @@ func UpdateDailySummary(c *gin.Context) {
 		return
 	}
 
+	percentage := float64(totalSeconds) / streak.MinReadingTimeThreshold * 100
+	if percentage > 100 {
+		percentage = 100
+	}
+
 	c.JSON(200, gin.H{
-		"message":       "ok",
-		"success":       true,
-		"total_seconds": totalSeconds,
+		"message":         "ok",
+		"success":         true,
+		"total_seconds":   totalSeconds,
+		"percentage_done": percentage,
 	})
 }
 

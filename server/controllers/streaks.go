@@ -66,18 +66,25 @@ func RecordReadingEvent(c *gin.Context) {
 		return
 	}
 
-	go func(userID uint64, date time.Time) {
-		err := streak.UpdateDailySummary(c.Request.Context(), models.MySQLDB, userID, date)
-		if err != nil {
-			fmt.Printf("[controllers.GetBookmarks] Error getting bookmarks: %v\n", err)
-			return
-		}
-		fmt.Println("Updated daily summary for user: ", userID)
-	}(userID, form.CreatedAt)
+	// go func(userID uint64, date time.Time) {
+	totalSeconds, err := streak.UpdateDailySummary(c.Request.Context(), models.MySQLDB, userID, form.CreatedAt)
+	if err != nil {
+		fmt.Printf("[controllers.GetBookmarks] Error getting bookmarks: %v\n", err)
+		return
+	}
+	fmt.Println("Updated daily summary for user: ", userID)
+	// }(userID, form.CreatedAt)
+
+	percentage := float64(totalSeconds) / streak.MinReadingTimeThreshold * 100
+	if percentage > 100 {
+		percentage = 100
+	}
 
 	c.JSON(200, gin.H{
-		"message": "ok",
-		"success": true,
+		"message":         "ok",
+		"success":         true,
+		"total_seconds":   totalSeconds,
+		"percentage_done": percentage,
 	})
 }
 
@@ -102,7 +109,7 @@ func UpdateDailySummary(c *gin.Context) {
 		return
 	}
 
-	err := streak.UpdateDailySummary(c.Request.Context(), models.MySQLDB, userID, form.Date)
+	totalSeconds, err := streak.UpdateDailySummary(c.Request.Context(), models.MySQLDB, userID, form.Date)
 	if err != nil {
 		fmt.Printf("[controllers.GetBookmarks] Error getting bookmarks: %v\n", err)
 		c.JSON(500, gin.H{
@@ -112,8 +119,9 @@ func UpdateDailySummary(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{
-		"message": "ok",
-		"success": true,
+		"message":       "ok",
+		"success":       true,
+		"total_seconds": totalSeconds,
 	})
 }
 

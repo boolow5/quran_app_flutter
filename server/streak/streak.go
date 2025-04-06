@@ -72,23 +72,22 @@ func RecordReadingEvent(ctx context.Context, db db.Database, event ReadingEvent)
 }
 
 // UpdateDailySummary calculates and updates the daily summary for a user
-func UpdateDailySummary(ctx context.Context, db db.Database, userID uint64, date time.Time) error {
+func UpdateDailySummary(ctx context.Context, db db.Database, userID uint64, date time.Time) (totalSeconds int, err error) {
 	// Format date as YYYY-MM-DD for SQL
 	dateStr := date.Format("2006-01-02")
 
 	fmt.Printf("Updating daily summary for user: %d, date: %s\n", userID, dateStr)
 
 	// Calculate total seconds for the day
-	var totalSeconds int
 	query := `
 		SELECT COALESCE(SUM(seconds_open), 0) 
 		FROM reading_events 
 		WHERE user_id = ? 
 		AND DATE(created_at) = ?
 	`
-	err := db.Get(ctx, &totalSeconds, query, userID, dateStr)
+	err = db.Get(ctx, &totalSeconds, query, userID, dateStr)
 	if err != nil {
-		return fmt.Errorf("failed to calculate daily total: %w", err)
+		return totalSeconds, fmt.Errorf("failed to calculate daily total: %w", err)
 	}
 
 	// Check if threshold is met
@@ -107,12 +106,13 @@ func UpdateDailySummary(ctx context.Context, db db.Database, userID uint64, date
 	_, err = db.Exec(ctx, upsertQuery, userID, dateStr, totalSeconds, thresholdMet)
 	if err != nil {
 		fmt.Printf("Failed to upsert daily summary: %v\n", err)
-		return fmt.Errorf("failed to update daily summary: %w", err)
+		return totalSeconds, fmt.Errorf("failed to update daily summary: %w", err)
 	}
 
 	fmt.Printf("Updated daily summary for user: %d, date: %s\n", userID, dateStr)
 	// Update streak if needed
-	return UpdateStreak(ctx, db, userID, date, thresholdMet)
+	err = UpdateStreak(ctx, db, userID, date, thresholdMet)
+	return totalSeconds, err
 }
 
 // UpdateStreak updates a user's streak based on their activity
@@ -238,7 +238,7 @@ func ProcessDailyStreaks(ctx context.Context, db db.Database, todayDate time.Tim
 
 	// Process each user's streak
 	for _, userID := range userIDs {
-		err := UpdateDailySummary(ctx, db, userID, todayDate)
+		_, err := UpdateDailySummary(ctx, db, userID, todayDate)
 		if err != nil {
 			// Log error but continue with other users
 			fmt.Printf("Error updating streak for user %d: %v\n", userID, err)

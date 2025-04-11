@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -50,6 +51,9 @@ func main() {
 			"buildCommit": BuildCommit,
 			"uptime":      time.Since(StartedAt).Truncate(time.Second).String(),
 		})
+	})
+	router.OPTIONS("/", func(c *gin.Context) {
+		c.AbortWithStatus(http.StatusNoContent)
 	})
 	controllers.SetupHandlers(router, db)
 

@@ -415,11 +415,30 @@ class QuranDataProvider extends ChangeNotifier {
     } catch (err) {
       print("Error saving read events: $err");
       return false;
+    } finally {
+      sendReadEventsQueue();
     }
     return true;
   }
 
+Future<bool> isOnline() async {
+  try {
+    final response = await apiService.options(path: "/"); // Replace with your actual health check endpoint
+      print("isOnline status code: ${response.statusCode}");
+    return response.statusCode == 204;
+  } catch (e) {
+    print("Error checking online status: $e");
+    return false;
+  }
+}
+
   Future<void> sendReadEventsQueue() async {
+    // check is online
+    // if not, return
+    if (!await isOnline()) {
+      return;
+    }
+
     for (int i = 0; i < _readEventsQueue.length; i++) {
       final event = _readEventsQueue[i];
       bool sent = false;

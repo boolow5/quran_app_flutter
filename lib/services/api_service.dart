@@ -141,6 +141,22 @@ class ApiService {
     }
   }
 
+  // OPTIONS request
+  Future<T> options<T>({
+    required String path,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    ResponseConverter<T>? converter,
+  }) async {
+    return _request<T>(
+      path: path,
+      method: 'OPTIONS',
+      queryParameters: queryParameters,
+      options: options,
+      converter: converter,
+    );
+  }
+
   // GET request
   Future<T> get<T>({
     required String path,

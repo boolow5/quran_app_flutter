@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -33,11 +35,19 @@ class _QuranPagesState extends State<QuranPages> {
   bool isLandscape = false;
   bool isLoading = true;
 
+  Timer? _timer;
+
   @override
   void initState() {
     super.initState();
 
     updateThemeScale(context);
+    
+    _timer = Timer.periodic(const Duration(seconds: 15), (timer) {
+      if (!mounted) return;
+
+      context.read<QuranDataProvider>().sendReadEventsQueue();
+    });
 
     Future.delayed(const Duration(microseconds: 100), () {
       setState(() {
@@ -147,6 +157,7 @@ class _QuranPagesState extends State<QuranPages> {
   void dispose() {
     super.dispose();
 
+    _timer?.cancel();
     _pageController.dispose();
   }
 

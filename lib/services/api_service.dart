@@ -35,7 +35,13 @@ class ApiService {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onResponse: (response, handler) {
-          handler.next(response);
+          print("[API] Response: [${response.statusCode}] ${response.data}");
+          if (response.statusCode != 204) {
+            handler.next(response);
+          } else {
+            response.data = {};
+            handler.next(response);
+          }
         },
         onRequest: (options, handler) async {
           try {
@@ -123,7 +129,9 @@ class ApiService {
         );
       }
 
-      if (response.statusCode != 200 && response.statusCode != 201) {
+      if (response.statusCode != 200 &&
+          response.statusCode != 201 &&
+          response.statusCode != 204) {
         throw ApiException(
           response.data['message'] ?? 'Something went wrong',
           response.statusCode,

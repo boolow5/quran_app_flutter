@@ -259,8 +259,10 @@ class QuranDataProvider extends ChangeNotifier {
     print("removeBookmark: $pageNumbers");
 
     try {
-      await apiService.delete(path: "/api/v1/bookmarks/${pageNumbers.join(",")}");
-      _bookmarks.removeWhere((bookmark) => pageNumbers.contains(bookmark.pageNumber));
+      await apiService.delete(
+          path: "/api/v1/bookmarks/${pageNumbers.join(",")}");
+      _bookmarks
+          .removeWhere((bookmark) => pageNumbers.contains(bookmark.pageNumber));
       _saveBookmarks();
       getBookmarks();
     } catch (e) {
@@ -274,7 +276,7 @@ class QuranDataProvider extends ChangeNotifier {
         );
       }
     } finally {
-       notifyListeners();
+      notifyListeners();
     }
   }
 
@@ -324,14 +326,13 @@ class QuranDataProvider extends ChangeNotifier {
         print("getBookmarks Success: ${resp.length}");
         List<dynamic> bookmarks = (resp ?? []);
         if (bookmarks.isNotEmpty) {
-          bookmarks = bookmarks
-              .where((item) => item["pageNumber"] > 0) 
-              .toList();
+          bookmarks =
+              bookmarks.where((item) => item["pageNumber"] > 0).toList();
         }
 
         print("getBookmarks: $bookmarks");
         _bookmarks = List<RecentPage>.from(
-            bookmarks.map((item) =>  RecentPage.fromJson(item)));
+            bookmarks.map((item) => RecentPage.fromJson(item)));
         if (_bookmarks.isNotEmpty) {
           _bookmarks.sort((a, b) => a.startDate.compareTo(b.startDate));
         }
@@ -405,8 +406,13 @@ class QuranDataProvider extends ChangeNotifier {
     return saved;
   }
 
-  Future<bool> sendReadEvent(int pageNumber, String suraName, int seconds) async {
-    _readEventsQueue.add(ReadEvent(pageNumber: pageNumber, suraName: suraName, seconds: seconds, sent: false));
+  Future<bool> sendReadEvent(
+      int pageNumber, String suraName, int seconds) async {
+    _readEventsQueue.add(ReadEvent(
+        pageNumber: pageNumber,
+        suraName: suraName,
+        seconds: seconds,
+        sent: false));
 
     try {
       // save read event
@@ -421,16 +427,17 @@ class QuranDataProvider extends ChangeNotifier {
     return true;
   }
 
-Future<bool> isOnline() async {
-  try {
-    final response = await apiService.options(path: "/"); // Replace with your actual health check endpoint
-      print("isOnline status code: ${response.statusCode}");
-    return response.statusCode == 204;
-  } catch (e) {
-    print("Error checking online status: $e");
-    return false;
+  Future<bool> isOnline() async {
+    try {
+      final response = await apiService.options(
+          path: "/"); // Replace with your actual health check endpoint
+      print("isOnline status code: ${response}");
+      return true;
+    } catch (e) {
+      print("Error checking online status: $e");
+      return false;
+    }
   }
-}
 
   Future<void> sendReadEventsQueue() async {
     // check is online
@@ -446,10 +453,10 @@ Future<bool> isOnline() async {
         final resp = await apiService.post(
           path: "/api/v1/streaks/read-event",
           data: {
-          "page_number": event.pageNumber,
-          "surah_name": event.suraName,
-          "seconds_open": event.seconds,
-        },
+            "page_number": event.pageNumber,
+            "surah_name": event.suraName,
+            "seconds_open": event.seconds,
+          },
         );
         print("sendReadEvent: $resp");
         if (resp != null && resp["success"] == true) {
@@ -459,7 +466,7 @@ Future<bool> isOnline() async {
           print("sendReadEvent Failed: ${resp?.data}");
           throw resp?.data['message'] ?? 'Something went wrong';
         }
-        
+
         if (sent) {
           _readEventsQueue[i] = _readEventsQueue[i].copyWith(sent: sent);
         }
@@ -484,7 +491,7 @@ Future<bool> isOnline() async {
           );
         }
       }
-    } 
+    }
 
     // remove all sent events
     _readEventsQueue.removeWhere((element) => element.sent);
@@ -505,7 +512,8 @@ Future<bool> isOnline() async {
       final resp = await apiService.get(path: "/api/v1/streaks");
       print("getUserStreak: $resp");
       if (resp != null && resp["user_id"] > 0) {
-        print("getUserStreak Success: ${resp['current_streak']} ${resp['last_active_date']}");
+        print(
+            "getUserStreak Success: ${resp['current_streak']} ${resp['last_active_date']}");
         _userStreak = UserStreak.fromJson(resp);
         if (_userStreak != null) {
           changes[1] = _userStreak!.currentStreak;
@@ -515,7 +523,6 @@ Future<bool> isOnline() async {
         print("getUserStreak Failed: ${resp?.data}");
         throw resp?.data['message'] ?? 'Something went wrong';
       }
-
     } on DioException catch (err) {
       print("getUserStreak Dio Error: $err");
       if (!err.toString().contains('no token available')) {

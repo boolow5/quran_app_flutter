@@ -72,10 +72,10 @@ if [ "$PLATFORM_NAME" = "android" ]; then
     # create symbol zip file
     cd $SYMBOLS_DIR;
     rm .DS_Store;
-    zip -r symbols.zip .
-    echo "cp $SYMBOLS_DIR/symbols.zip $BUILD_DIR/app/outputs/bundle/release/;"
+    zip -r symbols.zip . || echo "Failed to create symbols.zip";
+    echo "cp $SYMBOLS_DIR/symbols.zip $BUILD_DIR/app/outputs/bundle/release/;" || echo "Failed to copy symbols.zip";
     cd $BUILD_DIR/..;
-    cp -rv $SYMBOLS_DIR/symbols.zip $BUILD_DIR/app/outputs/bundle/release/;
+    cp -rv $SYMBOLS_DIR/symbols.zip $BUILD_DIR/app/outputs/bundle/release/ || echo "Failed to copy symbols.zip";
 
 
     # if current os is macos, open build/app/outputs/bundle/release

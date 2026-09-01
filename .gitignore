@@ -54,3 +54,6 @@ server/meezansync-*.json
 server/.env*
 .secret*
 server/bin/
+
+/android/app/.cxx/
+symbols.zip
